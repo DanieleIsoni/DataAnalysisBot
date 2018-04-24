@@ -1,0 +1,21 @@
+{
+  "name": "data-analysis-bot-v2",
+  "version": "1.0.0",
+  "description": "A bot fot Data Analysis",
+  "main": "app.js",
+  "scripts": {
+    "start": "export $(cat .env) && node src/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Daniele Isoni",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "console-stamp": "^0.2.6",
+    "dialogflow": "^0.3.0",
+    "express": "^4.16.3",
+    "node-telegram-bot-api": "^0.30.0",
+    "node-uuid": "^1.4.8",
+    "npm": "^6.0.0"
+  }
+}
