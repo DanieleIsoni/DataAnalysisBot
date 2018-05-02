@@ -3,5 +3,4 @@ npm-debug.log
 .idea/
 .DS_Store
 .env
-app.json
 package-lock.json

@@ -2,6 +2,7 @@ const DialogFlow = require('./Client/DialogFlow');
 const DialogFlowConfig = require('./Client/DialogFlowConfig');
 const express = require('express');
 const bodyParser = require('body-parser');
+const fulfillment = require('./Fulfillment/Fulfillment');
 
 const REST_PORT = (process.env.PORT || 5000);
 const DEV_CONFIG = (process.env.DEVELOPMENT_CONFIG === 'true');
@@ -12,6 +13,7 @@ const PROJECT_ID = process.env.PROJECT_ID;
 const LANGUAGE_CODE = process.env.LANGUAGE_CODE;
 const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
 const CLIENT_WEBHOOK = process.env.CLIENT_WEBHOOK;
+const FULFILLMENT_WEBHOOK = process.env.FULFILLMENT_WEBHOOK;
 
 let baseUrl = "";
 if (APP_NAME){
@@ -37,8 +39,9 @@ const ai = new DialogFlow(aiConfig, baseUrl);
 
 const app = express();
 app.use(bodyParser.json());
+
 app.post(`/${CLIENT_WEBHOOK}`, (req, res) => {
-    if (aiConfig.devConfig) console.log(`POST ${CLIENT_WEBHOOK}`);
+    console.log(`POST ${CLIENT_WEBHOOK}`);
     try {
         ai.processMessage(req, res);
     } catch (err) {
@@ -46,6 +49,16 @@ app.post(`/${CLIENT_WEBHOOK}`, (req, res) => {
     }
 });
 
+app.post(`/${FULFILLMENT_WEBHOOK}`, (req,res) => {
+    console.log(`POST ${FULFILLMENT_WEBHOOK}`);
+    try {
+        fulfillment.dialogflowFulfillment(req,res);
+    } catch (err) {
+        console.error(`ERROR: ${err}`);
+        return res.status(400).send(`Error while processing ${err.message}`);
+    }
+});
+
 app.listen(REST_PORT, function () {
-    if (aiConfig.devConfig) console.log(`Rest service ready on port ${REST_PORT}`);
+    console.log(`Rest service ready on port ${REST_PORT}`);
 });

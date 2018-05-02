@@ -125,7 +125,7 @@ module.exports = class DialogFlow {
                 let sessionPath = this.sessionClient.sessionPath(this.aiConfig.projectId, sessionId);
                 if (devConfig) console.log(`sessionPath: ${sessionPath}`);
 
-                if (devConfig) console.log('Empty message text');
+                console.log('Empty message text');
                 let messageDoc = msg.document;
                 if(messageDoc && chatId && messageDoc.file_id){
                     this.bot.getFileLink(messageDoc.file_id)
@@ -151,7 +151,7 @@ module.exports = class DialogFlow {
                 }
             }
         } else {
-            if (devConfig) console.log('Empty message');
+            console.log('Empty message');
             return DialogFlow.createResponse(res, 200, 'Empty message');
         }
     }
@@ -175,8 +175,6 @@ let processRequest = function (DialogFlow, promise, devConfig, bot, chatId, res)
                 let responseText = response.queryResult.fulfillmentText;
                 let messages = response.queryResult.fulfillmentMessages;
 
-                if (devConfig) console.log(`Result:\n${JSON.stringify(response.queryResult, null, '   ')}`);
-
                 if (responseText) {
                     if (devConfig) console.log(`Response as text message with message: ${responseText}`);
                     bot.sendMessage(chatId, responseText, {parse_mode: 'html'});
@@ -192,12 +190,12 @@ let processRequest = function (DialogFlow, promise, devConfig, bot, chatId, res)
 
                     DialogFlow.createResponse(res, 200, 'Message processed');
                 } else {
-                    if (devConfig) console.log('Received empty speech');
+                    console.log('Received empty speech');
                     bot.sendMessage(chatId, 'Something went wrong. Please retry in a few minutes');
                     DialogFlow.createResponse(res, 200, 'Received empty speech');
                 }
             } else {
-                if (devConfig) console.log('Received empty result');
+                console.log('Received empty result');
                 bot.sendMessage(chatId, 'Something went wrong. Please retry in a few minutes');
                 DialogFlow.createResponse(res, 200, 'Received empty result');
             }
