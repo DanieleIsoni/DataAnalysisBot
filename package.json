@@ -2,7 +2,7 @@
   "name": "data-analysis-bot-v2",
   "version": "1.0.0",
   "description": "A bot fot Data Analysis",
-  "main": "app.js",
+  "main": "src/app.js",
   "scripts": {
     "start": "export $(cat .env) && node src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -16,6 +16,8 @@
     "express": "^4.16.3",
     "node-telegram-bot-api": "^0.30.0",
     "node-uuid": "^1.4.8",
-    "npm": "^6.0.0"
+    "npm": "^6.0.0",
+    "python-shell": "^0.5.0",
+    "request": "^2.85.0"
   }
 }

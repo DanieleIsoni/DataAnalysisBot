@@ -2,7 +2,7 @@ const dialogFlow = require('dialogflow');
 //const structjson = require('./structjson.js');
 const uuid = require('node-uuid');
 const TelegramBot = require('node-telegram-bot-api');
-const structjson = require('./structjson.js');
+const structjson = require('./structjson');
 
 module.exports = class DialogFlow {
     get sessionClient() {
@@ -55,9 +55,9 @@ module.exports = class DialogFlow {
 
     processMessage(req, res) {
         let devConfig = this._aiConfig.devConfig;
-        if (devConfig) console.log(`body\n${JSON.stringify(req.body, null, '   ')}`);
 
         let updateObject = req.body;
+        if (devConfig) console.log(`body\n${JSON.stringify(updateObject, null, '   ')}`);
 
         if (updateObject && updateObject.message) {
             let msg = updateObject.message;

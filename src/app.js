@@ -1,5 +1,5 @@
-const DialogFlow = require('./DialogFlow');
-const DialogFlowConfig = require('./DialogFlowConfig');
+const DialogFlow = require('./Client/DialogFlow');
+const DialogFlowConfig = require('./Client/DialogFlowConfig');
 const express = require('express');
 const bodyParser = require('body-parser');
 
