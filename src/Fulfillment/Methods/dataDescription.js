@@ -1,5 +1,6 @@
 const PythonShell = require('python-shell');
 const DEV_CONFIG = (process.env.DEVELOPMENT_CONFIG == 'true');
+const fLog = '[FULFILLMENT] ';
 
 module.exports.dataDescription = function (fileName, fileLink, response){
     const options = {
@@ -9,7 +10,7 @@ module.exports.dataDescription = function (fileName, fileLink, response){
     };
     PythonShell.run('dataDescription.py', options, function (err, results) {
         if(err){
-            console.error(`ERROR: ${err}`);
+            console.error(`${fLog}ERROR: ${err}`);
         }
         let attributes = `${results}`.split(',');
         let messages = [];
@@ -32,7 +33,7 @@ module.exports.dataDescription = function (fileName, fileLink, response){
 
         if (DEV_CONFIG) console.log('\n'+JSON.stringify(messages, null, '   '));
         response.send({
-            fulfillmentText: '',//`<code>${message}</code>`,
+            fulfillmentText: 'This is the basic description for your data:',//`<code>${message}</code>`,
             fulfillmentMessages: messages
         });
     });

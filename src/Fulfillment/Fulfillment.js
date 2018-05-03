@@ -2,6 +2,7 @@ const DEV_CONFIG = (process.env.DEVELOPMENT_CONFIG === 'true');
 const storeAttributes = require('./Methods/storeAttributes');
 const executeTest = require('./Methods/executeTest');
 const dataDescription = require('./Methods/dataDescription');
+const fLog = '[FULFILLMENT] ';
 
 module.exports.dialogflowFulfillment = (request, response) => {
     if (DEV_CONFIG) console.log(`Request: ${JSON.stringify(request.body, null, '   ')}`);
@@ -29,7 +30,7 @@ module.exports.dialogflowFulfillment = (request, response) => {
 
                 storeAttributes.storeAttributes(fileName, fileLink, response, session);
             } else {
-                console.error(`Context not found for action ${action}`);
+                console.error(`${fLog}Context not found for action ${action}`);
                 response.send({
                     fulfillmentText: `Something went wrong. Try in a few minutes`,
                 });
@@ -47,7 +48,7 @@ module.exports.dialogflowFulfillment = (request, response) => {
 
                 dataDescription.dataDescription(fileName, fileLink, response);
             } else {
-               console.error(`Context not found for action ${action}`);
+               console.error(`${fLog}Context not found for action ${action}`);
                 response.send({
                     fulfillmentText: `Something went wrong. Try in a few minutes`
                 });
@@ -71,7 +72,7 @@ module.exports.dialogflowFulfillment = (request, response) => {
 
                 executeTest.executeTest(fileLink, test, test_original, attr, response);
             } else {
-                console.error(`Context not found for action ${action}`);
+                console.error(`${fLog}Context not found for action ${action}`);
                 response.send({
                     fulfillmentText: `Something went wrong. Try in a few minutes`,
                 });
@@ -98,7 +99,7 @@ module.exports.dialogflowFulfillment = (request, response) => {
 
                 executeTest.executeTest(fileLink, test, test_original, attr, response);
             } else {
-                console.error(`Context not found for action ${action}`);
+                console.error(`${fLog}Context not found for action ${action}`);
                 response.send({
                     fulfillmentText: `Something went wrong. Try in a few minutes`
                 });
@@ -125,7 +126,7 @@ module.exports.dialogflowFulfillment = (request, response) => {
 
                 executeTest.executeTest(fileLink, test, test_original, attr, response);
             } else {
-                console.error(`Context not found for action ${action}`);
+                console.error(`${fLog}Context not found for action ${action}`);
                 response.send({
                     fulfillmentText: `Something went wrong. Try in a few minutes`
                 });
@@ -159,7 +160,7 @@ module.exports.dialogflowFulfillment = (request, response) => {
         }
             break;*/
         default:
-            console.log('No action matched');
+            console.log(`${fLog}No action matched`);
             response.send({
                 fulfillmentText: `No action matched`
             });

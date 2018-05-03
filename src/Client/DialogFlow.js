@@ -3,6 +3,7 @@ const dialogFlow = require('dialogflow');
 const uuid = require('node-uuid');
 const TelegramBot = require('node-telegram-bot-api');
 const structjson = require('./structjson');
+const cLog = '[CLIENT] ';
 
 module.exports = class DialogFlow {
     get sessionClient() {
@@ -44,7 +45,7 @@ module.exports = class DialogFlow {
         this._bot
             .setWebHook(`${baseUrl}/${aiConfig.clientWebHook}`)
             .catch(err => {
-                console.error(`ERROR: ${err}`);
+                console.error(`${cLog}ERROR: ${err}`);
             });
 
         this._sessionClient = new dialogFlow.SessionsClient({
@@ -57,10 +58,10 @@ module.exports = class DialogFlow {
         let devConfig = this._aiConfig.devConfig;
 
         let updateObject = req.body;
+        let react = req.body.react;
         if (devConfig) {
             console.log(`body\n${JSON.stringify(updateObject, null, '   ')}`);
-            console.log(`body not parsed\n${updateObject}`);
-            console.log(`header1\n${JSON.stringify(req.header, null, '   ')}`);
+            console.log(`react\n${react}`);
         }
 
         if (updateObject && updateObject.message) {
@@ -129,7 +130,7 @@ module.exports = class DialogFlow {
                 let sessionPath = this.sessionClient.sessionPath(this.aiConfig.projectId, sessionId);
                 if (devConfig) console.log(`sessionPath: ${sessionPath}`);
 
-                console.log('Empty message text');
+                console.log(`${cLog}Empty message text`);
                 let messageDoc = msg.document;
                 if(messageDoc && chatId && messageDoc.file_id){
                     this.bot.getFileLink(messageDoc.file_id)
@@ -155,20 +156,30 @@ module.exports = class DialogFlow {
                 }
             }
         } else {
-            console.log('Empty message');
+            console.log(`${cLog}Empty message`);
             return DialogFlow.createResponse(res, 400, 'Empty message');
         }
     }
 
-    static createResponse(resp, statusCode, message, outType, outContent, code) {
+    static createResponse(resp, statusCode, message, outputs = null, code = null) {
+        /**
+         * Json structure
+         * {
+         *    who: 'bot',
+         *    message: message,
+         *    outputs: {
+         *      // o image/png o text/plain se codice o null se vuoto
+         *      type: null,
+         *      content: null
+         *    },
+         *    code: null
+         * }
+         */
+
         return resp.status(statusCode).json({
             who: 'bot',
             message: message,
-            output: {
-                // o image/png o text/plain se codice o null se vuoto
-                type: null,
-                content: null
-            },
+            outputs: outputs,
             code: null
         });
     }
@@ -183,34 +194,73 @@ let processRequest = function (DialogFlow, promise, devConfig, bot, chatId, res)
                 let responseText = response.queryResult.fulfillmentText;
                 let messages = response.queryResult.fulfillmentMessages;
 
-                if (responseText) {
+                /*if (responseText) {
                     if (devConfig) console.log(`Response as text message with message: ${responseText}`);
-                    bot.sendMessage(chatId, responseText, {parse_mode: 'html'});
+                    if (react != true)
+                        bot.sendMessage(chatId, responseText, {parse_mode: 'html'});
                     console.log('Message processed');
-                    DialogFlow.createResponse(res, 200, responseText);
+                    DialogFlow.createResponse(res, 200, '',[responseText]);
                 } else if (messages && messages.length > 0) {
                     if (devConfig) console.log(`Response as multiple textMessages with messages: ${JSON.stringify(messages, null, '   ')}`);
-                    messages.forEach(el => {
+                    messages.forEach((el, i) => {
                         let text = el.text.text[0];
                         if(text && text !== '') {
-                            bot.sendMessage(chatId, text, {parse_mode: 'html'});
+                            if (react != true) {
+                                bot.sendMessage(chatId, text, {parse_mode: 'html'});
+                            } else {
+                                messages[i] = text;
+                            }
                         }
                     });
                     console.log('Message processed');
-                    DialogFlow.createResponse(res, 200, text);
+                    DialogFlow.createResponse(res, 200, messages);
                 } else {
                     bot.sendMessage(chatId, 'Something went wrong. Please retry in a few minutes');
                     console.log('Received empty speech');
-                    DialogFlow.createResponse(res, 200, 'Something went wrong. Please retry in a few minutes');
+                    DialogFlow.createResponse(res, 400, ['Something went wrong. Please retry in a few minutes']);
+                }*/
+
+                if (responseText) {
+                    if (devConfig) console.log(`Response as text message with message: ${responseText}`);
+                    if (react != true)
+                        bot.sendMessage(chatId, responseText, {parse_mode: 'html'});
+                    console.log(`${cLog}FulfillmentText processed`);
+                    if (messages && messages.length > 0) {
+                        if (devConfig) console.log(`Response as multiple textMessages with messages: ${JSON.stringify(messages, null, '   ')}`);
+                        messages.forEach((el, i) => {
+                            let text = el.text.text[0];
+                            if(text && text !== '') {
+                                if (react != true) {
+                                    bot.sendMessage(chatId, text, {parse_mode: 'html'});
+                                }
+                            }
+                            messages[i] = {
+                                type: 'text/plain',
+                                content: text
+                            };
+                        });
+                        if (devConfig) console.log(`Outputs:\n${JSON.stringify(messages, null, '   ')}`);
+                        console.log(`${cLog}FulfillmentMessages processed`);
+                    } else if (messages.lenght = 0){
+                        messages = null;
+                    }
+                    DialogFlow.createResponse(res, 200, responseText, messages)
+                } else {
+                    if (react != true)
+                        bot.sendMessage(chatId, 'Something went wrong. Please retry in a few minutes');
+                    console.log(`${cLog}Received empty speech`);
+                    DialogFlow.createResponse(res, 400, 'Something went wrong. Please retry in a few minutes');
                 }
+
             } else {
-                bot.sendMessage(chatId, 'Something went wrong. Please retry in a few minutes');
-                console.log('Received empty result');
+                if (react != true)
+                    bot.sendMessage(chatId, 'Something went wrong. Please retry in a few minutes');
+                console.log(`${cLog}Received empty result`);
                 DialogFlow.createResponse(res, 200, 'Something went wrong. Please retry in a few minutes');
             }
         })
         .catch(err => {
-            console.error('Error while call to dialogFlow', err);
+            console.error(`${cLog}Error while call to dialogFlow`, err);
             DialogFlow.createResponse(res, 400, 'Error while call to dialogFlow');
         })
 };

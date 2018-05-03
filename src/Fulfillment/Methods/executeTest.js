@@ -1,5 +1,6 @@
 const PythonShell = require('python-shell');
 const DEV_CONFIG = (process.env.DEVELOPMENT_CONFIG == 'true');
+const fLog = '[FULFILLMENT] ';
 
 module.exports.executeTest = function(fileLink, test, test_original, attr, response){
     const options = {
@@ -10,7 +11,7 @@ module.exports.executeTest = function(fileLink, test, test_original, attr, respo
 
     PythonShell.run('executeTest.py', options, (err, result) => {
         if (err){
-            console.error(`ERROR: ${err}`);
+            console.error(`${fLog}ERROR: ${err}`);
         }
 
         let message;
@@ -29,7 +30,17 @@ module.exports.executeTest = function(fileLink, test, test_original, attr, respo
         }
 
         response.send({
-            fulfillmentText: message
+            fulfillmentText: message,
+            fulfillmentMessages: [
+                {
+                   platform: 'PLATFORM_UNSPECIFIED',
+                   text: {
+                       text: [
+                           `<code>${result}</code>`
+                       ]
+                   }
+                }
+            ]
         });
     });
 };
