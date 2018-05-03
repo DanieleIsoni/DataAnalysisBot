@@ -57,7 +57,11 @@ module.exports = class DialogFlow {
         let devConfig = this._aiConfig.devConfig;
 
         let updateObject = req.body;
-        if (devConfig) console.log(`body\n${JSON.stringify(updateObject, null, '   ')}`);
+        if (devConfig) {
+            console.log(`body\n${JSON.stringify(updateObject, null, '   ')}`);
+            console.log(`body not parsed\n${updateObject}`);
+            console.log(`header1\n${JSON.stringify(req.header, null, '   ')}`);
+        }
 
         if (updateObject && updateObject.message) {
             let msg = updateObject.message;
@@ -152,16 +156,20 @@ module.exports = class DialogFlow {
             }
         } else {
             console.log('Empty message');
-            return DialogFlow.createResponse(res, 200, 'Empty message');
+            return DialogFlow.createResponse(res, 400, 'Empty message');
         }
     }
 
-    static createResponse(resp, code, message) {
-        return resp.status(code).json({
-            status: {
-                code: code,
-                message: message
-            }
+    static createResponse(resp, statusCode, message, outType, outContent, code) {
+        return resp.status(statusCode).json({
+            who: 'bot',
+            message: message,
+            output: {
+                // o image/png o text/plain se codice o null se vuoto
+                type: null,
+                content: null
+            },
+            code: null
         });
     }
 };
@@ -178,7 +186,8 @@ let processRequest = function (DialogFlow, promise, devConfig, bot, chatId, res)
                 if (responseText) {
                     if (devConfig) console.log(`Response as text message with message: ${responseText}`);
                     bot.sendMessage(chatId, responseText, {parse_mode: 'html'});
-                    DialogFlow.createResponse(res, 200, 'Message processed');
+                    console.log('Message processed');
+                    DialogFlow.createResponse(res, 200, responseText);
                 } else if (messages && messages.length > 0) {
                     if (devConfig) console.log(`Response as multiple textMessages with messages: ${JSON.stringify(messages, null, '   ')}`);
                     messages.forEach(el => {
@@ -187,22 +196,22 @@ let processRequest = function (DialogFlow, promise, devConfig, bot, chatId, res)
                             bot.sendMessage(chatId, text, {parse_mode: 'html'});
                         }
                     });
-
-                    DialogFlow.createResponse(res, 200, 'Message processed');
+                    console.log('Message processed');
+                    DialogFlow.createResponse(res, 200, text);
                 } else {
-                    console.log('Received empty speech');
                     bot.sendMessage(chatId, 'Something went wrong. Please retry in a few minutes');
-                    DialogFlow.createResponse(res, 200, 'Received empty speech');
+                    console.log('Received empty speech');
+                    DialogFlow.createResponse(res, 200, 'Something went wrong. Please retry in a few minutes');
                 }
             } else {
-                console.log('Received empty result');
                 bot.sendMessage(chatId, 'Something went wrong. Please retry in a few minutes');
-                DialogFlow.createResponse(res, 200, 'Received empty result');
+                console.log('Received empty result');
+                DialogFlow.createResponse(res, 200, 'Something went wrong. Please retry in a few minutes');
             }
         })
         .catch(err => {
             console.error('Error while call to dialogFlow', err);
-            DialogFlow.createResponse(res, 200, 'Error while call to dialogFlow');
+            DialogFlow.createResponse(res, 400, 'Error while call to dialogFlow');
         })
 };
 
