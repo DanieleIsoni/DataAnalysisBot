@@ -20,6 +20,8 @@
 
 'use strict';
 
+const cLog = '[CLIENT] ';
+
 function jsonToStructProto(json) {
   const fields = {};
   for (let k in json) {
@@ -58,7 +60,7 @@ function jsonValueToProto(value) {
     valueProto.kind = kind;
     valueProto[kind] = value;
   } else {
-    console.warn('Unsupported value type ', typeof value);
+    console.warn(`${cLog}Unsupported value type `, typeof value);
   }
   return valueProto;
 }
@@ -85,13 +87,13 @@ function valueProtoToJson(proto) {
     return null;
   } else if (proto.kind === 'listValue') {
     if (!proto.listValue || !proto.listValue.values) {
-      console.warn('Invalid JSON list value proto: ', JSON.stringify(proto));
+      console.warn(`${cLog}Invalid JSON list value proto: `, JSON.stringify(proto));
     }
     return proto.listValue.values.map(valueProtoToJson);
   } else if (proto.kind === 'structValue') {
     return structProtoToJson(proto.structValue);
   } else {
-    console.warn('Unsupported JSON value proto kind: ', proto.kind);
+    console.warn(`${cLog}Unsupported JSON value proto kind: `, proto.kind);
     return null;
   }
 }

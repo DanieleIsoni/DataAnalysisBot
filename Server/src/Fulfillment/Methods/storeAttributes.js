@@ -9,16 +9,17 @@ const sessionEntityTypesClient = new dialogflow.SessionEntityTypesClient({
     keyFileName: gappCred,
     projectId: PROJECT_ID
 });
+const fLog = '[FULFILLMENT] ';
 
 module.exports.storeAttributes = function (fileName, fileLink, response, session){
     const options = {
         mode: 'text',
-        scriptPath: 'src/Python/',
+        scriptPath: 'Server/src/Python/',
         args: [`${fileLink}`]
     };
     PythonShell.run('getAttributes.py', options, function (err, results) {
         if(err){
-            console.error(`ERROR: ${err}`);
+            console.error(`${fLog}ERROR: ${err}`);
         }
         let attributes = `${results}`.split(',');
 
@@ -49,11 +50,11 @@ module.exports.storeAttributes = function (fileName, fileLink, response, session
         sessionEntityTypesClient.createSessionEntityType(request)
             .then(responses => {
                 let res = responses[0];
-                if (DEV_CONFIG) console.log(`response: ${JSON.stringify(res, null, '   ')}`);
+                if (DEV_CONFIG) console.log(`${fLog}response: ${JSON.stringify(res, null, '   ')}`);
 
                 if (res) {
                     let message = `Stored ${fileName} which contains: ${attributes.join(', ')}\nWhat do you want to do with this data?`;
-                    if (DEV_CONFIG) console.log(`messageSent: ${message}, to session: ${session}`);
+                    if (DEV_CONFIG) console.log(`${fLog}messageSent: ${message}, to session: ${session}`);
                     response.send({
                         fulfillmentText: message
                     });
@@ -64,7 +65,7 @@ module.exports.storeAttributes = function (fileName, fileLink, response, session
                 }
             })
             .catch(err => {
-                console.error(`ERROR: ${err}`);
+                console.error(`${fLog}ERROR: ${err}`);
             });
     });
 };

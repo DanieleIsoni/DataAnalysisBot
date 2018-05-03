@@ -5,7 +5,7 @@ const fLog = '[FULFILLMENT] ';
 module.exports.executeTest = function(fileLink, test, test_original, attr, response){
     const options = {
         mode: 'text',
-        scriptPath: 'src/Python/',
+        scriptPath: 'Server/src/Python/',
         args: [`${fileLink}`, `${test}`, `${attr}`]
     };
 

@@ -1,5 +1,4 @@
 const dialogFlow = require('dialogflow');
-//const structjson = require('./structjson.js');
 const uuid = require('node-uuid');
 const TelegramBot = require('node-telegram-bot-api');
 const structjson = require('./structjson');
@@ -60,8 +59,8 @@ module.exports = class DialogFlow {
         let updateObject = req.body;
         let react = req.body.react;
         if (devConfig) {
-            console.log(`body\n${JSON.stringify(updateObject, null, '   ')}`);
-            console.log(`react\n${react}`);
+            console.log(`${cLog}body\n${JSON.stringify(updateObject, null, '   ')}`);
+            console.log(`${cLog}react\n${react}`);
         }
 
         if (updateObject && updateObject.message) {
@@ -69,12 +68,12 @@ module.exports = class DialogFlow {
 
             let chatId;
 
-            if (msg.chat) {
-                chatId = msg.chat.id;
+            if (req.sessionID) {
+                chatId = req.sessionID;
             }
 
             let messageText = msg.text;
-            if (devConfig) console.log(`chatId: ${chatId}, messageText: ${messageText}`);
+            if (devConfig) console.log(`${cLog}chatId: ${chatId}, messageText: ${messageText}`);
 
             let promise;
 
@@ -83,10 +82,10 @@ module.exports = class DialogFlow {
                     this._sessionIds.set(chatId, uuid.v1());
                 }
                 let sessionId = this.sessionIds.get(chatId);
-                if (devConfig) console.log(`sessionId: ${sessionId}`);
+                if (devConfig) console.log(`${cLog}sessionId: ${sessionId}`);
 
                 let sessionPath = this.sessionClient.sessionPath(this.aiConfig.projectId, sessionId);
-                if (devConfig) console.log(`sessionPath: ${sessionPath}`);
+                if (devConfig) console.log(`${cLog}sessionPath: ${sessionPath}`);
 
                 switch(messageText) {
                     case "/start": {
@@ -115,32 +114,33 @@ module.exports = class DialogFlow {
                             }
                         };
                         promise = this.sessionClient.detectIntent(request);
+                        if (react == 'true'){
+                            req.session.messages.push({who: 'me', what: 'markdown', message: messageText, outputs: null});
+                        }
                     }
                         break;
                 }
-
-                processRequest(DialogFlow, promise, devConfig, this.bot, chatId, res);
+                processRequest(DialogFlow, promise, devConfig, this.bot, chatId, req, res, react);
             } else if(chatId){
                 if (!this._sessionIds.has(chatId)) {
                     this._sessionIds.set(chatId, uuid.v1());
                 }
                 let sessionId = this.sessionIds.get(chatId);
-                if (devConfig) console.log(`sessionId: ${sessionId}`);
+                if (devConfig) console.log(`${cLog}sessionId: ${sessionId}`);
 
                 let sessionPath = this.sessionClient.sessionPath(this.aiConfig.projectId, sessionId);
-                if (devConfig) console.log(`sessionPath: ${sessionPath}`);
+                if (devConfig) console.log(`${cLog}sessionPath: ${sessionPath}`);
 
                 console.log(`${cLog}Empty message text`);
                 let messageDoc = msg.document;
                 if(messageDoc && chatId && messageDoc.file_id){
                     this.bot.getFileLink(messageDoc.file_id)
                         .then(result => {
-                            let fileLink = result;
                             let event = {
                                 name: "DATA_RECEIVED",
                                 parameters: structjson.jsonToStructProto({
                                     file_name: messageDoc.file_name,
-                                    file_link: fileLink
+                                    file_link: result
                                 }),
                                 languageCode: this.aiConfig.languageCode,
                             };
@@ -151,8 +151,25 @@ module.exports = class DialogFlow {
                                 }
                             };
                             promise = this.sessionClient.detectIntent(request);
-                            processRequest(DialogFlow, promise, devConfig, this._bot, chatId, res);
+                            processRequest(DialogFlow, promise, devConfig, this._bot, chatId, req, res, react);
                         });
+                } else if (messageDoc && chatId && messageDoc.file_name && messageDoc.file_link){
+                    let event = {
+                        name: "DATA_RECEIVED",
+                        parameters: structjson.jsonToStructProto({
+                            file_name: messageDoc.file_name,
+                            file_link: messageDoc.file_link
+                        }),
+                        languageCode: this.aiConfig.languageCode,
+                    };
+                    let request = {
+                        session: sessionPath,
+                        queryInput: {
+                            event: event
+                        }
+                    };
+                    promise = this.sessionClient.detectIntent(request);
+                    processRequest(DialogFlow, promise, devConfig, this._bot, chatId, req, res, react);
                 }
             }
         } else {
@@ -175,93 +192,101 @@ module.exports = class DialogFlow {
          *    code: null
          * }
          */
-
         return resp.status(statusCode).json({
             who: 'bot',
             message: message,
             outputs: outputs,
-            code: null
+            code: code
         });
     }
 };
 
-let processRequest = function (DialogFlow, promise, devConfig, bot, chatId, res){
+let processRequest = function (DialogFlow, promise, devConfig, bot, chatId, req, res, react){
     promise
         .then(responses => {
             let response = responses[0];
-            if (devConfig) console.log(`Response:\n${JSON.stringify(response, null, '   ')}`);
+            if (devConfig) console.log(`${cLog}Response:\n${JSON.stringify(response, null, '   ')}`);
             if(response.queryResult) {
                 let responseText = response.queryResult.fulfillmentText;
                 let messages = response.queryResult.fulfillmentMessages;
-
-                /*if (responseText) {
-                    if (devConfig) console.log(`Response as text message with message: ${responseText}`);
-                    if (react != true)
-                        bot.sendMessage(chatId, responseText, {parse_mode: 'html'});
-                    console.log('Message processed');
-                    DialogFlow.createResponse(res, 200, '',[responseText]);
-                } else if (messages && messages.length > 0) {
-                    if (devConfig) console.log(`Response as multiple textMessages with messages: ${JSON.stringify(messages, null, '   ')}`);
-                    messages.forEach((el, i) => {
-                        let text = el.text.text[0];
-                        if(text && text !== '') {
-                            if (react != true) {
-                                bot.sendMessage(chatId, text, {parse_mode: 'html'});
-                            } else {
-                                messages[i] = text;
-                            }
-                        }
-                    });
-                    console.log('Message processed');
-                    DialogFlow.createResponse(res, 200, messages);
-                } else {
-                    bot.sendMessage(chatId, 'Something went wrong. Please retry in a few minutes');
-                    console.log('Received empty speech');
-                    DialogFlow.createResponse(res, 400, ['Something went wrong. Please retry in a few minutes']);
-                }*/
+                let webhookStatus = response.webhookStatus;
 
                 if (responseText) {
-                    if (devConfig) console.log(`Response as text message with message: ${responseText}`);
-                    if (react != true)
-                        bot.sendMessage(chatId, responseText, {parse_mode: 'html'});
+                    if (devConfig) console.log(`${cLog}Response as text message with message: ${responseText}`);
+                    if (react != 'true') {
+                        bot.sendMessage(chatId, responseText, {parse_mode: 'html'})
+                            .catch(err => {
+                                console.error(`${cLog}ERROR: ${err}`);
+                            });
+                    }
                     console.log(`${cLog}FulfillmentText processed`);
-                    if (messages && messages.length > 0) {
-                        if (devConfig) console.log(`Response as multiple textMessages with messages: ${JSON.stringify(messages, null, '   ')}`);
+                    if (messages && messages.length > 0 && webhookStatus !== null) {
+                        if (devConfig) console.log(`${cLog}Response as multiple textMessages with messages: ${JSON.stringify(messages, null, '   ')}`);
                         messages.forEach((el, i) => {
                             let text = el.text.text[0];
-                            if(text && text !== '') {
-                                if (react != true) {
-                                    bot.sendMessage(chatId, text, {parse_mode: 'html'});
+
+                            if(text && text !== '' && text !== responseText) {
+                                if (react != 'true') {
+                                    bot.sendMessage(chatId, text, {parse_mode: 'html'})
+                                        .catch(err => {
+                                            console.error(`${cLog}ERROR: ${err}`);
+                                        });
                                 }
+                                messages[i] = {
+                                    type: 'text/plain',
+                                    content: text
+                                };
+                            } else {
+                                messages.splice(i,1);
                             }
-                            messages[i] = {
-                                type: 'text/plain',
-                                content: text
-                            };
+
                         });
-                        if (devConfig) console.log(`Outputs:\n${JSON.stringify(messages, null, '   ')}`);
+                        if (devConfig) console.log(`${cLog}Outputs:\n${JSON.stringify(messages, null, '   ')}`);
                         console.log(`${cLog}FulfillmentMessages processed`);
-                    } else if (messages.lenght = 0){
+                    } else if (messages.lenght = 0 || webhookStatus === null){
                         messages = null;
+                    }
+                    if (react == 'true') {
+                        req.session.messages.push({who: 'bot', what: 'markdown', message: responseText, outputs: messages});
                     }
                     DialogFlow.createResponse(res, 200, responseText, messages)
                 } else {
-                    if (react != true)
-                        bot.sendMessage(chatId, 'Something went wrong. Please retry in a few minutes');
+                    if (react != 'true') {
+                        bot.sendMessage(chatId, 'Something went wrong. Please retry in a few minutes')
+                            .catch(err => {
+                                console.error(`${cLog}ERROR: ${err}`);
+                            });
+                    }
                     console.log(`${cLog}Received empty speech`);
-                    DialogFlow.createResponse(res, 400, 'Something went wrong. Please retry in a few minutes');
+                    let message = 'Something went wrong. Please retry in a few minutes';
+                    if (react == 'true') {
+                        req.session.messages.push({who: 'bot', what: 'markdown', message: message, outputs: null});
+                    }
+                    DialogFlow.createResponse(res, 400, message);
                 }
 
             } else {
-                if (react != true)
-                    bot.sendMessage(chatId, 'Something went wrong. Please retry in a few minutes');
+                if (react != 'true') {
+                    bot.sendMessage(chatId, 'Something went wrong. Please retry in a few minutes')
+                        .catch(err => {
+                            console.error(`${cLog}ERROR: ${err}`);
+                        });
+                }
                 console.log(`${cLog}Received empty result`);
-                DialogFlow.createResponse(res, 200, 'Something went wrong. Please retry in a few minutes');
+                let message = 'Something went wrong. Please retry in a few minutes';
+                if (react == 'true') {
+                    req.session.messages.push({who: 'bot', what: 'markdown', message: message, outputs: null});
+                }
+                DialogFlow.createResponse(res, 400, message);
             }
         })
         .catch(err => {
             console.error(`${cLog}Error while call to dialogFlow`, err);
-            DialogFlow.createResponse(res, 400, 'Error while call to dialogFlow');
-        })
+            let message = 'Error while call to dialogFlow';
+            if (react == 'true') {
+                req.session.messages.push({who: 'bot', what: 'markdown', message: message, outputs: null});
+            }
+            DialogFlow.createResponse(res, 400, message);
+        });
 };
 

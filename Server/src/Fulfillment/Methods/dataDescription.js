@@ -5,7 +5,7 @@ const fLog = '[FULFILLMENT] ';
 module.exports.dataDescription = function (fileName, fileLink, response){
     const options = {
         mode: 'text',
-        scriptPath: 'src/Python/',
+        scriptPath: 'Server/src/Python/',
         args: [`${fileLink}`]
     };
     PythonShell.run('dataDescription.py', options, function (err, results) {
@@ -31,7 +31,7 @@ module.exports.dataDescription = function (fileName, fileLink, response){
            }
         });
 
-        if (DEV_CONFIG) console.log('\n'+JSON.stringify(messages, null, '   '));
+        if (DEV_CONFIG) console.log(`${fLog}\n${JSON.stringify(messages, null, '   ')}`);
         response.send({
             fulfillmentText: 'This is the basic description for your data:',//`<code>${message}</code>`,
             fulfillmentMessages: messages

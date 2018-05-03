@@ -5,17 +5,17 @@ const dataDescription = require('./Methods/dataDescription');
 const fLog = '[FULFILLMENT] ';
 
 module.exports.dialogflowFulfillment = (request, response) => {
-    if (DEV_CONFIG) console.log(`Request: ${JSON.stringify(request.body, null, '   ')}`);
+    if (DEV_CONFIG) console.log(`${fLog}Request: ${JSON.stringify(request.body, null, '   ')}`);
     let contexts = request.body.queryResult.outputContexts;
     let session = request.body.session;
     let action = request.body.queryResult.action;
     let parameters = request.body.queryResult.parameters;
 
     if(DEV_CONFIG) {
-        console.log(`action: ${action}`);
-        console.log(`contexts: ${JSON.stringify(contexts, null, '   ')}`);
-        console.log(`sessionPath: ${session}`);
-        console.log(`parameters: ${JSON.stringify(parameters, null, '   ')}`);
+        console.log(`${fLog}action: ${action}`);
+        console.log(`${fLog}contexts: ${JSON.stringify(contexts, null, '   ')}`);
+        console.log(`${fLog}sessionPath: ${session}`);
+        console.log(`${fLog}parameters: ${JSON.stringify(parameters, null, '   ')}`);
     }
 
     switch (action) {
@@ -68,7 +68,7 @@ module.exports.dialogflowFulfillment = (request, response) => {
                 let test = parameters.Test;
                 let test_original = test_request.parameters['Test.original'];
                 let attr = parameters.Attribute;
-                if(DEV_CONFIG) console.log(`Chosen test: ${test}\nChosen attribute: ${attr}`);
+                if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test}\nChosen attribute: ${attr}`);
 
                 executeTest.executeTest(fileLink, test, test_original, attr, response);
             } else {
@@ -95,7 +95,7 @@ module.exports.dialogflowFulfillment = (request, response) => {
                 let test = test_request.parameters.Test;
                 let test_original = test_request.parameters['Test.original'];
                 let attr = parameters.Attribute;
-                if(DEV_CONFIG) console.log(`Chosen test: ${test}\nChosen attribute: ${attr}`);
+                if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test}\nChosen attribute: ${attr}`);
 
                 executeTest.executeTest(fileLink, test, test_original, attr, response);
             } else {
@@ -122,7 +122,7 @@ module.exports.dialogflowFulfillment = (request, response) => {
                 let test = parameters.Test;
                 let test_original = testrequest_followup_test.parameters['Test.original'];
                 let attr = test_request.parameters.Attribute;
-                if(DEV_CONFIG) console.log(`Chosen test: ${test}\nChosen attribute: ${attr}`);
+                if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test}\nChosen attribute: ${attr}`);
 
                 executeTest.executeTest(fileLink, test, test_original, attr, response);
             } else {
