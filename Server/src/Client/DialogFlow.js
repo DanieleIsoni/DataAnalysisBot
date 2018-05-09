@@ -41,12 +41,13 @@ module.exports = class DialogFlow {
         this._aiConfig = aiConfig;
         this._bot = new TelegramBot(aiConfig.telegramToken);
         console.log(`${cLog}TelegramWebHook: ${baseUrl}/${aiConfig.clientWebHook}`);
-        console.log("Has open webhook: "+this._bot.hasOpenWebHook());
         this._bot
             .setWebHook(`${baseUrl}/${aiConfig.clientWebHook}`)
             .catch(err => {
                 console.error(`${cLog}ERROR: ${err}`);
             });
+
+        console.log("Has open webhook: "+this._bot.hasOpenWebHook());
 
         this._sessionClient = new dialogFlow.SessionsClient({
            keyFileName: aiConfig.googleAppCreds

@@ -15,7 +15,6 @@ const DEV_CONFIG = (process.env.DEVELOPMENT_CONFIG === 'true');
 
 const APP_NAME = process.env.APP_NAME;
 const GOOGLE_APPLICATION_CREDENTIALS = process.env.GOOGLE_APPLICATION_CREDENTIALS;
-const JSON_CRED = process.env.JSON_CRED;
 const PROJECT_ID = process.env.PROJECT_ID;
 const LANGUAGE_CODE = process.env.LANGUAGE_CODE;
 const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
