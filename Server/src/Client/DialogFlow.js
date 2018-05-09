@@ -115,7 +115,7 @@ module.exports = class DialogFlow {
                         };
                         promise = this.sessionClient.detectIntent(request);
                         if (react == 'true'){
-                            req.session.messages.push({who: 'me', what: 'markdown', message: messageText, outputs: null});
+                            req.session.messages.push({what: 'markdown', message: messageText, outputs: null});
                         }
                     }
                         break;

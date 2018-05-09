@@ -27,7 +27,7 @@ class ConnectedForm extends React.Component {
     componentDidMount(){
         axios.get('https://data-analysis-bot.herokuapp.com/messages')
         .then(response => {
-            response.data.map(messaggio => {
+            response.data.messages.map(messaggio => {
                 this.props.addMessaggio({id: uuidv1(), who: messaggio.who, what: 'markdown', messaggio: messaggio.message, output: messaggio.outputs, code: messaggio.code});
             })
         })
