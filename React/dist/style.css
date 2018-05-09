@@ -179,9 +179,10 @@ html, body{
 }
 
 .resultdiv pre{
-    margin: 0 15px;
+    margin: 5px 15px;
     padding: 10px;
     box-shadow: 0 1px 1px 0 #C7C7C7 inset;
+    background: #eee;
     border-radius: 5px;
 }
 
