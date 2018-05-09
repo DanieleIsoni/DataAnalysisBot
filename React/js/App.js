@@ -8,7 +8,7 @@ export default class App extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            side: "none",
+            side: "block",
         }
 
         this.handleClick = this.handleClick.bind(this);

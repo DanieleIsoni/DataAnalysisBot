@@ -20,15 +20,14 @@ class Jupyter{
         var outs = [];
 
         outputs.map((output, i) => {
-            var dati = (output.type == "image/png") ? {"image/png": output.content} : {"text": [output.content]}
+            var dati = (output.type == "image/png") ? {"image/png": output.content} : {"text/plain": [output.content]}
             var result_type = (output.type == "image/png") ? "display_data" : "execute_result";
             var data_out = (output.content != null) ? {"data": dati, "metadata": {}, "execution_count": 1, "output_type": result_type} : "";
-
             outs.push(data_out);
         });
 
 
-        this.cells.push({"cell_type": "code", "execution_count": 1, "metadata": { "who": "bot" }, "outputs": [outs], "source": [code]});
+        this.cells.push({"cell_type": "code", "execution_count": 1, "metadata": { "who": "bot" }, "outputs": outs, "source": [code]});
     }
 
     static readJupyter(filejup){

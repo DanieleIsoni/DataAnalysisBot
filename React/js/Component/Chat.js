@@ -42,11 +42,11 @@ class ConnectedMessages extends React.Component {
             return(
                 <li key={el.id} onClick={(e) => this.handleListClick(e, el.id)} >              
                     {
-                        (el.what == "code") ? 
+                        (el.code != null) ? 
                             (
                                 <div className="line">
                                     <span className="incode">In [ {n} ]: </span>
-                                    <Code code={el.messaggio} />
+                                    <Code code={el.code} />
                                 </div>
                             )
                         :
