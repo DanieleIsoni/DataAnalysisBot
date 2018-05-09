@@ -85,7 +85,7 @@ html, body{
     margin-top: 20px;
 }
 
-.output-area p{
+.output-area pre{
     display: inline-block;
 }
 
@@ -174,7 +174,7 @@ pre{
     border-radius: 10px 10px 0px 10px;
 }
 
-.resultdiv p{
+.resultdiv pre{
     margin: 0 15px;
 }
 
