@@ -197,8 +197,9 @@ html, body{
     align-items: center;
     flex-wrap: nowrap;
     background: #222;
-    height: 60px;
+    min-height: auto;
     box-shadow: 0px -4px 15px -4px rgba(0,0,0,0.08);
+    align-content: space-between;
 }
 
 .form-upload{
@@ -219,6 +220,7 @@ html, body{
     margin-right: 10px;
     border: 0;
     background: #333;
+    flex: 2 0 60%;
 }
 
 #dialog:focus {
@@ -241,6 +243,7 @@ html, body{
     padding: 0 10px;
     margin-right: 10px;
     margin-bottom: 0 !important;
+    flex-grow: 1;
 }
 
 .upload-file:hover{
@@ -401,6 +404,7 @@ h5{
     transition: background 0.3s;
     cursor: pointer;
     box-shadow: 0px 1px 10px -1px rgba(0,0,0,0.26);
+    flex: 1 0 33%;
 }
 
 .button-board-lateral label i{
@@ -454,4 +458,19 @@ h5{
   .example-leave.example-leave-active {
     transform: scale(0.1);
     transition: transform 300ms ease-in;
+  }
+
+  @media (max-width: 768px) {
+    .gestione{
+        display: none;
+    }
+
+    .file-name{
+        display: none;
+    }
+
+    .control{
+        height: 120px;
+        flex-wrap: wrap;
+    }
   }
