@@ -8,7 +8,7 @@ import Upload from "./Upload";
 const mapAddMessaggioEvent = dispatch => {
     return {
       addMessaggio: messaggio => dispatch(addMessaggio(messaggio)),
-      aaddVariabile: variabile => dispatch(addVariabile(variabile))
+      addVariabile: variabile => dispatch(addVariabile(variabile))
     };
 };
 

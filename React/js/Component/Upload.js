@@ -26,8 +26,7 @@ class ConnectedUpload extends React.Component {
         if(e.target.value){
             this.setState({ 
                 filename: (e.target.value.split( '\\' ).pop()) ? e.target.value.split( '\\' ).pop() : "Upload...",
-                showSend: 1,
-                progress: 0,
+                showSend: 1
             });
         }
     }
