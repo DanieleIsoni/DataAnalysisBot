@@ -129,6 +129,8 @@ html, body{
     font-size: 15px;
     color: #666;
     float: left;
+    flex-basis: 100px;
+    flex: none;
 }
 
 .outcode{
@@ -141,7 +143,7 @@ html, body{
 }
 
 .markdown div{
-    padding: 10px 20px;
+    padding: 6px 20px;
     position: relative;
     max-width: 60%;
     float: left; 
@@ -149,7 +151,7 @@ html, body{
 }
 
 .me{
-    background: #42A5F5;
+    background: #0099ff;
     color: white;
     border-radius: 10px 10px 10px 0;
     float: right !important;
@@ -157,7 +159,9 @@ html, body{
 
 pre{
     margin: 0 12px !important;
-    border-radius: 20px;
+    border-radius: 5px;
+    box-shadow: 0 1px 1px 0 #C7C7C7 inset;
+    cursor: text;
 }
 
 .react-syntax-highlighter-line-number{
