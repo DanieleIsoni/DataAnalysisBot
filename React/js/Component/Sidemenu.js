@@ -65,15 +65,12 @@ class ConnectedSidemenu extends React.Component {
         );
 
         return (
-            <div className="gestione col-12 col-md-4 col-lg-4">
+            <div className="gestione col-12 col-md-4 col-lg-4" style={{"display": this.props.show}}>
                 <div className="variable-context">
                     <h5>Variables</h5>
                     <List onClick={this.handleClick} selected={this.state.idVar}/>
                 </div>
                 {dettaglioVariabile}
-                <div className="panel">
-
-                </div>
             </div>
         );
     }

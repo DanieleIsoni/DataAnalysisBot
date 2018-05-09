@@ -58,6 +58,7 @@ class ConnectedForm extends React.Component {
             })
             .then(response => {
                 this.props.addMessaggio({id: uuidv1(), who: "bot", what: "markdown", messaggio: response.data.message, output: response.data.outputs, code: response.data.code});
+                console.log(response.data.code);
             })
         }
     }

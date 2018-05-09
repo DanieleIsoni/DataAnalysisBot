@@ -55,7 +55,7 @@ html, body{
     box-sizing: border-box;
     list-style: none;
     overflow-x: hidden;
-    padding-bottom: 90px;
+    padding-bottom: 120px;
 }
 
 .chat-thread:before{
@@ -193,9 +193,9 @@ html, body{
     width: 100%;
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     padding: 10px 15px;
     align-items: center;
-    flex-wrap: nowrap;
     background: #222;
     min-height: auto;
     box-shadow: 0px -4px 15px -4px rgba(0,0,0,0.08);
@@ -220,7 +220,7 @@ html, body{
     margin-right: 10px;
     border: 0;
     background: #333;
-    flex: 2 0 60%;
+    flex: 2 0 50%;
 }
 
 #dialog:focus {
@@ -404,7 +404,8 @@ h5{
     transition: background 0.3s;
     cursor: pointer;
     box-shadow: 0px 1px 10px -1px rgba(0,0,0,0.26);
-    flex: 1 0 33%;
+    flex: 1 1 100px;
+    margin: 0 3px;
 }
 
 .button-board-lateral label i{
@@ -461,16 +462,53 @@ h5{
   }
 
   @media (max-width: 768px) {
-    .gestione{
-        display: none;
-    }
-
     .file-name{
         display: none;
     }
 
     .control{
         height: 120px;
-        flex-wrap: wrap;
+    }
+
+    .gestione{
+        position: absolute !important;
+        top: 0;
+        display: none;
+    }
+
+    .openSide{
+        position: absolute;
+        bottom: 130px;
+        right: 20px;
+        width: 40px;
+        height: 40px;
+        background: #333;
+        color: white;
+        text-align: center;
+        border-radius: 50%;
+    }
+
+    .openSide i{
+        line-height: 40px;
+    }
+
+    .chat-thread:before{
+        width: 70px;
+    }
+
+    .resultdiv{
+        padding-left: 70px;
+    }
+
+    .incode-markdown{
+        width: 70px;
+    }
+
+    .incode{
+        width: 70px;
+    }
+
+    .outcode{
+        width: 70px;
     }
   }
