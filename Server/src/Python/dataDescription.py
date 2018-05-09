@@ -4,8 +4,8 @@ import numpy as np
 import urllib
 
 if len(sys.argv) > 1:
+    url = sys.argv[1]
     try:
-        url = sys.argv[1]
         data_set = pd.read_csv(url, sep=',', na_values=["?"])
         for el in data_set:
             print(el)

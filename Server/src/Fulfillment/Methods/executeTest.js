@@ -52,8 +52,7 @@ try:
         print('Something went wrong')
 except urllib.error.HTTPError as err:
     if err.code == 404:
-    print('ERROR: The provided url is unreachable')
-`
+    print('ERROR: The provided url is unreachable')`;
 
         response.send({
             fulfillmentText: message,
