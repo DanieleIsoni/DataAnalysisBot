@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 import { addVariabile, addMessaggio } from "../Actions/index";
 import uuidv1 from "uuid";
 import Upload from "./Upload";
+import SaveJupyter from './SaveJupyter';
+import LoadJupyter from './LoadJupyter';
 
 const mapAddMessaggioEvent = dispatch => {
     return {
@@ -71,6 +73,9 @@ class ConnectedForm extends React.Component {
                 <button className="button-board round"><i className="material-icons">redo</i></button>
                 <input type="text" name="input" id="dialog" autoComplete="off" placeholder="Ask me something!" value={this.state.inputValue} onKeyPress={this.handleKeyPress} onChange={this.handleChange}/>
                 <Upload addMessaggio={this.props.addMessaggio}/>
+                <SaveJupyter />
+                <LoadJupyter />
+                <button className="button-board-lateral">Clear</button>
             </div>
         );
     }

@@ -72,9 +72,7 @@ class ConnectedSidemenu extends React.Component {
                 </div>
                 {dettaglioVariabile}
                 <div className="panel">
-                    <SaveJupyter />
-                    <LoadJupyter />
-                    <button className="button-board-lateral" onClick={this.clearSession}>Clear</button>
+
                 </div>
             </div>
         );
