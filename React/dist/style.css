@@ -157,7 +157,7 @@ html, body{
     float: right !important;
 }
 
-pre{
+.line pre{
     margin: 0 12px !important;
     border-radius: 5px;
     box-shadow: 0 1px 1px 0 #C7C7C7 inset;
@@ -174,8 +174,15 @@ pre{
     border-radius: 10px 10px 0px 10px;
 }
 
+.resultdiv{
+    padding-left: 100px;
+}
+
 .resultdiv pre{
     margin: 0 15px;
+    padding: 10px;
+    box-shadow: 0 1px 1px 0 #C7C7C7 inset;
+    border-radius: 5px;
 }
 
 .control{

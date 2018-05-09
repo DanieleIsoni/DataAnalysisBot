@@ -39,8 +39,9 @@ module.exports = class DialogFlow {
 
     constructor(aiConfig, baseUrl) {
         this._aiConfig = aiConfig;
-
         this._bot = new TelegramBot(aiConfig.telegramToken);
+        console.log(`${cLog}TelegramWebHook: ${baseUrl}/${aiConfig.clientWebHook}`);
+        console.log("Has open webhook: "+this._bot.hasOpenWebHook());
         this._bot
             .setWebHook(`${baseUrl}/${aiConfig.clientWebHook}`)
             .catch(err => {
@@ -68,8 +69,10 @@ module.exports = class DialogFlow {
 
             let chatId;
 
-            if (req.sessionID) {
+            if (req.sessionID && react == 'true') {
                 chatId = req.sessionID;
+            } else if (react != 'true'){
+                chatId = msg.chat.id;
             }
 
             let messageText = msg.text;
