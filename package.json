@@ -3,13 +3,15 @@
   "version": "1.0.0",
   "description": "A bot fot Data Analysis",
   "repository": "https://github.com/DanieleIsoni/DataAnalysisBot",
-  "main": "src/app.js",
+  "main": "React/main.js",
   "scripts": {
     "start": "export $(cat .env) && node Server/src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack -p --progress --config webpack.config.js",
     "dev-build": "webpack --progress -d --config webpack.config.js",
-    "watch": "webpack --progress -d --config webpack.config.js --watch"
+    "watch": "webpack --progress -d --config webpack.config.js --watch",
+    "start:dev": "webpack-dev-server",
+    "start:ele": "electron ."
   },
   "keywords": [
     "fullstack",

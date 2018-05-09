@@ -16,12 +16,19 @@ class Jupyter{
         }
     }
 
-    addCode(output, code){
-        var dati = (output.type == "image/png") ? {"image/png": output.content} : {"text": [output.content]}
-        var result_type = (output.type == "image/png") ? "display_data" : "execute_result";
-        var outputs = (output.content != null) ? {"data": dati, "metadata": {}, "execution_count": 1, "output_type": result_type} : "";
+    addCode(outputs, code){
+        var outs = [];
 
-        this.cells.push({"cell_type": "code", "execution_count": 1, "metadata": { "who": "bot" }, "outputs": [outputs], "source": [code]});
+        outputs.map((output, i) => {
+            var dati = (output.type == "image/png") ? {"image/png": output.content} : {"text": [output.content]}
+            var result_type = (output.type == "image/png") ? "display_data" : "execute_result";
+            var data_out = (output.content != null) ? {"data": dati, "metadata": {}, "execution_count": 1, "output_type": result_type} : "";
+
+            outs.push(data_out);
+        });
+
+
+        this.cells.push({"cell_type": "code", "execution_count": 1, "metadata": { "who": "bot" }, "outputs": [outs], "source": [code]});
     }
 
     static readJupyter(filejup){
