@@ -214,6 +214,7 @@ let processRequest = function (DialogFlow, promise, devConfig, bot, chatId, req,
                 let responseText = response.queryResult.fulfillmentText;
                 let messages = response.queryResult.fulfillmentMessages;
                 let webhookStatus = response.webhookStatus;
+                let webhookPayload = response.webhookPayload;
 
                 if (responseText) {
                     if (devConfig) console.log(`${cLog}Response as text message with message: ${responseText}`);
@@ -253,7 +254,7 @@ let processRequest = function (DialogFlow, promise, devConfig, bot, chatId, req,
                     if (react == 'true') {
                         req.session.messages.push({who: 'bot', what: 'markdown', message: responseText, outputs: messages});
                     }
-                    DialogFlow.createResponse(res, 200, responseText, messages)
+                    DialogFlow.createResponse(res, 200, responseText, messages, webhookPayload);
                 } else {
                     if (react != 'true') {
                         bot.sendMessage(chatId, 'Something went wrong. Please retry in a few minutes')

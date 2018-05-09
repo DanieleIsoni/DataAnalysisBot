@@ -135,10 +135,10 @@ module.exports.dialogflowFulfillment = (request, response) => {
             break;
         /*case 'plot.chart': {
             const data_received = contexts.find(obj => {
-                return obj.name === 'data_received';
+                return obj.name === `${session}/contexts/data_received`;
             });
             const plot_chart = contexts.find(obj => {
-                return obj.name === 'plot_chart';
+                return obj.name === `${session}/contexts/plot_chart`;
             });
 
             if (data_received && plot_chart) {
@@ -152,8 +152,19 @@ module.exports.dialogflowFulfillment = (request, response) => {
                 }
                 if(DEV_CONFIG) console.log(`Chosen test: ${test} on ${testAttr}\nChosen attribute for x-axis: ${attr}\nChosen chart: ${chart}`)
 
+
+
                 switch(chart) {
-                    default
+                    case 'barchart': {
+
+                    }
+                        break;
+                    default:
+                        const text = 'Chart not available try with another type of chart';
+                        console.warn(`${fLog}${text}`);
+                        response.send({
+                            fulfillmentText: text
+                        });
                 }
 
             }
