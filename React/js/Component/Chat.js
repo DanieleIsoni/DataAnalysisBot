@@ -1,6 +1,5 @@
 import React from "react";
 import axios from 'axios';
-import Form from "./Form";
 import uuidv1 from "uuid";
 import { connect } from "react-redux";
 import { addMessaggio } from "../Actions/index";
@@ -105,12 +104,11 @@ const Messages = connect(mapMessaggi)(ConnectedMessages);
 export default class Chat extends React.Component {
     render(){
         return (
-            <div className="chat col-12 col-md-8 col-lg-8">
-                <div className="scroll_container">
-                    <Messages /> 
+                <div className="chat col-12 col-md-8 col-lg-8">
+                    <div className="scroll_container">
+                        <Messages /> 
+                    </div>
                 </div>
-                <Form />
-            </div>
         );
     }
 }

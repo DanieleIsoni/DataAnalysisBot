@@ -34,22 +34,27 @@ class ConnectedUpload extends React.Component {
     handleSubmit(e){
         e.preventDefault();
         var file = this.fileInput.files[0];
-        var formdata = new FormData();
-        formdata.append('file', file);
 
-        axios.post('https://data-analysis-bot.herokuapp.com/upload', formdata, {
-            onUploadProgress: (progressEvent) => {
-                const totalLength = progressEvent.lengthComputable ? progressEvent.total : progressEvent.target.getResponseHeader('content-length') || progressEvent.target.getResponseHeader('x-decompressed-content-length');
-                if (totalLength !== null) {
-                    this.setState({ progress: Math.round( (progressEvent.loaded * 100) / totalLength ) })
-                }
-            }
-        }).then(response => {
-                this.props.addVariabile({ "name": file.name, "id": uuidv1() });
-                this.props.addMessaggio({"id": uuidv1(), "who": "bot", "what": "markdown", "messaggio": response.data.message, "output": []});
-    
-                this.setState({ showSend: 0, filename: "Upload..." });
-        })
+        if(file){
+            var formdata = new FormData();
+            formdata.append('file', file);
+
+            axios.post('https://data-analysis-bot.herokuapp.com/upload', formdata, {
+                /*onUploadProgress: (progressEvent) => {
+                    const totalLength = progressEvent.lengthComputable ? progressEvent.total : progressEvent.target.getResponseHeader('content-length') || progressEvent.target.getResponseHeader('x-decompressed-content-length');
+                    if (totalLength !== null) {
+                        this.setState({ progress: Math.round( (progressEvent.loaded * 100) / totalLength ) })
+                    }
+                }*/
+            }).then(response => {
+                    this.props.addVariabile({ "name": file.name, "id": uuidv1() });
+                    this.props.addMessaggio({"id": uuidv1(), "who": "bot", "what": "markdown", "messaggio": response.data.message, "output": []});
+        
+                    this.setState({ showSend: 0, filename: "Upload..." });
+            })
+        }else{
+            this.setState({ showSend: 0, filename: "Upload..." });
+        }
     }
 
     render(){

@@ -214,7 +214,7 @@ let processRequest = function (DialogFlow, promise, devConfig, bot, chatId, req,
                 let responseText = response.queryResult.fulfillmentText;
                 let messages = response.queryResult.fulfillmentMessages;
                 let webhookStatus = response.webhookStatus;
-                let webhookPayload = response.webhookPayload;
+                let webhookPayload = response.webhookPayload.fields.code.stringValue;
 
                 if (responseText) {
                     if (devConfig) console.log(`${cLog}Response as text message with message: ${responseText}`);
