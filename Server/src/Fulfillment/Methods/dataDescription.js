@@ -23,7 +23,7 @@ module.exports.dataDescription = function (fileName, fileLink, response){
                    platform: 'PLATFORM_UNSPECIFIED',
                    text: {
                        text: [
-                           `<code>${message}</code>`
+                           `${message}`
                        ]
                    }
                });

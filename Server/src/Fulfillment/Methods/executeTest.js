@@ -36,7 +36,7 @@ module.exports.executeTest = function(fileLink, test, test_original, attr, respo
                    platform: 'PLATFORM_UNSPECIFIED',
                    text: {
                        text: [
-                           `<code>${result}</code>`
+                           `${result}`
                        ]
                    }
                 }
