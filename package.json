@@ -5,7 +5,8 @@
   "repository": "https://github.com/DanieleIsoni/DataAnalysisBot",
   "main": "React/main.js",
   "scripts": {
-    "start": "export $(cat .env) && node Server/src/app.js",
+    "start": "./node_modules/.bin/forever -m 5 Server/src/app.js",
+    "start:local": "export $(cat .env) && node Server/src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack -p --progress --config webpack.config.js",
     "dev-build": "webpack --progress -d --config webpack.config.js",
@@ -59,6 +60,7 @@
     "express": "^4.16.3",
     "express-fileupload": "^0.4.0",
     "express-session": "^1.15.6",
+    "forever": "^0.15.3",
     "fs": "0.0.1-security",
     "js-file-download": "^0.4.1",
     "node-telegram-bot-api": "^0.30.0",

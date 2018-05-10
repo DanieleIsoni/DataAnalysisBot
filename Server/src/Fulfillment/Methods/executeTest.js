@@ -12,6 +12,9 @@ module.exports.executeTest = function(fileLink, test, test_original, attr, respo
     PythonShell.run('executeTest.py', options, (err, result) => {
         if (err){
             console.error(`${fLog}ERROR: ${err}`);
+            return response.send({
+                fulfillmentText: 'Something went wrong. Either you executed a test on not Numeric variables or an internal error occurred'
+            });
         }
 
         let message;
@@ -52,8 +55,7 @@ try:
         print('Something went wrong')
 except urllib.error.HTTPError as err:
     if err.code == 404:
-    print('ERROR: The provided url is unreachable')
-`
+    print('ERROR: The provided url is unreachable')`;
 
         response.send({
             fulfillmentText: message,
