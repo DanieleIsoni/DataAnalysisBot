@@ -8,12 +8,13 @@ name = "pypi"
 [packages]
 
 certifi = "==2018.1.18"
+matplotlib = "==2.2.2"
 numpy = "==1.14.2"
 pandas = "==0.22.0"
 python-dateutil = "==2.7.0"
 pytz = "==2018.3"
+setuptools = "==39.1.0"
 six = "==1.11.0"
-
 
 [dev-packages]
 

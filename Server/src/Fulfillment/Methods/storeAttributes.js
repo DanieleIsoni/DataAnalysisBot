@@ -48,11 +48,9 @@ module.exports.storeAttributes = function (fileName, fileLink, response, session
         sessionEntityTypesClient.createSessionEntityType(request)
             .then(responses => {
                 let res = responses[0];
-                if (DEV_CONFIG) console.log(`${fLog}response: ${JSON.stringify(res, null, '   ')}`);
 
                 if (res) {
                     let message = `Stored ${fileName} which contains: ${attributes.join(', ')}\nWhat do you want to do with this data?`;
-                    if (DEV_CONFIG) console.log(`${fLog}messageSent: ${message}, to session: ${session}`);
                     response.send({
                         fulfillmentText: message
                     });

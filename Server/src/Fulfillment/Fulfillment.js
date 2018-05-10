@@ -2,21 +2,16 @@ const DEV_CONFIG = (process.env.DEVELOPMENT_CONFIG === 'true');
 const storeAttributes = require('./Methods/storeAttributes');
 const executeTest = require('./Methods/executeTest');
 const dataDescription = require('./Methods/dataDescription');
+const plotChart = require('./Methods/plotChart');
 const fLog = '[FULFILLMENT] ';
 
 module.exports.dialogflowFulfillment = (request, response) => {
-    if (DEV_CONFIG) console.log(`${fLog}Request: ${JSON.stringify(request.body, null, '   ')}`);
     let contexts = request.body.queryResult.outputContexts;
     let session = request.body.session;
     let action = request.body.queryResult.action;
     let parameters = request.body.queryResult.parameters;
 
-    if(DEV_CONFIG) {
-        console.log(`${fLog}action: ${action}`);
-        console.log(`${fLog}contexts: ${JSON.stringify(contexts, null, '   ')}`);
-        console.log(`${fLog}sessionPath: ${session}`);
-        console.log(`${fLog}parameters: ${JSON.stringify(parameters, null, '   ')}`);
-    }
+    if (DEV_CONFIG) console.log(`${fLog}Request: ${JSON.stringify(request.body, null, '   ')}`);
 
     switch (action) {
         case 'data.received': {
@@ -133,7 +128,7 @@ module.exports.dialogflowFulfillment = (request, response) => {
             }
         }
             break;
-        /*case 'plot.chart': {
+        case 'plot.chart': {
             const data_received = contexts.find(obj => {
                 return obj.name === `${session}/contexts/data_received`;
             });
@@ -152,24 +147,11 @@ module.exports.dialogflowFulfillment = (request, response) => {
                 }
                 if(DEV_CONFIG) console.log(`Chosen test: ${test} on ${testAttr}\nChosen attribute for x-axis: ${attr}\nChosen chart: ${chart}`)
 
-
-
-                switch(chart) {
-                    case 'barchart': {
-
-                    }
-                        break;
-                    default:
-                        const text = 'Chart not available try with another type of chart';
-                        console.warn(`${fLog}${text}`);
-                        response.send({
-                            fulfillmentText: text
-                        });
-                }
+                plotChart.plotChart(fileLink, chart, test, testAttr, attr, response);
 
             }
         }
-            break;*/
+            break;
         default:
             console.log(`${fLog}No action matched`);
             response.send({

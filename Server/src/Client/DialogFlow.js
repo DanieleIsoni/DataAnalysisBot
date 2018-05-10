@@ -58,10 +58,6 @@ module.exports = class DialogFlow {
 
         let updateObject = req.body;
         let react = req.body.react;
-        if (devConfig) {
-            console.log(`${cLog}body\n${JSON.stringify(updateObject, null, '   ')}`);
-            console.log(`${cLog}react\n${react}`);
-        }
 
         if (updateObject && updateObject.message) {
             let msg = updateObject.message;
@@ -84,10 +80,8 @@ module.exports = class DialogFlow {
                     this._sessionIds.set(chatId, uuid.v1());
                 }
                 let sessionId = this.sessionIds.get(chatId);
-                if (devConfig) console.log(`${cLog}sessionId: ${sessionId}`);
 
                 let sessionPath = this.sessionClient.sessionPath(this.aiConfig.projectId, sessionId);
-                if (devConfig) console.log(`${cLog}sessionPath: ${sessionPath}`);
 
                 switch(messageText) {
                     case "/start": {
@@ -128,10 +122,8 @@ module.exports = class DialogFlow {
                     this._sessionIds.set(chatId, uuid.v1());
                 }
                 let sessionId = this.sessionIds.get(chatId);
-                if (devConfig) console.log(`${cLog}sessionId: ${sessionId}`);
 
                 let sessionPath = this.sessionClient.sessionPath(this.aiConfig.projectId, sessionId);
-                if (devConfig) console.log(`${cLog}sessionPath: ${sessionPath}`);
 
                 console.log(`${cLog}Empty message text`);
                 let messageDoc = msg.document;
@@ -213,10 +205,11 @@ let processRequest = function (DialogFlow, promise, devConfig, bot, chatId, req,
                 let messages = response.queryResult.fulfillmentMessages;
                 let webhookStatus = response.webhookStatus;
                 let webhookPayload = response.queryResult.webhookPayload;
-                let codeToSend = webhookPayload ? webhookPayload.fields.code.stringValue : null;
+                let codeToSend = webhookPayload && webhookPayload.fields && webhookPayload.fields.code ? webhookPayload.fields.code.stringValue : null;
+                let image = webhookPayload && webhookPayload.fields && webhookPayload.fields.image ? webhookPayload.fields.image.stringValue : null;
 
                 if (responseText) {
-                    if (devConfig) console.log(`${cLog}Response as text message with message: ${responseText}`);
+                    console.log(`${cLog}Response as text message with message: ${responseText}`);
                     if (react != 'true') {
                         bot.sendMessage(chatId, responseText, {parse_mode: 'html'})
                             .catch(err => {
@@ -225,7 +218,7 @@ let processRequest = function (DialogFlow, promise, devConfig, bot, chatId, req,
                     }
                     console.log(`${cLog}FulfillmentText processed`);
                     if (messages && messages.length > 0 && webhookStatus !== null) {
-                        if (devConfig) console.log(`${cLog}Response as multiple textMessages with messages: ${JSON.stringify(messages, null, '   ')}`);
+                        console.log(`${cLog}Response as multiple textMessages with messages: ${JSON.stringify(messages, null, '   ')}`);
                         messages.forEach((el, i) => {
                             let text = el.text.text[0];
 
@@ -245,11 +238,25 @@ let processRequest = function (DialogFlow, promise, devConfig, bot, chatId, req,
                             }
 
                         });
-                        if (devConfig) console.log(`${cLog}Outputs:\n${JSON.stringify(messages, null, '   ')}`);
+                        console.log(`${cLog}Outputs:\n${JSON.stringify(messages, null, '   ')}`);
                         console.log(`${cLog}FulfillmentMessages processed`);
                     } else if (messages.lenght = 0 || webhookStatus === null){
                         messages = null;
                     }
+
+                    if (image && webhookStatus !== null) {
+                        if (react != 'true'){
+                            bot.sendPhoto(chatId, image)
+                                .catch(err => {
+                                    console.error(`${cLog}ERROR: ${err}`);
+                                });
+                        }
+                        messages.push({
+                            type:'image/png',
+                            content: image
+                        });
+                    }
+
                     if (react == 'true') {
                         req.session.messages.push({who: 'bot', what: 'markdown', message: responseText, outputs: messages});
                     }
@@ -285,8 +292,8 @@ let processRequest = function (DialogFlow, promise, devConfig, bot, chatId, req,
             }
         })
         .catch(err => {
-            console.error(`${cLog}Error while call to dialogFlow`, err);
-            let message = 'Error while call to dialogFlow';
+            console.error(`${cLog}Error processing your request`, err);
+            let message = 'Error processing your request';
             if (react == 'true') {
                 req.session.messages.push({who: 'bot', what: 'markdown', message: message, outputs: null});
             }

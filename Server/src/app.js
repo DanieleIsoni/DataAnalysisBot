@@ -109,7 +109,7 @@ const allowed_file = (mime) => {
 
 app.route('/upload')
     .post((req, res) => {
-        let path_ = path.join(__dirname,`../../tmp/${req.body.id}`);
+        let path_ = path.join(__dirname,`../../tmp/${req.sessionID}`);
         console.log(`Path to save: ${path_}`);
         if (!fs.existsSync(path_)){
             fs.mkdirSync(path_);
