@@ -4,7 +4,7 @@ var fileDownload = require('js-file-download');
 import Jup from "../Jupyter/Jupyter";
 
 const mapMessaggi = state => {
-    return { messaggi: state.messaggi };
+    return { messaggi: state.messaggi.present };
 };
 
 class ConnectedJupyter extends React.Component{

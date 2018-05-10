@@ -31,11 +31,13 @@ class ConnectedSidemenu extends React.Component {
         axios.get('https://data-analysis-bot.herokuapp.com/variable/' + el.name, {responseType: 'json'})
         .then(response => {
             console.log(response.data);
-            this.setState({
-                idVar: el.id,
-                selectedVar: el.name,
-                contentVar: response.data
-            });
+            if(typeof response.data.schema != "undefined"){
+                this.setState({
+                    idVar: el.id,
+                    selectedVar: el.name,
+                    contentVar: response.data
+                });
+            }
         })
     }
 

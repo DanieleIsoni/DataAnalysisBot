@@ -13,7 +13,7 @@ const Code = (props) => {
 }
 
 const mapMessaggi = state => {
-    return { messaggi: state.messaggi };
+    return { messaggi: state.messaggi.present };
 };
 
 class ConnectedMessages extends React.Component {

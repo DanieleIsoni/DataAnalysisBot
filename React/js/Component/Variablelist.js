@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import axios from 'axios';
 
 const mapVariabili = state => {
-    return { variabili: state.variabili };
+    return { variabili: state.variabili.present };
 };
 
 class ConnectedList extends React.Component {

@@ -9,13 +9,13 @@
 html, body{
     margin: 0;
     height: 100% !important;
+    overflow: hidden;
     font-family: 'Montserrat', helvetica, arial, sans-serif;
 }
 
 .container-fluid{
     height: 100% !important;
     padding: 0 !important;
-    overflow: hidden;
     background: #f1f1f1;
 }
 
@@ -36,7 +36,6 @@ html, body{
 .gestione{
     background: #f7f7f7;
     padding: 20px 10px;
-    display: flex;
     flex-direction: column;
     justify-content: space-between;
     justify-content: flex-start;
@@ -55,7 +54,7 @@ html, body{
     box-sizing: border-box;
     list-style: none;
     overflow-x: hidden;
-    padding-bottom: 120px;
+    padding-bottom: 100px;
 }
 
 .chat-thread:before{
@@ -187,6 +186,26 @@ html, body{
     border-radius: 5px;
 }
 
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    border-radius: 10px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #666; 
+    border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #333; 
+}
+
 .control{
     position: absolute;
     bottom: 0;
@@ -201,6 +220,7 @@ html, body{
     box-shadow: 0px -4px 15px -4px rgba(0,0,0,0.08);
     align-content: space-between;
 }
+
 
 .form-upload{
     display: flex;
@@ -303,6 +323,8 @@ html, body{
 }
 
 
+
+
 /**************************** TOP BAR ******************************/
 
 .button-board{
@@ -374,6 +396,10 @@ h5{
     margin-top: 20px;
     width: 100%;
     overflow-x: auto;
+}
+
+.variable-detail > div > div{
+    overflow-x: auto !important;
 }
 
 .selected-var{
@@ -473,7 +499,7 @@ h5{
 
     .gestione{
         position: absolute !important;
-        top: 0;
+        top: 0px;
         display: none;
     }
 
@@ -494,24 +520,32 @@ h5{
     }
 
     .chat-thread:before{
-        width: 70px;
+        width: 0px;
+        display: none;
     }
 
     .resultdiv{
-        padding-left: 70px;
+        padding-left: 0px;
     }
 
     .incode-markdown{
-        width: 70px;
+        display: none;
     }
 
     .incode{
-        width: 70px;
-        font-size: 14px;
-    }
-
-    .outcode{
-        width: 70px;
-        font-size: 14px;
+        display: none;
     }
   }
+
+  @media (min-width: 768px) {
+      .gestione{
+        display: flex !important;
+      }
+  }
+
+button:disabled,
+button[disabled]{
+    opacity: 0.3;
+}
+
+  

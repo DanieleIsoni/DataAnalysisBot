@@ -6,6 +6,7 @@ import uuidv1 from "uuid";
 import Upload from "./Upload";
 import SaveJupyter from './SaveJupyter';
 import LoadJupyter from './LoadJupyter';
+import { ActionCreators } from 'redux-undo'
 
 const mapAddMessaggioEvent = dispatch => {
     return {
@@ -13,6 +14,30 @@ const mapAddMessaggioEvent = dispatch => {
       addVariabile: variabile => dispatch(addVariabile(variabile))
     };
 };
+
+const mapStateToProps = (state) => ({
+    canUndo: state.messaggi.past.length > 0,
+    canRedo: state.messaggi.future.length > 0
+})
+  
+const mapDispatchToProps = dispatch => {
+    return{
+        onUndo: () => dispatch(ActionCreators.jump(-2)),
+        onRedo: () => dispatch(ActionCreators.jump(2))
+    }
+}
+  
+let UndoRedo = ({ canUndo, canRedo, onUndo, onRedo }) => (
+    <div>
+        <button className="button-board round" onClick={onUndo} disabled={!canUndo}><i className="material-icons">undo</i></button>
+        <button className="button-board round" onClick={onRedo} disabled={!canRedo}><i className="material-icons">redo</i></button>
+    </div>
+)
+
+UndoRedo = connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(UndoRedo);
 
 class ConnectedForm extends React.Component {
     constructor(props){
@@ -70,8 +95,7 @@ class ConnectedForm extends React.Component {
     render(){
         return (
             <div className="control">
-                <button className="button-board round"><i className="material-icons">undo</i></button>
-                <button className="button-board round"><i className="material-icons">redo</i></button>
+                <UndoRedo />
                 <input type="text" name="input" id="dialog" autoComplete="off" placeholder="Ask me something!" value={this.state.inputValue} onKeyPress={this.handleKeyPress} onChange={this.handleChange}/>
                 <Upload addMessaggio={this.props.addMessaggio}/>
                 <SaveJupyter />
