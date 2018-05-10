@@ -40,14 +40,12 @@ module.exports = class DialogFlow {
     constructor(aiConfig, baseUrl) {
         this._aiConfig = aiConfig;
         this._bot = new TelegramBot(aiConfig.telegramToken);
-        console.log(`${cLog}TelegramWebHook: ${baseUrl}/${aiConfig.clientWebHook}`);
+        if(aiConfig.devConfig) console.log(`${cLog}TelegramWebHook: ${baseUrl}/${aiConfig.clientWebHook}`);
         this._bot
             .setWebHook(`${baseUrl}/${aiConfig.clientWebHook}`)
             .catch(err => {
                 console.error(`${cLog}ERROR: ${err}`);
             });
-
-        console.log("Has open webhook: "+this._bot.hasOpenWebHook());
 
         this._sessionClient = new dialogFlow.SessionsClient({
            keyFileName: aiConfig.googleAppCreds
@@ -217,8 +215,6 @@ let processRequest = function (DialogFlow, promise, devConfig, bot, chatId, req,
                 let webhookPayload = response.queryResult.webhookPayload;
                 let codeToSend = webhookPayload ? webhookPayload.fields.code.stringValue : null;
 
-                console.log("WEBPAYLOADDDDDD: "+ JSON.stringify(webhookPayload,null,'   '));
-
                 if (responseText) {
                     if (devConfig) console.log(`${cLog}Response as text message with message: ${responseText}`);
                     if (react != 'true') {
@@ -234,8 +230,8 @@ let processRequest = function (DialogFlow, promise, devConfig, bot, chatId, req,
                             let text = el.text.text[0];
 
                             if(text && text !== '' && text !== responseText) {
-                                if (react != 'true') {
-                                    bot.sendMessage(chatId, text, {parse_mode: 'html'})
+                                if (react != 'true' && response.action === 'data.description.request') {
+                                    bot.sendMessage(chatId, `<code>${text}</code>`, {parse_mode: 'html'})
                                         .catch(err => {
                                             console.error(`${cLog}ERROR: ${err}`);
                                         });

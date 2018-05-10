@@ -12,6 +12,9 @@ module.exports.executeTest = function(fileLink, test, test_original, attr, respo
     PythonShell.run('executeTest.py', options, (err, result) => {
         if (err){
             console.error(`${fLog}ERROR: ${err}`);
+            return response.send({
+                fulfillmentText: 'Something went wrong. Either you executed a test on not Numeric variables or an internal error occurred'
+            });
         }
 
         let message;

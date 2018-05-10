@@ -50,7 +50,7 @@ module.exports = class DialogFlowConfig{
 
     constructor(googleAppCreds, projectId, languageCode, telegramToken, clientWebHook, devConfig) {
         this._googleAppCreds = googleAppCreds;
-        this._projectId = projectId
+        this._projectId = projectId;
         this._languageCode = languageCode;
         this._telegramToken = telegramToken;
         this._clientWebHook = clientWebHook;
