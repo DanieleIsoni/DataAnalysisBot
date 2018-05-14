@@ -75,8 +75,6 @@ except urllib.error.HTTPError as err:
 
                 result = `${result}`.slice(2, `${result}`.length);
 
-                console.log(`${fLog}result: ${result}`);
-
                 let resToSend = {
                     fulfillmentText: 'Here is your chart:',
                     payload: {

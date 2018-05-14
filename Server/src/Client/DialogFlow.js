@@ -1,6 +1,8 @@
 const dialogFlow = require('dialogflow');
 const uuid = require('node-uuid');
 const TelegramBot = require('node-telegram-bot-api');
+const fs = require('fs');
+const path = require('path');
 const structjson = require('./structjson');
 const cLog = '[CLIENT] ';
 
@@ -116,7 +118,7 @@ module.exports = class DialogFlow {
                     }
                         break;
                 }
-                processRequest(DialogFlow, promise, devConfig, this.bot, chatId, req, res, react);
+                processRequest(DialogFlow, promise, this.aiConfig, this.bot, chatId, req, res, react);
             } else if(chatId){
                 if (!this._sessionIds.has(chatId)) {
                     this._sessionIds.set(chatId, uuid.v1());
@@ -145,7 +147,7 @@ module.exports = class DialogFlow {
                                 }
                             };
                             promise = this.sessionClient.detectIntent(request);
-                            processRequest(DialogFlow, promise, devConfig, this._bot, chatId, req, res, react);
+                            processRequest(DialogFlow, promise, this.aiConfig, this._bot, chatId, req, res, react);
                         });
                 } else if (messageDoc && chatId && messageDoc.file_name && messageDoc.file_link){
                     let event = {
@@ -163,7 +165,7 @@ module.exports = class DialogFlow {
                         }
                     };
                     promise = this.sessionClient.detectIntent(request);
-                    processRequest(DialogFlow, promise, devConfig, this._bot, chatId, req, res, react);
+                    processRequest(DialogFlow, promise, this.aiConfig, this._bot, chatId, req, res, react);
                 }
             }
         } else {
@@ -195,11 +197,11 @@ module.exports = class DialogFlow {
     }
 };
 
-let processRequest = function (DialogFlow, promise, devConfig, bot, chatId, req, res, react){
+let processRequest = function (DialogFlow, promise, aiConfig, bot, chatId, req, res, react){
     promise
         .then(responses => {
             let response = responses[0];
-            if (devConfig) console.log(`${cLog}Response:\n${JSON.stringify(response, null, '   ')}`);
+            if (aiConfig.devConfig) console.log(`${cLog}Response:\n${JSON.stringify(response, null, '\t')}`);
             if(response.queryResult) {
                 let responseText = response.queryResult.fulfillmentText;
                 let messages = response.queryResult.fulfillmentMessages;
@@ -246,10 +248,32 @@ let processRequest = function (DialogFlow, promise, devConfig, bot, chatId, req,
 
                     if (image && webhookStatus !== null) {
                         if (react != 'true'){
-                            bot.sendPhoto(chatId, image)
-                                .catch(err => {
-                                    console.error(`${cLog}ERROR: ${err}`);
-                                });
+
+                            let tmpSessionPath = path.join(aiConfig.tmpPath, `/${chatId}`);
+
+                            if (!fs.existsSync(tmpSessionPath)){
+                                fs.mkdirSync(tmpSessionPath);
+                            }
+
+                            let imagePath = path.join(tmpSessionPath,`/image.png`);
+
+                            try {
+                                fs.writeFileSync(imagePath, image, {encoding: 'base64'});
+                                bot.sendPhoto(chatId, imagePath)
+                                    .then(() => {
+                                        fs.unlinkSync(imagePath);
+                                    })
+                                    .catch(err => {
+                                        console.error(`${cLog}ERROR: ${err}`);
+                                    });
+                            } catch (e) {
+                                console.error(`${cLog}ERROR: ${e}`);
+                                bot.sendMessage(chatId, `There was an error processing the image of your chart`)
+                                    .catch(err => {
+                                        console.error(`${cLog}ERROR: ${err}`)
+                                    });
+                            }
+
                         }
                         messages.push({
                             type:'image/png',

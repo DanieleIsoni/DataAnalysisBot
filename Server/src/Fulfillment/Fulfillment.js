@@ -145,7 +145,7 @@ module.exports.dialogflowFulfillment = (request, response) => {
                 if (!chart || chart === '') {
                     chart = 'barchart';
                 }
-                if(DEV_CONFIG) console.log(`Chosen test: ${test} on ${testAttr}\nChosen attribute for x-axis: ${attr}\nChosen chart: ${chart}`)
+                if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test} on ${testAttr}\nChosen attribute for x-axis: ${attr}\nChosen chart: ${chart}`)
 
                 plotChart.plotChart(fileLink, chart, test, testAttr, attr, response);
 

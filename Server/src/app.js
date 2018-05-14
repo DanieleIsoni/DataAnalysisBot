@@ -33,15 +33,8 @@ if (APP_NAME){
 // console timestamps
 require('console-stamp')(console, 'yyyy.mm.dd HH:MM:ss.l');
 
-const aiConfig = new DialogFlowConfig(
-    GOOGLE_APPLICATION_CREDENTIALS,
-    PROJECT_ID,
-    LANGUAGE_CODE,
-    TELEGRAM_TOKEN,
-    CLIENT_WEBHOOK,
-    DEV_CONFIG
-);
-
+let tmpPath;
+let aiConfig;
 let ai;
 
 const app = express();
@@ -109,10 +102,15 @@ const allowed_file = (mime) => {
 
 app.route('/upload')
     .post((req, res) => {
-        let path_ = path.join(__dirname,`../../tmp/${req.sessionID}`);
+        let path_ = path.join(tmpPath,`/${req.sessionID}`);
         console.log(`Path to save: ${path_}`);
         if (!fs.existsSync(path_)){
-            fs.mkdirSync(path_);
+            try {
+                fs.mkdirSync(path_);
+            } catch (e) {
+                console.error(`ERROR: ${e}`);
+                res.end();
+            }
         }
         let name = "";
         if(req.files.file && req.files.file.name && allowed_file(req.files.file.name)){
@@ -181,14 +179,26 @@ app.route(`/${FULFILLMENT_WEBHOOK}`)
 app.listen(REST_PORT, function () {
     console.log(`Rest service ready on port ${REST_PORT}`);
 
-    fs.mkdir(path.join(__dirname, '../../tmp'), err => {
+    tmpPath = path.join(__dirname, '../../tmp');
+
+    fs.mkdir(tmpPath , err => {
         if (err) {
             return console.error(`ERROR: ${err}`);
         }
 
-        console.log(`Temp Directory created in ${path.join(__dirname, '../../tmp')}`);
+        console.log(`Temp Directory created in ${tmpPath}`);
 
     });
+
+    aiConfig = new DialogFlowConfig(
+        GOOGLE_APPLICATION_CREDENTIALS,
+        PROJECT_ID,
+        LANGUAGE_CODE,
+        TELEGRAM_TOKEN,
+        CLIENT_WEBHOOK,
+        DEV_CONFIG,
+        tmpPath
+    );
 
     ai = new DialogFlow(aiConfig, baseUrl);
 
