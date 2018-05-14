@@ -140,6 +140,7 @@ module.exports.dialogflowFulfillment = (request, response) => {
                 let fileLink = data_received.parameters.file_link;
                 let test = parameters.CompositeTest.Test;
                 let testAttr = parameters.CompositeTest.Attribute;
+                let testOrig = plot_chart.parameters.CompositeTest['Test.original'];
                 let attr = parameters.Attribute;
                 let chart = parameters.Chart;
                 if (!chart || chart === '') {
@@ -147,7 +148,7 @@ module.exports.dialogflowFulfillment = (request, response) => {
                 }
                 if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test} on ${testAttr}\nChosen attribute for x-axis: ${attr}\nChosen chart: ${chart}`)
 
-                plotChart.plotChart(fileLink, chart, test, testAttr, attr, response);
+                plotChart.plotChart(fileLink, chart, test, testAttr, testOrig, attr, response);
 
             }
         }

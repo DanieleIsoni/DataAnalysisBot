@@ -2,11 +2,11 @@ const PythonShell = require('python-shell');
 const DEV_CONFIG = (process.env.DEVELOPMENT_CONFIG == 'true');
 const fLog = '[FULFILLMENT] ';
 
-module.exports.plotChart = (fileLink, chart, test, testAttr, attr, response) => {
+module.exports.plotChart = (fileLink, chart, test, testAttr, testOrig, attr, response) => {
     const options = {
         mode: 'text',
         scriptPath: 'Server/src/Python/',
-        args: [`${fileLink}`, `${test}`, `${testAttr}`, `${attr}`]
+        args: [`${fileLink}`, `${test}`, `${testAttr}`, `${testOrig}`, `${attr}`]
     };
 
     switch(chart) {
@@ -59,8 +59,8 @@ try:
     barplot(x_data=x.index.values,
             y_data=x[testMod],
             x_label=${attr},
-            y_label=${test}+' '+${testAttr},
-            title=${test}+' '+${testAttr}+' per '+${attr})
+            y_label=${testOrig}+' '+${testAttr},
+            title=${testOrig}+' '+${testAttr}+' per '+${attr})
                 
     figfile = BytesIO()
     plt.savefig(figfile, format='png')
@@ -73,7 +73,7 @@ except urllib.error.HTTPError as err:
     if err.code == 404:
         print('ERROR: The provided url is unreachable')`;
 
-                result = `${result}`.slice(2, `${result}`.length);
+                result = `${result}`.slice(2, `${result}`.length-1);
 
                 let resToSend = {
                     fulfillmentText: 'Here is your chart:',

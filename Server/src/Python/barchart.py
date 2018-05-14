@@ -12,7 +12,8 @@ if len(sys.argv) > 1:
     url = sys.argv[1]
     test = sys.argv[2]
     testAttr = sys.argv[3]
-    attr = sys.argv[4]
+    testOrig = sys.argv[4]
+    attr = sys.argv[5]
 
     try:
         data_set = pd.read_csv(url, sep=',', na_values=["?"])
@@ -49,8 +50,8 @@ if len(sys.argv) > 1:
         barplot(x_data=x.index.values,
                 y_data=x[testMod],
                 x_label=attr,
-                y_label=test+' '+testAttr,
-                title=test+' '+testAttr+' per '+attr)
+                y_label=testOrig+' '+testAttr,
+                title=testOrig+' '+testAttr+' per '+attr)
 
         figfile = BytesIO()
         plt.savefig(figfile, format='png')
