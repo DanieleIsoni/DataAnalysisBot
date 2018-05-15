@@ -48,12 +48,21 @@ module.exports = class DialogFlowConfig{
         this._devConfig = value;
     }
 
-    constructor(googleAppCreds, projectId, languageCode, telegramToken, clientWebHook, devConfig) {
+    get tmpPath() {
+        return this._tmpPath;
+    }
+
+    set tmpPath(value) {
+        this._tmpPath = value;
+    }
+
+    constructor(googleAppCreds, projectId, languageCode, telegramToken, clientWebHook, devConfig, tmpPath) {
         this._googleAppCreds = googleAppCreds;
         this._projectId = projectId;
         this._languageCode = languageCode;
         this._telegramToken = telegramToken;
         this._clientWebHook = clientWebHook;
         this._devConfig = devConfig;
+        this._tmpPath = tmpPath;
     }
 };
