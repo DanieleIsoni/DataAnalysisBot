@@ -150,13 +150,6 @@ html, body{
     margin: 0 15px;
 }
 
-.me{
-    background: #0099ff;
-    color: white;
-    border-radius: 10px 10px 10px 0;
-    float: right !important;
-}
-
 .line pre{
     margin: 0 12px !important;
     border-radius: 5px;
@@ -169,10 +162,17 @@ html, body{
     font-size: 12px;
 }
 
+.me{
+    background: #0099ff;
+    color: white;
+    border-radius: 20px 20px 5px 20px;
+    float: right !important;
+}
+
 .bot, .comp{
     color: #444;
     background: #eee;
-    border-radius: 10px 10px 0px 10px;
+    border-radius: 5px 20px 20px 20px;
 }
 
 .resultdiv{
@@ -274,6 +274,14 @@ html, body{
 
 .upload-file .material-icons{
     line-height: 40px;
+}
+
+.upload_button{
+    margin-right: 10px;
+}
+
+.upload_button i{
+    vertical-align: bottom;
 }
 
 .send-file{
