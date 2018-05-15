@@ -210,7 +210,7 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, chatId, req, 
                 let codeToSend = webhookPayload && webhookPayload.fields && webhookPayload.fields.code ? webhookPayload.fields.code.stringValue : null;
                 let image = webhookPayload && webhookPayload.fields && webhookPayload.fields.image ? webhookPayload.fields.image.stringValue : null;
 
-                if (responseText) {
+                if (responseText || webhookStatus.code === 0) {
                     console.log(`${cLog}Response as text message with message: ${responseText}`);
                     if (react != 'true' && image == null) {
                         bot.sendMessage(chatId, responseText, {parse_mode: 'html'})
@@ -286,29 +286,58 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, chatId, req, 
                     }
                     DialogFlow.createResponse(res, 200, responseText, messages, codeToSend);
                 } else {
-                    if (react != 'true') {
-                        bot.sendMessage(chatId, 'Something went wrong. Please retry in a few minutes')
-                            .catch(err => {
-                                console.error(`${cLog}ERROR: ${err}`);
-                            });
+                    switch (webhookStatus.code) {
+                        case 4: {
+                            let message = 'Request has timed out. Please retry in a few minutes';
+                            if (react != 'true') {
+                                bot.sendMessage(chatId, message)
+                                    .catch(err => {
+                                        console.error(`${cLog}ERROR: ${err}`);
+                                    });
+                            }
+                            console.log(`${cLog}${webhookStatus.message}`);
+                            if (react == 'true') {
+                                req.session.messages.push({
+                                    who: 'bot',
+                                    what: 'markdown',
+                                    message: message,
+                                    outputs: null
+                                });
+                            }
+                            DialogFlow.createResponse(res, 400, message);
+                        }
+                            break;
+
+                        default:
+                            let message = 'Something went wrong. Please retry in a few minutes';
+                            if (react != 'true') {
+                                bot.sendMessage(chatId, message)
+                                    .catch(err => {
+                                        console.error(`${cLog}ERROR: ${err}`);
+                                    });
+                            }
+                            console.log(`${cLog}Received empty speech`);
+                            if (react == 'true') {
+                                req.session.messages.push({
+                                    who: 'bot',
+                                    what: 'markdown',
+                                    message: message,
+                                    outputs: null
+                                });
+                            }
+                            DialogFlow.createResponse(res, 400, message);
                     }
-                    console.log(`${cLog}Received empty speech`);
-                    let message = 'Something went wrong. Please retry in a few minutes';
-                    if (react == 'true') {
-                        req.session.messages.push({who: 'bot', what: 'markdown', message: message, outputs: null});
-                    }
-                    DialogFlow.createResponse(res, 400, message);
                 }
 
             } else {
+                let message = 'Something went wrong. Please retry in a few minutes';
                 if (react != 'true') {
-                    bot.sendMessage(chatId, 'Something went wrong. Please retry in a few minutes')
+                    bot.sendMessage(chatId, message)
                         .catch(err => {
                             console.error(`${cLog}ERROR: ${err}`);
                         });
                 }
                 console.log(`${cLog}Received empty result`);
-                let message = 'Something went wrong. Please retry in a few minutes';
                 if (react == 'true') {
                     req.session.messages.push({who: 'bot', what: 'markdown', message: message, outputs: null});
                 }
