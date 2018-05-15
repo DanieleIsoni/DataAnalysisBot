@@ -3,6 +3,7 @@ import axios from 'axios';
 import { connect } from "react-redux";
 import { addVariabile, addMessaggio } from "../Actions/index";
 import uuidv1 from "uuid";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 const mapAddVariabileEvent = dispatch => {
     return {
@@ -15,18 +16,22 @@ class ConnectedUpload extends React.Component {
         super(props);
         this.state = {
             filename: 'Upload...',
-            showSend: 0
+            filesize: '',
+            modal: false,
+            progress: 0
         }
 
         this.handlefileupload = this.handlefileupload.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.toggle = this.toggle.bind(this);
     }
 
     handlefileupload(e){
         if(e.target.value){
             this.setState({ 
                 filename: (e.target.value.split( '\\' ).pop()) ? e.target.value.split( '\\' ).pop() : "Upload...",
-                showSend: 1
+                filesize: this.fileInput.files[0].size,
+                modal: true
             });
         }
     }
@@ -40,33 +45,53 @@ class ConnectedUpload extends React.Component {
             formdata.append('file', file);
 
             axios.post('https://data-analysis-bot.herokuapp.com/upload', formdata, {
-                /*onUploadProgress: (progressEvent) => {
+                onUploadProgress: (progressEvent) => {
                     const totalLength = progressEvent.lengthComputable ? progressEvent.total : progressEvent.target.getResponseHeader('content-length') || progressEvent.target.getResponseHeader('x-decompressed-content-length');
                     if (totalLength !== null) {
                         this.setState({ progress: Math.round( (progressEvent.loaded * 100) / totalLength ) })
                     }
-                }*/
+                }
             }).then(response => {
                     this.props.addVariabile({ "name": file.name, "id": uuidv1() });
                     this.props.addMessaggio({"id": uuidv1(), "who": "bot", "what": "markdown", "messaggio": response.data.message, "output": []});
         
-                    this.setState({ showSend: 0, filename: "Upload..." });
+                    this.setState({ modal: false, filename: "Upload..." });
             })
         }else{
-            this.setState({ showSend: 0, filename: "Upload..." });
+            this.setState({ modal: false, filename: "Upload..." });
         }
+    }
+
+    toggle() {
+        this.setState({
+          modal: !this.state.modal,
+          filesize: '',
+          progress: 0
+        });
     }
 
     render(){
         return (
-            <form action="/" method="POST" encType="multipart/form-data" className="form-upload" onSubmit={this.handleSubmit}>
-                <input type="file" name="file" id="file" accept=".xls,.xlsx,.csv,.data" className="hidden_input" onChange={this.handlefileupload} ref={input => { this.fileInput = input; }} />
-                <label className="upload-file" htmlFor="file">
-                    <i className="material-icons">attach_file</i>
-                    <span className="file-name">{this.state.filename}</span>
-                </label>
-                <button type="submit" className={(this.state.showSend) ? "show_send send-file" : "send-file"}><i className="material-icons">file_upload</i></button>
-            </form>
+            <div>
+                <Button color="primary" onClick={this.toggle}>Upload</Button>
+                    <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
+                    <form action="/" method="POST" encType="multipart/form-data" className="form-upload" onSubmit={this.handleSubmit}>
+                        <ModalHeader>Confirm file send {(this.state.progress) ? "(Upload progress: " + this.state.progress + " )" : ""} </ModalHeader>   
+                        <ModalBody>
+                                <input type="file" name="file" id="file" accept=".xls,.xlsx,.csv,.data" className="hidden_input" onChange={this.handlefileupload} ref={input => { this.fileInput = input; }} />
+                                <label className="upload-file" htmlFor="file">
+                                    <i className="material-icons">attach_file</i>
+                                    <span className="file-name">{this.state.filename}</span>
+                                </label>   
+                                {(this.state.filesize) ? "Size: " + this.state.filesize + " Byte" : ""}
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button color="primary">Submit</Button>{' '}
+                            <Button color="secondary" onClick={this.toggle}>Cancel</Button>
+                        </ModalFooter>
+                        </form>
+                    </Modal>
+            </div>
         );
     }
 }

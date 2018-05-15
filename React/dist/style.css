@@ -162,6 +162,7 @@ html, body{
     border-radius: 5px;
     box-shadow: 0 1px 1px 0 #C7C7C7 inset;
     cursor: text;
+    max-height: 270px;
 }
 
 .react-syntax-highlighter-line-number{
@@ -223,12 +224,12 @@ html, body{
 
 
 .form-upload{
-    display: flex;
+    /*display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
     align-content: center;
     align-items: center;
-    height: 45px;
+    height: 45px;*/
 }
 
 #dialog{
@@ -256,9 +257,9 @@ html, body{
     max-width: 200px;
     flex-wrap: nowrap;
     height: 40px;
-    background: #333;
+    background: #eee;
     border-radius: 5px;
-    color: #aaa;
+    color: #333;
     cursor: pointer;
     padding: 0 10px;
     margin-right: 10px;
@@ -267,7 +268,7 @@ html, body{
 }
 
 .upload-file:hover{
-    background: #555;
+    background: #aaa;
     transition: background 0.3s;
 }
 
@@ -303,7 +304,7 @@ html, body{
 .file-name{
     padding: 0px 5px;
     line-height: 40px;
-    color: #bbb;
+    color: #777;
     white-space:nowrap;
 }
 
@@ -488,60 +489,62 @@ h5{
     transition: transform 300ms ease-in;
   }
 
-  @media (max-width: 768px) {
-    .file-name{
-        display: none;
-    }
+@media (max-width: 768px) {
+.file-name{
+    display: none;
+}
 
+.gestione{
+    position: absolute !important;
+    top: 0px;
+    display: none;
+}
+
+.openSide{
+    position: absolute;
+    bottom: 130px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    background: #333;
+    color: white;
+    text-align: center;
+    border-radius: 50%;
+}
+
+.openSide i{
+    line-height: 40px;
+}
+
+.chat-thread:before{
+    width: 0px;
+    display: none;
+}
+
+.resultdiv{
+    padding-left: 0px;
+}
+
+.incode-markdown{
+    display: none;
+}
+
+.incode{
+    display: none;
+}
+}
+
+@media (min-width: 768px) {
+    .gestione{
+    display: flex !important;
+    }
+}
+
+@media (max-width: 992px) {
     .control{
         height: 120px;
     }
-
-    .gestione{
-        position: absolute !important;
-        top: 0px;
-        display: none;
-    }
-
-    .openSide{
-        position: absolute;
-        bottom: 130px;
-        right: 20px;
-        width: 40px;
-        height: 40px;
-        background: #333;
-        color: white;
-        text-align: center;
-        border-radius: 50%;
-    }
-
-    .openSide i{
-        line-height: 40px;
-    }
-
-    .chat-thread:before{
-        width: 0px;
-        display: none;
-    }
-
-    .resultdiv{
-        padding-left: 0px;
-    }
-
-    .incode-markdown{
-        display: none;
-    }
-
-    .incode{
-        display: none;
-    }
-  }
-
-  @media (min-width: 768px) {
-      .gestione{
-        display: flex !important;
-      }
-  }
+}
 
 button:disabled,
 button[disabled]{
