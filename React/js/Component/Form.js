@@ -6,7 +6,7 @@ import uuidv1 from "uuid";
 import Upload from "./Upload";
 import SaveJupyter from './SaveJupyter';
 import LoadJupyter from './LoadJupyter';
-import { ActionCreators } from 'redux-undo'
+import UndoRedo from './UndoRedo';
 
 const mapAddMessaggioEvent = dispatch => {
     return {
@@ -15,39 +15,18 @@ const mapAddMessaggioEvent = dispatch => {
     };
 };
 
-const mapStateToProps = (state) => ({
-    canUndo: state.messaggi.past.length > 0,
-    canRedo: state.messaggi.future.length > 0
-})
-  
-const mapDispatchToProps = dispatch => {
-    return{
-        onUndo: () => dispatch(ActionCreators.jump(-2)),
-        onRedo: () => dispatch(ActionCreators.jump(2))
-    }
-}
-  
-let UndoRedo = ({ canUndo, canRedo, onUndo, onRedo }) => (
-    <div>
-        <button className="button-board round" onClick={onUndo} disabled={!canUndo}><i className="material-icons">undo</i></button>
-        <button className="button-board round" onClick={onRedo} disabled={!canRedo}><i className="material-icons">redo</i></button>
-    </div>
-)
-
-UndoRedo = connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(UndoRedo);
-
 class ConnectedForm extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            inputValue: ''
+            inputValue: '',
+            comandi: [""],
+            selectedCommand: 0
         }
 
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.handleKeyDown = this.handleKeyDown.bind(this);
     }
 
     componentDidMount(){
@@ -65,26 +44,48 @@ class ConnectedForm extends React.Component {
         })
     }
 
-    handleKeyPress(event) {
-        if(event.key === 'Enter'){
-            var value = event.target.value;
+    sendMessage(event){
+        var value = event.target.value;
             
-            this.props.addMessaggio({id: uuidv1(), who: "me", what: "markdown", messaggio: value, output: []});
-            this.setState({ inputValue: ''});
+        var comands = this.state.comandi;
+        comands.push(value);
 
-            axios.post("https://data-analysis-bot.herokuapp.com/clientWebHook/", {
-                "message": {
-                    "text": value
-                },
-                "react": "true"
-            }, {
-                'accept': 'application/json',
-                'Content-Type': 'application/json'
-            })
-            .then(response => {
-                this.props.addMessaggio({id: uuidv1(), who: "bot", what: "markdown", messaggio: response.data.message, output: response.data.outputs, code: response.data.code});
-                console.log(response.data.code);
-            })
+        this.props.addMessaggio({id: uuidv1(), who: "me", what: "markdown", messaggio: value, output: []});
+        this.setState({ inputValue: '', comandi: comands});
+
+        axios.post("https://data-analysis-bot.herokuapp.com/clientWebHook/", {
+            "message": {
+                "text": value
+            },
+            "react": "true"
+        }, {
+            'accept': 'application/json',
+            'Content-Type': 'application/json'
+        })
+        .then(response => {
+            this.props.addMessaggio({id: uuidv1(), who: "bot", what: "markdown", messaggio: response.data.message, output: response.data.outputs, code: response.data.code});
+            console.log(response.data.output);
+        })
+    }
+
+    handleKeyPress(event) {
+        if(event.key == 'Enter'){
+            this.sendMessage(event);
+        }
+    }
+
+    handleKeyDown(e){
+        if (e.keyCode === 38) {
+            e.preventDefault();
+            if(this.state.comandi.length > 0 && this.state.selectedCommand < this.state.comandi.length){
+                this.setState({ inputValue: this.state.comandi[this.state.selectedCommand], selectedCommand: this.state.selectedCommand + 1 })
+            }
+        }else if(e.keyCode === 40){
+            e.preventDefault();
+            if(this.state.selectedCommand > 0){
+                var nextSel = this.state.selectedCommand - 1;
+                this.setState({ inputValue: this.state.comandi[nextSel], selectedCommand: nextSel })
+            }
         }
     }
 
@@ -96,7 +97,7 @@ class ConnectedForm extends React.Component {
         return (
             <div className="control">
                 <UndoRedo />
-                <input type="text" name="input" id="dialog" autoComplete="off" placeholder="Ask me something!" value={this.state.inputValue} onKeyPress={this.handleKeyPress} onChange={this.handleChange}/>
+                <input type="text" name="input" id="dialog" autoComplete="off" placeholder="Ask me something!" value={this.state.inputValue} onKeyDown={ this.handleKeyDown }onKeyPress={this.handleKeyPress} onChange={this.handleChange}/>
                 <Upload addMessaggio={this.props.addMessaggio}/>
                 <SaveJupyter />
                 <LoadJupyter />
