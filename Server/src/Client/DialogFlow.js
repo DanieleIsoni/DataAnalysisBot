@@ -212,7 +212,7 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, chatId, req, 
 
                 if (responseText) {
                     console.log(`${cLog}Response as text message with message: ${responseText}`);
-                    if (react != 'true') {
+                    if (react != 'true' && image == null) {
                         bot.sendMessage(chatId, responseText, {parse_mode: 'html'})
                             .catch(err => {
                                 console.error(`${cLog}ERROR: ${err}`);
@@ -259,7 +259,7 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, chatId, req, 
 
                             try {
                                 fs.writeFileSync(imagePath, image, {encoding: 'base64'});
-                                bot.sendPhoto(chatId, imagePath)
+                                bot.sendPhoto(chatId, imagePath, {caption: responseText})
                                     .then(() => {
                                         fs.unlinkSync(imagePath);
                                     })
