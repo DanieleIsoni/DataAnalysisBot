@@ -15,7 +15,7 @@ class ConnectedUpload extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            filename: 'Upload...',
+            filename: 'Upload file...',
             filesize: '',
             modal: false,
             progress: 0
@@ -31,6 +31,7 @@ class ConnectedUpload extends React.Component {
             this.setState({ 
                 filename: (e.target.value.split( '\\' ).pop()) ? e.target.value.split( '\\' ).pop() : "Upload...",
                 filesize: this.fileInput.files[0].size,
+
                 modal: true
             });
         }
@@ -55,10 +56,10 @@ class ConnectedUpload extends React.Component {
                     this.props.addVariabile({ "name": file.name, "id": uuidv1() });
                     this.props.addMessaggio({"id": uuidv1(), "who": "bot", "what": "markdown", "messaggio": response.data.message, "output": []});
         
-                    this.setState({ modal: false, filename: "Upload..." });
+                    this.setState({ modal: false, filename: "Upload file..." });
             })
         }else{
-            this.setState({ modal: false, filename: "Upload..." });
+            this.setState({ modal: false, filename: "Upload file..." });
         }
     }
 
@@ -73,21 +74,19 @@ class ConnectedUpload extends React.Component {
     render(){
         return (
             <div>
-                <Button color="primary" className="upload_button" onClick={this.toggle}><i class="material-icons">attach_file</i> Upload</Button>
+                <Button color="primary" className="upload_button" onClick={this.toggle}><i className="material-icons">attach_file</i> Upload</Button>
                     <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
                     <form action="/" method="POST" encType="multipart/form-data" className="form-upload" onSubmit={this.handleSubmit}>
-                        <ModalHeader>Confirm file send {(this.state.progress) ? "(Upload progress: " + this.state.progress + " )" : ""} </ModalHeader>   
+                        <ModalHeader>Upload a file {(this.state.progress) ? "(% UP: " + this.state.progress + " )" : ""} </ModalHeader>   
                         <ModalBody>
                                 <input type="file" name="file" id="file" accept=".xls,.xlsx,.csv,.data" className="hidden_input" onChange={this.handlefileupload} ref={input => { this.fileInput = input; }} />
                                 <label className="upload-file" htmlFor="file">
-                                    <i className="material-icons">attach_file</i>
-                                    <span className="file-name">{this.state.filename}</span>
+                                    <span className="file-name">{this.state.filename}</span><span className="file-size">{(this.state.filesize) ? this.state.filesize / 1000 + "KB" : ""}</span>
                                 </label>   
-                                {(this.state.filesize) ? "Size: " + this.state.filesize + " Byte" : ""}
                         </ModalBody>
                         <ModalFooter>
-                            <Button color="primary">Submit</Button>{' '}
                             <Button color="secondary" onClick={this.toggle}>Cancel</Button>
+                            <Button color="primary">Upload <i className="material-icons">cloud_upload</i></Button>{' '}
                         </ModalFooter>
                         </form>
                     </Modal>
