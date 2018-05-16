@@ -1,8 +1,8 @@
 import React from "react";
-import Chat from "./Component/Chat";
-import Sidemenu from "./Component/Sidemenu";
+import Chat from "./Component/Chat/Chat";
+import Sidemenu from "./Component/Sidemenu/Sidemenu";
 import { connect } from "react-redux";
-import Form from "./Component/Form";
+import Form from "./Component/Control/Form";
 
 export default class App extends React.Component {
     constructor(props){
