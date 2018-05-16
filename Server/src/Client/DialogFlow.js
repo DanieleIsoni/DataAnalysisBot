@@ -127,7 +127,6 @@ module.exports = class DialogFlow {
 
                 let sessionPath = this.sessionClient.sessionPath(this.aiConfig.projectId, sessionId);
 
-                console.log(`${cLog}Empty message text`);
                 let messageDoc = msg.document;
                 if(messageDoc && chatId && messageDoc.file_id){
                     this.bot.getFileLink(messageDoc.file_id)
@@ -173,7 +172,7 @@ module.exports = class DialogFlow {
                 }
             }
         } else {
-            console.log(`${cLog}Empty message`);
+            console.log(`${cLog}Empty request`);
             return DialogFlow.createResponse(res, 400, 'Empty message');
         }
     }

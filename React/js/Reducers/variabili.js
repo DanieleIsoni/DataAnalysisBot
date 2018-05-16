@@ -6,7 +6,7 @@ const variabili = (state = [], action) => {
         case ADD_VARIABILE:
             return [...state, action.payload];
         case DELETE_VARIABLE:
-        let  {[action.payload]: deleted, ...newState} = state;
+            let  {[action.payload]: deleted, ...newState} = state;
             return newState;
         default:
             return state;
