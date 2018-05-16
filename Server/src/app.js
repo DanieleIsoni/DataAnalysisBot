@@ -39,6 +39,7 @@ let ai;
 
 const app = express();
 
+
 app.use(bodyParser.json());
 app.use(session({ secret: 'data-analysis-bot', resave: true, saveUninitialized: true}));
 app.use(fileUpload());
@@ -48,6 +49,19 @@ app.use(function (req, res, next) {
     if(!req.session.datasets) req.session.datasets = [];
     if(!req.session.commands) req.session.commands = [];
     next();
+});
+// middleware route to support CORS and preflighted requests
+app.use(function(req, res, next) {
+  //Enabling CORS
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.header('Content-Type', 'application/json');
+  if (req.method == 'OPTIONS') {
+    res.header('Access-Control-Allow-Methods', 'GET,PUT, POST, DELETE');
+    return res.status(200).json({});
+  }
+  // make sure we go to the next routes
+  next();
 });
 
 app.route('/')
@@ -83,6 +97,17 @@ app.route('/variable/:filename')
             ret = "Variable not found";
         }
         res.write(JSON.stringify(ret));
+        res.end();
+    });
+
+app.route('/delete/:id')
+    .get((req, res) => {
+        let id = req.params.id;
+
+        req.session.datasets.splice(id,1);
+        let ret = `Variable ${id} deleted`;
+
+        res.write(ret);
         res.end();
     });
 
