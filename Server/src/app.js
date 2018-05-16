@@ -100,6 +100,17 @@ app.route('/variable/:filename')
         res.end();
     });
 
+app.route('/delete/:id')
+    .get((req, res) => {
+        let id = req.params.id;
+
+        req.session.datasets.splice(id,1);
+        let ret = `Variable ${id} deleted`;
+
+        res.write(ret);
+        res.end();
+    });
+
 app.route(`/${CLIENT_WEBHOOK}`)
     .post((req, res) => {
         console.log(`POST ${CLIENT_WEBHOOK}`);
