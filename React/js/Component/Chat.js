@@ -21,7 +21,8 @@ class ConnectedMessages extends React.Component {
         super(props);
         this.state = {
             selected: '',
-            nIn: 0
+            nIn: 0,
+            openCode: ''
         }
         this.handleListClick = this.handleListClick.bind(this);
     }
@@ -37,6 +38,12 @@ class ConnectedMessages extends React.Component {
         this.setState({ selected: id });
     }
 
+    openCode(e, id){
+        this.setState({
+            openCode: id
+        });
+    }
+
     render(){
         const list = this.props.messaggi.map((el, n) => {
             return(
@@ -44,9 +51,23 @@ class ConnectedMessages extends React.Component {
                     {
                         (el.code != null) ? 
                             (
-                                <div className="line">
-                                    <span className="incode">In [ {n} ]: </span>
-                                    <Code code={el.code} />
+                                <div>
+                                    <div className="line">
+                                        <span className="incode-markdown">{n}</span>
+                                        <div className="markdown">
+                                            <div className={el.who}>{el.messaggio}</div>
+                                        </div>
+                                    </div>
+                                    <div className="line">
+                                        <span className="incode">In [ {n} ]: </span>
+                                        {
+                                            (el.id === this.state.openCode) ? <Code code={el.code} /> 
+                                            : 
+                                            <div className="markdown">
+                                                <div className="openCode"><a onClick={(e) => this.openCode(e, el.id)}><i className="material-icons">code</i> View the Code</a></div>
+                                            </div>
+                                        }
+                                    </div>
                                 </div>
                             )
                         :
@@ -69,7 +90,7 @@ class ConnectedMessages extends React.Component {
                                             <div className="resultdiv" key={i}>
                                                 {
                                                     (al.type == "image/png") ? 
-                                                    <a href={"data:image/gif;base64," + al.content}><img src={"data:image/gif;base64," + al.content}/></a>
+                                                    <a target="_blank" href={"data:image/gif;base64," + al.content}><img src={"data:image/gif;base64," + al.content}/></a>
                                                     :
                                                     <pre>{al.content}</pre>
                                                 }

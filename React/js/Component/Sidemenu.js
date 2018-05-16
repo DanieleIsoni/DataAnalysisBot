@@ -4,15 +4,8 @@ import axios from 'axios';
 import List from './Variablelist';
 import SaveJupyter from './SaveJupyter';
 import LoadJupyter from './LoadJupyter';
-import { clearMessaggi } from "../Actions/index";
 
 const JsonTable = require('ts-react-json-table');
-
-const mapClearMessaggiEvent = dispatch => {
-    return {
-      clearMessaggi: () => dispatch(clearMessaggi())
-    };
-};
 
 const mapVariabili = state => {
     return { variabili: state.variabili.present };
@@ -28,13 +21,11 @@ class ConnectedSidemenu extends React.Component {
             savedJup: 'Save Jupyter Notebook'
         }
         this.handleClick = this.handleClick.bind(this);
-        this.clearSession = this.clearSession.bind(this);
     }
 
     handleClick (el) {
         axios.get('https://data-analysis-bot.herokuapp.com/variable/' + el.name, {responseType: 'json'})
         .then(response => {
-            console.log(response.data);
             if(typeof response.data.schema != "undefined"){
                 this.setState({
                     idVar: el.id,
@@ -42,13 +33,6 @@ class ConnectedSidemenu extends React.Component {
                     contentVar: response.data
                 });
             }
-        })
-    }
-
-    clearSession(e) {
-        axios.get('https://data-analysis-bot.herokuapp.com/clear')
-        .then(response => {
-            this.props.clearMessaggi();
         })
     }
 
@@ -63,7 +47,7 @@ class ConnectedSidemenu extends React.Component {
 
         const dettaglioVariabile = (this.state.selectedVar) ? (
             <div className="variable-detail">
-                <div className="side_subtitle"><h5><i className="material-icons">description</i>Dettagli Variabile [{this.state.selectedVar}]</h5></div>
+                <div className="side_subtitle"><h5><i className="material-icons">description</i>Dettagli Variabile</h5></div>
                 <JsonTable className="table table-bordered table-hover" rows={this.state.contentVar.data} columns={getColumns(this.state.contentVar.schema.fields)}/>
             </div>
         ) : (
@@ -82,5 +66,5 @@ class ConnectedSidemenu extends React.Component {
     }
 }
 
-const Sidemenu = connect(mapVariabili, mapClearMessaggiEvent)(ConnectedSidemenu);
+const Sidemenu = connect(mapVariabili)(ConnectedSidemenu);
 export default Sidemenu;

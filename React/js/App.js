@@ -28,7 +28,12 @@ export default class App extends React.Component {
                     <Sidemenu show={this.state.side}/>
                     <Form />
                 </div>    
-                <div className="openSide" onClick={this.handleClick}><i className="material-icons">keyboard_arrow_down</i></div>
+                {
+                    (this.state.side == "block") ?
+                    <div className="openSide" onClick={this.handleClick}><i className="material-icons">keyboard_arrow_down</i></div>
+                    :
+                    ""
+                } 
             </div>   
         );
     }

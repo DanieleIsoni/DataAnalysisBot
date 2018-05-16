@@ -199,6 +199,14 @@ html, body{
     border-radius: 5px;
 }
 
+.openCode{
+    box-shadow: 0 1px 2px 0 rgba(60,64,67,0.302), 0 1px 3px 1px rgba(60,64,67,0.149);
+    padding: 10px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    margin-top: 10px !important;
+}
+
 ::-webkit-scrollbar {
     width: 6px;
 }
@@ -252,9 +260,9 @@ html, body{
     color: #eee;
 }
 
-#dialog:focus ~ .suggest_panel{
+/*#dialog:focus ~ .suggest_panel{
     display: block;
-}
+}*/
 
 .suggest_panel{
     background: white;
@@ -495,9 +503,14 @@ html, body{
 
 .close_var{
     font-size: 15px !important;
-    color: #F44336;
+    color: #555;
     cursor: pointer;
     vertical-align: middle;
+}
+
+.close_var:hover{
+    color: #F44336;
+    transition: color 0.3s;
 }
 
 .panel{
@@ -599,6 +612,7 @@ html, body{
     color: white;
     text-align: center;
     border-radius: 50%;
+    display: none;
 }
 
 .openSide i{
@@ -636,6 +650,10 @@ html, body{
 
     .suggest_panel{
         bottom: 120px;
+    }
+
+    .openSide{
+        display: block;
     }
 }
 

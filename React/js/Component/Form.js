@@ -1,7 +1,7 @@
 import React from "react";
 import axios from 'axios';
 import { connect } from "react-redux";
-import { addVariabile, addMessaggio } from "../Actions/index";
+import { addVariabile, addMessaggio, clearMessaggi } from "../Actions/index";
 import uuidv1 from "uuid";
 import Upload from "./Upload";
 import SaveJupyter from './SaveJupyter';
@@ -11,7 +11,8 @@ import UndoRedo from './UndoRedo';
 const mapAddMessaggioEvent = dispatch => {
     return {
       addMessaggio: messaggio => dispatch(addMessaggio(messaggio)),
-      addVariabile: variabile => dispatch(addVariabile(variabile))
+      addVariabile: variabile => dispatch(addVariabile(variabile)),
+      clearMessaggi: () => dispatch(clearMessaggi())
     };
 };
 
@@ -27,6 +28,7 @@ class ConnectedForm extends React.Component {
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleKeyDown = this.handleKeyDown.bind(this);
+        this.clearSession = this.clearSession.bind(this);
     }
 
     componentDidMount(){
@@ -41,6 +43,13 @@ class ConnectedForm extends React.Component {
             response.data.variables.map(variabile => {
                 this.props.addVariabile({ "name": variabile.name, "id": uuidv1() }); 
             })
+        })
+    }
+
+    clearSession(e) {
+        axios.get('https://data-analysis-bot.herokuapp.com/clear')
+        .then(response => {
+            this.props.clearMessaggi();
         })
     }
 
@@ -102,7 +111,7 @@ class ConnectedForm extends React.Component {
                 <Upload addMessaggio={this.props.addMessaggio}/>
                 <SaveJupyter />
                 <LoadJupyter />
-                <button className="button-board-lateral">Clear</button>
+                <button className="button-board-lateral" onClick={this.clearSession}>Clear</button>
             </div>
         );
     }

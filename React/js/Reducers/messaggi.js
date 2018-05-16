@@ -7,7 +7,7 @@ const messaggi = (state = [], action) => {
         case ADD_MESSAGGIO:
             return [...state, action.payload];
         case CLEAR_MESSAGGI:
-            return [...state, []];
+            return [];
         default:
             return state;
     }
