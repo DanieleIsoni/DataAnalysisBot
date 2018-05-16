@@ -166,6 +166,10 @@ module.exports = class DialogFlow {
                     };
                     promise = this.sessionClient.detectIntent(request);
                     processRequest(DialogFlow, promise, this.aiConfig, this._bot, chatId, req, res, react);
+                } else {
+                    let message = `You haven't sent anything, what should I do?`;
+                    console.log(`${cLog}Empty message`);
+                    return DialogFlow.createResponse(res, 400, message);
                 }
             }
         } else {
@@ -204,6 +208,7 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, chatId, req, 
             if (aiConfig.devConfig) console.log(`${cLog}Response:\n${JSON.stringify(response, null, '\t')}`);
             if(response.queryResult) {
                 let responseText = response.queryResult.fulfillmentText;
+                let action = response.queryResult.action;
                 let messages = response.queryResult.fulfillmentMessages;
                 let webhookStatus = response.webhookStatus;
                 let webhookPayload = response.queryResult.webhookPayload;
