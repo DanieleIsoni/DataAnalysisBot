@@ -48,7 +48,13 @@ class ConnectedUpload extends React.Component {
             var formdata = new FormData();
             formdata.append('file', file);
 
-            axios.post('https://data-analysis-bot.herokuapp.com/upload', formdata, {
+            axios({
+                url: 'https://data-analysis-bot.herokuapp.com/upload',
+                data: formdata,
+                method: 'post', 
+                validateStatus: function (status) {
+                    return status < 500; // Reject only if the status code is greater than or equal to 500
+                },
                 onUploadProgress: (progressEvent) => {
                     const totalLength = progressEvent.lengthComputable ? progressEvent.total : progressEvent.target.getResponseHeader('content-length') || progressEvent.target.getResponseHeader('x-decompressed-content-length');
                     if (totalLength !== null) {
@@ -56,13 +62,15 @@ class ConnectedUpload extends React.Component {
                     }
                 }
             }).then(response => {
+                if(response.status == 200){
                     this.props.addVariabile({ "name": file.name, "id": uuidv1() });
                     this.props.addMessaggio({"id": uuidv1(), "who": "bot", "what": "markdown", "messaggio": response.data.message, "output": []});
+                }else{
+                    this.props.addMessaggio({"id": uuidv1(), "who": "bot", "what": "markdown error", "messaggio": response.data.message, "output": []});
+                }      
         
-                    this.setState({ modal: false, filename: "Upload file...", showLoader: false });
-            }).catch(error => {
-                this.props.addMessaggio({id: uuidv1(), who: "bot", what: "markdown error", messaggio: response.data.message, output: response.data.outputs, code: response.data.code});
-            });
+                this.setState({ modal: false, filename: "Upload file...", showLoader: false });
+            })
         }else{
             this.setState({ modal: false, filename: "Upload file..." });
         }

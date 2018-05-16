@@ -61,7 +61,7 @@ class ConnectedSidemenu extends React.Component {
                 </div>
                 {dettaglioVariabile}
                 <div className="request_type">
-                    <div className="side_subtitle"><h5><i className="material-icons">list</i> Possible queries</h5></div>
+                    <div className="side_subtitle"><h5><i className="material-icons">question_answer</i> Possible queries</h5></div>
                     
                 </div>
             </div>

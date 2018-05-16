@@ -67,7 +67,12 @@ class ConnectedForm extends React.Component {
         var udelete = uuidv1();
         this.props.addMessaggio({id: udelete, who: "bot", what: "markdown", messaggio: <div className="loading"></div>, output: []});
 
-        axios.post("https://data-analysis-bot.herokuapp.com/clientWebHook/", {
+        axios({
+            url: "https://data-analysis-bot.herokuapp.com/clientWebHook/",
+            method: 'post', 
+            validateStatus: function (status) {
+                return status < 500; // Reject only if the status code is greater than or equal to 500
+            },
             "message": {
                 "text": value
             },
@@ -77,11 +82,12 @@ class ConnectedForm extends React.Component {
             'Content-Type': 'application/json'
         })
         .then(response => {
-            this.props.editMessaggio(udelete,{id: uuidv1(), who: "bot", what: "markdown", messaggio: response.data.message, output: response.data.outputs, code: response.data.code});
-           // this.props.addMessaggio({id: uuidv1(), who: "bot", what: "markdown", messaggio: response.data.message, output: response.data.outputs, code: response.data.code});
-        }).catch(error => {
-            this.props.editMessaggio(udelete,{id: uuidv1(), who: "bot", what: "markdown error", messaggio: response.data.message, output: response.data.outputs, code: response.data.code});
-        });
+            if(response.status == 200){
+                this.props.editMessaggio(udelete,{id: uuidv1(), who: "bot", what: "markdown", messaggio: response.data.message, output: response.data.outputs, code: response.data.code});
+            }else{
+                this.props.editMessaggio(udelete,{id: uuidv1(), who: "bot", what: "markdown error", messaggio: response.data.message, output: response.data.outputs, code: response.data.code});
+            }
+        })
     }
 
     handleKeyPress(event) {
