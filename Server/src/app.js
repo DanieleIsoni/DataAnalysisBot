@@ -1,6 +1,7 @@
 const DialogFlow = require('./Client/DialogFlow');
 const DialogFlowConfig = require('./Client/DialogFlowConfig');
 const fulfillment = require('./Fulfillment/Fulfillment');
+const sessionHandler = require('./sessionHandler');
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -36,6 +37,7 @@ require('console-stamp')(console, 'yyyy.mm.dd HH:MM:ss.l');
 let tmpPath;
 let aiConfig;
 let ai;
+let sessions = new Map();
 
 const app = express();
 
@@ -66,11 +68,13 @@ app.use(function(req, res, next) {
 
 app.route('/')
     .get((req, res) => {
+        sessionHandler.sessionHandler(sessions, req);
         res.sendFile("React/index.html", {root: "./" });
     });
 
 app.route('/messages')
     .get((req, res) => {
+        sessionHandler.sessionHandler(sessions, req);
         res.writeHead(200, {'Content-Type': 'application/json'});
         res.write(JSON.stringify({
             messages: req.session.messages,
@@ -81,6 +85,7 @@ app.route('/messages')
 
 app.route('/clear')
     .get((req, res) => {
+        sessionHandler.sessionHandler(sessions, req);
         req.session.messages = [];
         res.write(JSON.stringify({clear: true}));
         res.end();
@@ -88,6 +93,7 @@ app.route('/clear')
 
 app.route('/variable/:filename')
     .get((req, res) => {
+        sessionHandler.sessionHandler(sessions, req);
         let data = req.params.filename;
         let el = req.session.datasets.find((element) => { return element.name === data });
         let ret = '';
@@ -102,6 +108,7 @@ app.route('/variable/:filename')
 
 app.route('/delete/:id')
     .get((req, res) => {
+        sessionHandler.sessionHandler(sessions, req);
         let id = req.params.id;
 
         req.session.datasets.splice(id,1);
@@ -113,6 +120,7 @@ app.route('/delete/:id')
 
 app.route(`/${CLIENT_WEBHOOK}`)
     .post((req, res) => {
+        sessionHandler.sessionHandler(sessions, req);
         console.log(`POST ${CLIENT_WEBHOOK}`);
         try {
             ai.processMessage(req, res);
@@ -127,6 +135,7 @@ const allowed_file = (mime) => {
 
 app.route('/upload')
     .post((req, res) => {
+        sessionHandler.sessionHandler(sessions, req);
         let path_ = path.join(tmpPath,`/${req.sessionID}`);
         console.log(`Path to save: ${path_}`);
         if (!fs.existsSync(path_)){
@@ -228,3 +237,4 @@ app.listen(REST_PORT, function () {
     ai = new DialogFlow(aiConfig, baseUrl);
 
 });
+
