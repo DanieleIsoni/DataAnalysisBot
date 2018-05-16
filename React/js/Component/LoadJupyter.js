@@ -14,7 +14,7 @@ class ConnectedLoadJupyter extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            label: " Jupyter"
+            label: " Load"
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -46,7 +46,7 @@ class ConnectedLoadJupyter extends React.Component{
         return(
             <form className="button-board-lateral" action="/" method="POST" encType="multipart/form-data">
                 <input type="file" name="file" id="jup" accept=".ipynb" className="hidden_input" onChange={ (e) => this.handleChange(e.target.files) }/>
-                <label htmlFor="jup"><span><i className="material-icons">file_upload</i> {this.state.label}</span></label>
+                <label htmlFor="jup"><span><i className="material-icons">cloud_upload</i> {this.state.label}</span></label>
             </form>
         );
     }

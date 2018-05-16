@@ -97,7 +97,8 @@ class ConnectedForm extends React.Component {
         return (
             <div className="control">
                 <UndoRedo />
-                <input type="text" name="input" id="dialog" autoComplete="off" placeholder="Ask me something!" value={this.state.inputValue} onKeyDown={ this.handleKeyDown }onKeyPress={this.handleKeyPress} onChange={this.handleChange}/>
+                <input type="text" name="input" id="dialog" autoComplete="off" placeholder="Ask me something!" value={this.state.inputValue} onKeyDown={ this.handleKeyDown } onKeyPress={this.handleKeyPress} onChange={this.handleChange}/>
+                <div className="suggest_panel col-12 col-md-8 col-lg-8"></div>
                 <Upload addMessaggio={this.props.addMessaggio}/>
                 <SaveJupyter />
                 <LoadJupyter />

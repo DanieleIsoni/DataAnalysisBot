@@ -69,11 +69,10 @@ class ConnectedMessages extends React.Component {
                                             <div className="resultdiv" key={i}>
                                                 {
                                                     (al.type == "image/png") ? 
-                                                    <img src={"data:image/gif;base64," + al.content}/>
+                                                    <a href={"data:image/gif;base64," + al.content}><img src={"data:image/gif;base64," + al.content}/></a>
                                                     :
-                                                    ""
+                                                    <pre>{al.content}</pre>
                                                 }
-                                                <pre>{al.content}</pre>
                                             </div>
                                         );
                                     })

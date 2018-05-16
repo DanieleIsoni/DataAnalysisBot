@@ -14,6 +14,10 @@ const mapClearMessaggiEvent = dispatch => {
     };
 };
 
+const mapVariabili = state => {
+    return { variabili: state.variabili.present };
+};
+
 class ConnectedSidemenu extends React.Component {
     constructor(props){
         super(props);
@@ -59,8 +63,8 @@ class ConnectedSidemenu extends React.Component {
 
         const dettaglioVariabile = (this.state.selectedVar) ? (
             <div className="variable-detail">
-                <h5>Dettagli Variabile</h5>
-                <JsonTable className="table table-striped table-hover" theadClassName="thead-dark" rows={this.state.contentVar.data} columns={getColumns(this.state.contentVar.schema.fields)}/>
+                <div className="side_subtitle"><h5><i className="material-icons">description</i>Dettagli Variabile [{this.state.selectedVar}]</h5></div>
+                <JsonTable className="table table-bordered table-hover" rows={this.state.contentVar.data} columns={getColumns(this.state.contentVar.schema.fields)}/>
             </div>
         ) : (
             <div className="variable-detail"></div>
@@ -69,7 +73,7 @@ class ConnectedSidemenu extends React.Component {
         return (
             <div className="gestione col-12 col-md-4 col-lg-4" style={{"display": this.props.show}}>
                 <div className="variable-context">
-                    <h5>Variables</h5>
+                    <div className="side_subtitle"><h5><i className="material-icons">list</i>Variables <span className="var_num">{this.props.variabili.length}</span></h5></div>
                     <List onClick={this.handleClick} selected={this.state.idVar}/>
                 </div>
                 {dettaglioVariabile}
@@ -78,5 +82,5 @@ class ConnectedSidemenu extends React.Component {
     }
 }
 
-const Sidemenu = connect(null, mapClearMessaggiEvent)(ConnectedSidemenu);
+const Sidemenu = connect(mapVariabili, mapClearMessaggiEvent)(ConnectedSidemenu);
 export default Sidemenu;

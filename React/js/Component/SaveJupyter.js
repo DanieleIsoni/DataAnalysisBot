@@ -46,7 +46,7 @@ class ConnectedJupyter extends React.Component{
 
     render(){
         return(
-            <button className="button-board-lateral" onClick={this.saveJupyter}><i className="material-icons">file_download</i>{this.state.savedJup}</button>
+            <button className="button-board-lateral" onClick={this.saveJupyter}><i className="material-icons">cloud_download</i>{this.state.savedJup}</button>
         );
     }
 }
