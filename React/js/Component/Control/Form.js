@@ -63,7 +63,10 @@ class ConnectedForm extends React.Component {
         comands.push(value);
         this.setState({ inputValue: '', comandi: comands});
 
-        this.props.addMessaggio({id: uuidv1(), who: "me", what: "markdown", messaggio: value, output: []});
+        if(value != ""){
+            this.props.addMessaggio({id: uuidv1(), who: "me", what: "markdown", messaggio: value, output: []});
+        }
+
         var udelete = uuidv1();
         this.props.addMessaggio({id: udelete, who: "bot", what: "markdown", messaggio: <div className="loading"></div>, output: []});
 
@@ -73,15 +76,16 @@ class ConnectedForm extends React.Component {
             validateStatus: function (status) {
                 return status < 500; // Reject only if the status code is greater than or equal to 500
             },
-            "message": {
+            data: {"message": {
                 "text": value
-            },
-            "react": "true"
-        }, {
-            'accept': 'application/json',
-            'Content-Type': 'application/json'
+                },"react": "true"
+            }, headers: {
+                'accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
         })
         .then(response => {
+            console.log(response);
             if(response.status == 200){
                 this.props.editMessaggio(udelete,{id: uuidv1(), who: "bot", what: "markdown", messaggio: response.data.message, output: response.data.outputs, code: response.data.code});
             }else{
