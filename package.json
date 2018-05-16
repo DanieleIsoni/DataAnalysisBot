@@ -76,6 +76,7 @@
     "redux-undo": "^1.0.0-beta9-9-7",
     "request": "^2.85.0",
     "style-loader": "^0.21.0",
+    "rimraf": "^2.6.2",
     "ts-react-json-table": "^0.1.1"
   },
   "engines": {
