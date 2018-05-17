@@ -3,7 +3,9 @@ const uuid = require('node-uuid');
 const TelegramBot = require('node-telegram-bot-api');
 const fs = require('fs');
 const path = require('path');
-const structjson = require('./structjson');
+
+const structjson = require('./Methods/structjson');
+
 const cLog = '[CLIENT] ';
 
 module.exports = class DialogFlow {

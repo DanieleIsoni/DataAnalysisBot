@@ -2,6 +2,7 @@ const DialogFlow = require('./Client/DialogFlow');
 const DialogFlowConfig = require('./Client/DialogFlowConfig');
 const fulfillment = require('./Fulfillment/Fulfillment');
 const sessionHandler = require('./sessionHandler');
+const deleteVariable = require('./Client/Methods/deleteVariable');
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -109,13 +110,11 @@ app.route('/variable/:filename')
 app.route('/delete/:id')
     .get((req, res) => {
         sessionHandler.sessionHandler(sessions, req);
-        let id = req.params.id;
 
-        req.session.datasets.splice(id,1);
-        let ret = `Variable ${id} deleted`;
+        let dialogSessionId = ai.sessionIds.get(req.sessionID);
 
-        res.write(ret);
-        res.end();
+        deleteVariable.deleteVariable(req, res, tmpPath, dialogSessionId);
+
     });
 
 app.route(`/${CLIENT_WEBHOOK}`)
