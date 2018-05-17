@@ -13,7 +13,7 @@ html, body{
 }
 
 .material-icons{
-    vertical-align: bottom;
+    vertical-align: middle;
 }
 
 .container-fluid{
@@ -83,13 +83,13 @@ button[disabled]{
     transition: transform 300ms ease-in;
 }
 
-@media (max-width: 768px) {
-    .gestione{
-        position: absolute !important;
-        top: 0px;
+@media (min-width: 768px) {
+    .openSide{
         display: none;
     }
+}
 
+@media (max-width: 768px) {
     .openSide{
         position: absolute;
         bottom: 130px;
@@ -101,33 +101,11 @@ button[disabled]{
         text-align: center;
         border-radius: 50%;
         display: none;
+        cursor: pointer;
     }
 
     .openSide i{
         line-height: 40px;
-    }
-
-    .chat-thread:before{
-        width: 0px;
-        display: none;
-    }
-
-    .resultdiv{
-        padding-left: 0px;
-    }
-
-    .incode-markdown{
-        display: none;
-    }
-
-    .incode{
-        display: none;
-    }
-}
-
-@media (min-width: 768px) {
-    .gestione{
-        display: flex !important;
     }
 }
 

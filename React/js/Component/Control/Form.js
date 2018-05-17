@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { addVariabile, addMessaggio, clearMessaggi, editMessaggio } from "../../Actions/index";
 import uuidv1 from "uuid";
 import Upload from "./Upload";
-import SaveJupyter from './SaveJupyter';
+import Jupyter from './JupyterOP';
 import LoadJupyter from './LoadJupyter';
 import UndoRedo from './UndoRedo';
 
@@ -24,7 +24,7 @@ class ConnectedForm extends React.Component {
         super(props);
         this.state = {
             inputValue: '',
-            comandi: [""],
+            comandi: [],
             selectedCommand: 0
         }
 
@@ -37,12 +37,9 @@ class ConnectedForm extends React.Component {
     componentDidMount(){
         axios.get('https://data-analysis-bot.herokuapp.com/messages')
         .then(response => {
-            console.log(response);
-
             response.data.messages.map(messaggio => {
                 this.props.addMessaggio({id: uuidv1(), who: messaggio.who, what: "markdown", messaggio: messaggio.message, output: messaggio.outputs, code: messaggio.code});
             })
-
             response.data.variables.map(variabile => {
                 this.props.addVariabile({ "name": variabile.name, "id": uuidv1() }); 
             })
@@ -104,16 +101,16 @@ class ConnectedForm extends React.Component {
         if (e.keyCode === 38) {
             e.preventDefault();
             if(this.state.comandi.length > 0 && this.state.selectedCommand < this.state.comandi.length){
-                this.setState({ inputValue: this.state.comandi[this.state.selectedCommand], selectedCommand: this.state.selectedCommand + 1 })
+                this.setState({ inputValue: this.state.comandi[this.state.comandi.length - 1 - this.state.selectedCommand], selectedCommand: this.state.selectedCommand + 1 })
             }
         }else if(e.keyCode === 40){
             e.preventDefault();
             if(this.state.selectedCommand > 0){
                 var nextSel = this.state.selectedCommand - 1;
-                this.setState({ inputValue: this.state.comandi[nextSel], selectedCommand: nextSel })
+                this.setState({ inputValue: this.state.comandi[this.state.comandi.length - 1 - nextSel], selectedCommand: nextSel })
+            }else if(this.state.selectedCommand == 0){
+                this.setState({inputValue: ""});
             }
-        }else{
-            this.setState({ selectedCommand: 0 });
         }
     }
 
@@ -126,10 +123,8 @@ class ConnectedForm extends React.Component {
             <div className="control">
                 <UndoRedo />
                 <input type="text" name="input" id="dialog" autoComplete="off" placeholder="Ask me something!" value={this.state.inputValue} onKeyDown={ this.handleKeyDown } onKeyPress={this.handleKeyPress} onChange={this.handleChange}/>
-                <div className="suggest_panel col-12 col-md-8 col-lg-8"></div>
                 <Upload addMessaggio={this.props.addMessaggio}/>
-                <SaveJupyter />
-                <LoadJupyter />
+                <Jupyter />
                 <button className="button-board-lateral" onClick={this.clearSession}>Clear</button>
             </div>
         );
