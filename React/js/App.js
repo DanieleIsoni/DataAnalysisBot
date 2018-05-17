@@ -27,13 +27,8 @@ export default class App extends React.Component {
                     <Chat />
                     <Sidemenu show={this.state.side}/>
                     <Form />
-                </div>    
-                {
-                    (this.state.side == "block") ?
-                    <div className="openSide" onClick={this.handleClick}><i className="material-icons">keyboard_arrow_down</i></div>
-                    :
-                    ""
-                } 
+                </div>   
+                <div className="openSide" onClick={this.handleClick}><i className="material-icons">keyboard_arrow_down</i></div>
             </div>   
         );
     }

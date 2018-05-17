@@ -10,26 +10,28 @@
 
 .gestione .side_subtitle{
     margin-left: -15px;
-    background: rgba(0, 123, 255, 0.15);
+    background: rgba(0, 123, 255, 0.12);
     height: 35px;
-    border-radius: 0 30px 30px 0;
+    border-radius: 30px 30px 30px 30px;
     display: inline-block;
     width: auto;
     margin-bottom: 20px;
     position: relative;
     padding-left: 15px;
+    margin-left: 6px;
 }
 
 .side_subtitle h5{
-    color: #007bff !important;
-    font-weight: 400 !important;
+    color: rgba(0, 123, 255, 0.8) !important;
+    font-weight: 200 !important;
     line-height: 35px; 
     padding-right: 30px;
-    margin-right: 20px
+    margin-right: 20px;
+    font-size: 2.1vh;
 }
 
 .side_subtitle h5 i{
-    color: #007bff;
+    color: rgba(0, 123, 255, 0.9);
     line-height: 35px; 
     vertical-align: bottom;
     margin-right: 15px;
@@ -49,19 +51,19 @@
     padding: 20px 5px;
     font-weight: 500;
     color: #aaa;
-    font-size: 20px;
+    font-size: 16px;
 }
 
 .side_message i{
-    vertical-align: bottom;
     margin-right: 15px;
+    font-size: 22px;
 }
 
 .variable-list{
     background: rgba(0,0,0,0);
     width: 100%;
     height: auto;
-    padding: 10px 5px;
+    margin-left: 15px;
 }
 
 .variable-container{
@@ -103,3 +105,16 @@
     transition: color 0.3s;
 }
 
+@media (max-width: 768px) {
+    .gestione{
+        position: absolute !important;
+        top: 0px;
+        display: none;
+    }
+}
+
+@media (min-width: 768px) {
+    .gestione{
+        display: flex !important;
+    }
+}
