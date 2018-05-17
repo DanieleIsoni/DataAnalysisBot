@@ -10,6 +10,8 @@ const contextsClient = new dialogflow.ContextsClient({
 
 module.exports.deleteVariable = (req, res, tmpPath, dialogSessionId) => {
 
+    let id = req.params.id;
+    let name = req.session.datasets[id].name;
     let path_ = path.join(tmpPath,`/${req.sessionID}/${name}`);
     let ret;
 
@@ -19,8 +21,6 @@ module.exports.deleteVariable = (req, res, tmpPath, dialogSessionId) => {
             fs.unlinkSync(path_);
         }
 
-        let id = req.params.id;
-        let name = req.session.datasets[id].name;
         req.session.datasets.splice(id,1);
 
         clearContexts(PROJECT_ID, dialogSessionId);

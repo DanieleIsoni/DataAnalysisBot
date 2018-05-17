@@ -179,11 +179,12 @@ module.exports = class DialogFlow {
         }
     }
 
-    static createResponse(resp, statusCode, message, outputs = null, code = null) {
+    static createResponse(resp, statusCode, message, action = null, outputs = null, code = null) {
         /**
          * Json structure
          * {
          *    who: 'bot',
+         *    action: test.request,
          *    message: message,
          *    outputs: {
          *      // o image/png o text/plain se codice o null se vuoto
@@ -195,6 +196,7 @@ module.exports = class DialogFlow {
          */
         return resp.status(statusCode).json({
             who: 'bot',
+            action: action,
             message: message,
             outputs: outputs,
             code: code
@@ -290,7 +292,7 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, chatId, req, 
                     if (react == 'true') {
                         req.session.messages.push({who: 'bot', what: 'markdown', message: responseText, outputs: messages});
                     }
-                    DialogFlow.createResponse(res, 200, responseText, messages, codeToSend);
+                    DialogFlow.createResponse(res, 200, responseText, action, messages, codeToSend);
                 } else {
                     switch (webhookStatus.code) {
                         case 4: {
