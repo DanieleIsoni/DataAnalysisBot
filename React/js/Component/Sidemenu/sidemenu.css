@@ -11,7 +11,7 @@
 .gestione .side_subtitle{
     margin-left: -15px;
     background: rgba(0, 123, 255, 0.12);
-    height: 30px;
+    height: 35px;
     border-radius: 30px 30px 30px 30px;
     display: inline-block;
     width: auto;
@@ -24,7 +24,7 @@
 .side_subtitle h5{
     color: rgba(0, 123, 255, 0.8) !important;
     font-weight: 200 !important;
-    line-height: 30px; 
+    line-height: 35px; 
     padding-right: 30px;
     margin-right: 20px;
     font-size: 2.1vh;
@@ -32,7 +32,7 @@
 
 .side_subtitle h5 i{
     color: rgba(0, 123, 255, 0.9);
-    line-height: 30px; 
+    line-height: 35px; 
     vertical-align: bottom;
     margin-right: 15px;
 }
@@ -43,7 +43,7 @@
     font-size: 13px;
     padding: 0px 15px;
     font-weight: 600;
-    line-height: 30px; 
+    line-height: 35px; 
     top: 0;
 }
 
