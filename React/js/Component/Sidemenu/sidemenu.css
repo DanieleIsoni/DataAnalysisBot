@@ -1,6 +1,6 @@
 .gestione{
     background: white;
-    padding: 20px 10px;
+    padding: 20px 10px 120px 10px;
     flex-direction: column;
     justify-content: space-between;
     justify-content: flex-start;
@@ -11,7 +11,7 @@
 .gestione .side_subtitle{
     margin-left: -15px;
     background: rgba(0, 123, 255, 0.12);
-    height: 35px;
+    height: 30px;
     border-radius: 30px 30px 30px 30px;
     display: inline-block;
     width: auto;
@@ -24,7 +24,7 @@
 .side_subtitle h5{
     color: rgba(0, 123, 255, 0.8) !important;
     font-weight: 200 !important;
-    line-height: 35px; 
+    line-height: 30px; 
     padding-right: 30px;
     margin-right: 20px;
     font-size: 2.1vh;
@@ -32,7 +32,7 @@
 
 .side_subtitle h5 i{
     color: rgba(0, 123, 255, 0.9);
-    line-height: 35px; 
+    line-height: 30px; 
     vertical-align: bottom;
     margin-right: 15px;
 }
@@ -43,7 +43,7 @@
     font-size: 13px;
     padding: 0px 15px;
     font-weight: 600;
-    line-height: 35px; 
+    line-height: 30px; 
     top: 0;
 }
 
@@ -69,8 +69,8 @@
 .variable-container{
     position: relative;
     padding: 7px 15px;
-    background: white;
-    box-shadow: 0 1px 2px 0 rgba(60,64,67,0.302), 0 1px 3px 1px rgba(60,64,67,0.149);
+    background: #f6f7f9;
+    box-shadow: inset 0 0 0 1px #e9eaeb;
     border-radius: 30px;
     display: inline-block;
     margin-right: 20px;
@@ -103,6 +103,78 @@
 .close_var:hover{
     color: #F44336;
     transition: color 0.3s;
+}
+
+.hint_container{
+    margin: 5px 10px 10px 5px;
+    border-radius: 20px;
+    padding: 10px;
+    background: #f6f7f9;
+    box-shadow: inset 0 0 0 1px #e9eaeb;   
+}
+
+.head_hint{
+    top: 0;
+    width: 100%;
+    border-radius: 20px;
+}
+
+.hint_container h5{
+    font-weight: 500;
+    color: #333;
+    padding: 3px 10px;
+}
+
+.delete_var{
+    height: 100%;
+    z-index: 10;
+}
+
+.operation{
+    color: #EF5350;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.attribute{
+    color: #2196F3;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.body_hint{
+    padding: 5px 10px;
+}
+
+.list_hint{
+    padding: 0;
+}
+
+.list_hint li{
+    margin: 5px 0;
+    padding: 7px 15px;
+    background: white;
+    box-shadow: inset 0 0 0 1px #e9eaeb;
+    border-radius: 30px;
+    list-style: none;
+}
+
+.red_container{
+    background: rgba(255, 54, 54, 0.12);
+}
+
+.red_container .head_hint{
+    background: rgba(0,0,0,0);
+    color: #EF5350;
+}
+
+.blue_container{
+    background: rgba(0, 123, 255, 0.12);
+}
+
+.blue_container .head_hint{
+    background: rgba(0,0,0,0);
+    color: #2196F3;
 }
 
 @media (max-width: 768px) {

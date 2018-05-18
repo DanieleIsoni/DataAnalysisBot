@@ -1,12 +1,12 @@
 import React from "react";
 import axios from 'axios';
 import { connect } from "react-redux";
-import { addVariabile, addMessaggio, clearMessaggi, editMessaggio } from "../../Actions/index";
+import { addVariabile, addMessaggio, clearMessaggi, editMessaggio, addHints } from "../../Actions/index";
 import uuidv1 from "uuid";
 import Upload from "./Upload";
 import Jupyter from './JupyterOP';
-import LoadJupyter from './LoadJupyter';
 import UndoRedo from './UndoRedo';
+import Action from '../../Constants/Actions';
 
 import './control.css';
 
@@ -15,8 +15,13 @@ const mapAddMessaggioEvent = dispatch => {
       addMessaggio: messaggio => dispatch(addMessaggio(messaggio)),
       editMessaggio: (id, messaggio) => dispatch(editMessaggio(id, messaggio)),
       addVariabile: variabile => dispatch(addVariabile(variabile)),
-      clearMessaggi: () => dispatch(clearMessaggi())
+      clearMessaggi: () => dispatch(clearMessaggi()),
+      addHints: hints => dispatch(addHints(hints))
     };
+};
+
+const mapVariabili = state => {
+    return { variabili: state.variabili.present };
 };
 
 class ConnectedForm extends React.Component {
@@ -43,7 +48,8 @@ class ConnectedForm extends React.Component {
             response.data.variables.map(variabile => {
                 this.props.addVariabile({ "name": variabile.name, "id": uuidv1() }); 
             })
-        })
+            this.actionController("initial");
+        }); 
     }
 
     clearSession(e) {
@@ -51,6 +57,34 @@ class ConnectedForm extends React.Component {
         .then(response => {
             this.props.clearMessaggi();
         })
+    }
+
+    actionController (azione) {
+        console.log(azione);
+        switch(azione){
+            case "initial":
+            case "input.welcome":
+            case "input.unknown":
+                if(this.props.variabili.length > 0){
+                    
+                    this.props.addHints(Action["after_file"]);
+                }else{
+                    this.props.addHints(Action["initial"]);
+                }
+                break;
+            case "data.received":
+            case "plot.chart":
+                this.props.addHints(Action["after_file"]);
+                break;
+            case "test.request":
+            case "test.request.fu.attribute":
+            case "test.request.fu.test":
+                this.props.addHints(Action["after_analisys"]);
+                break;
+            default:
+                this.props.addHints(Action["initial"]);
+                break;
+        }
     }
 
     sendMessage(event){
@@ -84,6 +118,7 @@ class ConnectedForm extends React.Component {
         .then(response => {
             console.log(response);
             if(response.status == 200){
+                this.actionController(response.data.action);
                 this.props.editMessaggio(udelete,{id: uuidv1(), who: "bot", what: "markdown", messaggio: response.data.message, output: response.data.outputs, code: response.data.code});
             }else{
                 this.props.editMessaggio(udelete,{id: uuidv1(), who: "bot", what: "markdown error", messaggio: response.data.message, output: response.data.outputs, code: response.data.code});
@@ -131,5 +166,5 @@ class ConnectedForm extends React.Component {
     }
 }
 
-const Form = connect(null, mapAddMessaggioEvent)(ConnectedForm);
+const Form = connect(mapVariabili, mapAddMessaggioEvent)(ConnectedForm);
 export default Form;

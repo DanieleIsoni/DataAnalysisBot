@@ -139,10 +139,7 @@
     transition: background 0.4s;
 }
 
-
-
 /* MODALE CARICAMENTO FILE */
-
 .upload-file{
     position: relative;
     display: flex;

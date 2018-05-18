@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import axios from 'axios';
 import List from './Variablelist';
 import './sidemenu.css';
+import Hints from './Hints';
 
 const JsonTable = require('ts-react-json-table');
 
@@ -60,10 +61,7 @@ class ConnectedSidemenu extends React.Component {
                     <List onClick={this.handleClick} selected={this.state.idVar}/>
                 </div>
                 {dettaglioVariabile}
-                <div className="request_type">
-                    <div className="side_subtitle"><h5><i className="material-icons">question_answer</i> Possible queries</h5></div>
-                    
-                </div>
+                <Hints />
             </div>
         );
     }

@@ -88,10 +88,10 @@ class ConnectedJupyter extends React.Component{
         return(
             <ButtonDropdown  className="button-board-lateral" isOpen={this.state.dropdownOpen} toggle={this.toggle}>
                 <DropdownToggle caret className="group_lateral">
-                    Jupyter
+                Jupyter 
                 </DropdownToggle>
                 <DropdownMenu>
-                <DropdownItem header>Jupyter menu</DropdownItem>
+                <DropdownItem header><img style={{width: '35px'}} src="dist/img/jup.png"/> Jupyter menu </DropdownItem>
                 <DropdownItem onClick={this.saveJupyter}><i className="material-icons">cloud_download</i> Save Jupyter</DropdownItem>
                 <DropdownItem divider />
                 <form action="/" method="POST" encType="multipart/form-data">

@@ -1,13 +1,16 @@
 import React from "react";
 import axios from 'axios';
 import { connect } from "react-redux";
-import { addVariabile, addMessaggio } from "../../Actions/index";
+import { addVariabile, addMessaggio, addHints } from "../../Actions/index";
 import uuidv1 from "uuid";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
+var MODAL_REF = 'MODAL';
+
 const mapAddVariabileEvent = dispatch => {
     return {
-      addVariabile: variabile => dispatch(addVariabile(variabile))
+      addVariabile: variabile => dispatch(addVariabile(variabile)),
+      addHints: hints => dispatch(addHints(hints))
     };
 };
 
@@ -32,10 +35,11 @@ class ConnectedUpload extends React.Component {
             this.setState({ 
                 filename: (e.target.value.split( '\\' ).pop()) ? e.target.value.split( '\\' ).pop() : "Upload...",
                 filesize: this.fileInput.files[0].size,
-
                 modal: true
             });
         }
+
+        this.sendFile.focus();
     }
 
     handleSubmit(e){
@@ -102,7 +106,7 @@ class ConnectedUpload extends React.Component {
                         </ModalBody>
                         <ModalFooter>
                             <Button color="secondary" onClick={this.toggle}>Cancel</Button>
-                            <Button color="primary">Upload <i className="material-icons">cloud_upload</i></Button>{' '}
+                            <Button innerRef={(button) => (this.sendFile = button)} color="primary">Upload <i className="material-icons">cloud_upload</i></Button>{' '}
                         </ModalFooter>
                         </form>
                     </Modal>
