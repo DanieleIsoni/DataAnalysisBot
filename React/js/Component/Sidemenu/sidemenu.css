@@ -18,7 +18,7 @@
     margin-bottom: 20px;
     position: relative;
     padding-left: 15px;
-    margin-left: 6px;
+    margin-left: 5px;
 }
 
 .side_subtitle h5{
@@ -27,11 +27,10 @@
     line-height: 35px; 
     padding-right: 30px;
     margin-right: 20px;
-    font-size: 2.1vh;
 }
 
 .side_subtitle h5 i{
-    color: rgba(0, 123, 255, 0.9);
+    color: rgba(0, 123, 255, 0.8);
     line-height: 35px; 
     vertical-align: bottom;
     margin-right: 15px;
@@ -80,7 +79,7 @@
 }
 
 .variable-detail{
-    margin-top: 20px;
+    margin: 20px 0;
 }
 
 
@@ -94,10 +93,11 @@
 }
 
 .close_var{
-    font-size: 15px !important;
+    font-size: 18px !important;
     color: #555;
     cursor: pointer;
     vertical-align: middle;
+    padding-left: 10px;
 }
 
 .close_var:hover{
@@ -106,9 +106,9 @@
 }
 
 .hint_container{
-    margin: 5px 10px 10px 5px;
-    border-radius: 20px;
-    padding: 10px;
+    margin: 8px 10px 10px 8px;
+    border-radius: 10px;
+    padding: 5px 10px;
     background: #f6f7f9;
     box-shadow: inset 0 0 0 1px #e9eaeb;   
 }
@@ -116,13 +116,12 @@
 .head_hint{
     top: 0;
     width: 100%;
-    border-radius: 20px;
 }
 
 .hint_container h5{
     font-weight: 500;
-    color: #333;
-    padding: 3px 10px;
+    color: #555;
+    padding: 5px 10px;
 }
 
 .delete_var{
@@ -151,29 +150,38 @@
 }
 
 .list_hint li{
-    margin: 5px 0;
-    padding: 7px 15px;
+    margin: 8px 15px;
+    list-style: none;  
+}
+
+.list_hint li div > div{
+    color: #666;
+    padding: 6px 30px;
     background: white;
-    box-shadow: inset 0 0 0 1px #e9eaeb;
     border-radius: 30px;
-    list-style: none;
+    width: auto;
+    display: inline-block;
+}
+
+.list_hint li div > div:hover{
+    box-shadow: 0 0 8px 1px rgba(0,0,0,0.1);
 }
 
 .red_container{
     background: rgba(255, 54, 54, 0.12);
+    box-shadow: inset 0 0 0 1px rgba(255, 54, 54, 0.25);  
 }
 
-.red_container .head_hint{
-    background: rgba(0,0,0,0);
+.red_container .head_hint h5{
     color: #EF5350;
 }
 
 .blue_container{
     background: rgba(0, 123, 255, 0.12);
+    box-shadow: inset 0 0 0 1px rgba(0, 123, 255, 0.25);  
 }
 
-.blue_container .head_hint{
-    background: rgba(0,0,0,0);
+.blue_container .head_hint h5{
     color: #2196F3;
 }
 
@@ -182,6 +190,12 @@
         position: absolute !important;
         top: 0px;
         display: none;
+    }
+}
+
+@media (max-width: 992px) {
+    .gestione h5{
+        font-size: 16px;
     }
 }
 

@@ -1,15 +1,17 @@
+import './chat.css';
+
 import React from "react";
 import Messages from './MessageList';
-import './chat.css';
+import { Col } from 'reactstrap';
 
 export default class Chat extends React.Component {
     render(){
         return (
-            <div className="chat col-12 col-md-8 col-lg-8">
+            <Col xs="12" md="8" className="chat">
                 <div className="scroll_container">
                     <Messages /> 
                 </div>
-            </div>
+            </Col>
         );
     }
 }

@@ -2,8 +2,8 @@ import React from "react";
 
 let actions = {
     "initial": [
-        {name: "Welcome", esempi: ["hi", "hello"]},
-        {name: "Upload", esempi: ["Upload file with the button"]}
+        {name: "Welcome", esempi: [<div>Hi</div>, <div>Hello</div>]},
+        {name: "Upload", esempi: [<div>Upload file with the button</div>]}
     ],
     "after_file": [
         {name: "Analisys", esempi: [

@@ -1,10 +1,11 @@
+import './sidemenu.css';
+
 import React from "react";
 import { connect } from "react-redux";
 import axios from 'axios';
 import List from './Variablelist';
-import './sidemenu.css';
 import Hints from './Hints';
-
+import { Col } from 'reactstrap';
 const JsonTable = require('ts-react-json-table');
 
 const mapVariabili = state => {
@@ -55,14 +56,14 @@ class ConnectedSidemenu extends React.Component {
         );
 
         return (
-            <div className="gestione col-12 col-md-4 col-lg-4" style={{"display": this.props.show}}>
+            <Col xs="12" md="4" className="gestione" style={{"display": this.props.show}}>
                 <div className="variable-context">
                     <div className="side_subtitle"><h5><i className="material-icons">list</i> Variables <span className="var_num">{this.props.variabili.length}</span></h5></div>
                     <List onClick={this.handleClick} selected={this.state.idVar}/>
                 </div>
                 {dettaglioVariabile}
                 <Hints />
-            </div>
+            </Col>
         );
     }
 }
