@@ -49,19 +49,21 @@ class ConnectedMessages extends React.Component {
                                     <div className="line">
                                         <span className="incode-markdown">{n}</span>
                                         <div className="markdown">
-                                            <div className={el.who}>{el.messaggio}</div>
+                                            <div className={el.who}>
+                                            {el.messaggio}<br/>
+                                            <a className="code_command" onClick={(e) => this.openCode(e, el.id)}><i className="material-icons">code</i> View the Code</a>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className="line">
-                                        <span className="incode">In [ {n} ]: </span>
-                                        {
-                                            (el.id === this.state.openCode) ? <Code code={el.code} /> 
-                                            : 
-                                            <div className="markdown">
-                                                <div className="openCode"><a onClick={(e) => this.openCode(e, el.id)}><i className="material-icons">code</i> View the Code</a></div>
-                                            </div>
-                                        }
-                                    </div>
+                                    {
+                                    (el.id === this.state.openCode) ?
+                                        <div className="line">
+                                            <span className="incode">In [ {n} ]: </span>
+                                                <Code code={el.code} />   
+                                        </div>
+                                        :
+                                        ""
+                                    }
                                 </div>
                             )
                         :

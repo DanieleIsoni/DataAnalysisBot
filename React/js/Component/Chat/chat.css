@@ -147,6 +147,11 @@
     flex: none;
 }
 
+.code_command{
+    color: #2196F3 !important;
+    cursor: pointer;
+}
+
 .react-syntax-highlighter-line-number{
     font-size: 12px;
 }
