@@ -22,6 +22,7 @@ class ConnectedSidemenu extends React.Component {
             savedJup: 'Save Jupyter Notebook'
         }
         this.handleClick = this.handleClick.bind(this);
+        this.closeVar = this.closeVar.bind(this);
     }
 
     handleClick (el) {
@@ -37,6 +38,14 @@ class ConnectedSidemenu extends React.Component {
         })
     }
 
+    closeVar (e){
+        this.setState({
+            idVar: '',
+            selectedVar: '',
+            contentVar: []
+        }); 
+    }
+
     render () {
         let getColumns = (columns) => {
             var array = [];
@@ -48,8 +57,10 @@ class ConnectedSidemenu extends React.Component {
 
         const dettaglioVariabile = (this.state.selectedVar) ? (
             <div className="variable-detail">
-                <div className="side_subtitle"><h5><i className="material-icons">description</i>Dettagli Variabile</h5></div>
-                <JsonTable className="table table-bordered table-hover" rows={this.state.contentVar.data} columns={getColumns(this.state.contentVar.schema.fields)}/>
+                <div className="side_subtitle"><h5><i className="material-icons">description</i>Dettagli Variabile</h5>                
+                 {  (this.state.selectedVar) ? <a  className="code_command close_side" onClick={(e) => this.closeVar(e)}> <i className="material-icons">close</i></a> : ""}
+                 </div>
+                <JsonTable className="table table-hover" rows={this.state.contentVar.data} columns={getColumns(this.state.contentVar.schema.fields)}/>
             </div>
         ) : (
             <div className="variable-detail"></div>

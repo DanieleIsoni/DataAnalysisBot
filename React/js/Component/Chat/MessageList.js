@@ -34,7 +34,7 @@ class ConnectedMessages extends React.Component {
 
     openCode(e, id){
         this.setState({
-            openCode: id
+            openCode: (this.state.openCode) ? '' : id
         });
     }
 
@@ -51,7 +51,12 @@ class ConnectedMessages extends React.Component {
                                         <div className="markdown">
                                             <div className={el.who}>
                                             {el.messaggio}<br/>
-                                            <a className="code_command" onClick={(e) => this.openCode(e, el.id)}><i className="material-icons">code</i> View the Code</a>
+                                            {
+                                                (el.id === this.state.openCode) ?
+                                                <a className="code_command" onClick={(e) => this.openCode(e, el.id)}><i className="material-icons">code</i> Close</a>
+                                                :
+                                                <a className="code_command" onClick={(e) => this.openCode(e, el.id)}><i className="material-icons">code</i> View the Code</a>
+                                            }
                                             </div>
                                         </div>
                                     </div>
