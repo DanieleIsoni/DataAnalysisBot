@@ -56,6 +56,7 @@
     "axios": "^0.18.0",
     "body-parser": "^1.18.2",
     "console-stamp": "^0.2.6",
+    "cors": "^2.8.4",
     "css-loader": "^0.28.11",
     "dialogflow": "^0.3.0",
     "electron-default-menu": "^1.0.1",
@@ -64,6 +65,7 @@
     "express-session": "^1.15.6",
     "forever": "^0.15.3",
     "fs": "0.0.1-security",
+    "heroku-ssl-redirect": "0.0.4",
     "js-file-download": "^0.4.1",
     "node-telegram-bot-api": "^0.30.0",
     "node-uuid": "^1.4.8",
@@ -75,8 +77,8 @@
     "reactstrap": "^6.0.1",
     "redux-undo": "^1.0.0-beta9-9-7",
     "request": "^2.85.0",
-    "style-loader": "^0.21.0",
     "rimraf": "^2.6.2",
+    "style-loader": "^0.21.0",
     "ts-react-json-table": "^0.1.1"
   },
   "engines": {

@@ -11,6 +11,7 @@ const fileUpload = require('express-fileupload');
 const fs = require('fs');
 const path = require('path');
 const PythonShell = require('python-shell');
+const sslRedirect = require('heroku-ssl-redirect');
 
 const REST_PORT = (process.env.PORT || 5000);
 const DEV_CONFIG = (process.env.DEVELOPMENT_CONFIG === 'true');
@@ -42,7 +43,7 @@ let sessions = new Map();
 
 const app = express();
 
-
+app.use(sslRedirect(['production', 'development']));
 app.use(bodyParser.json());
 app.use(session({ secret: 'data-analysis-bot', resave: true, saveUninitialized: true}));
 app.use(fileUpload());
@@ -52,19 +53,6 @@ app.use(function (req, res, next) {
     if(!req.session.datasets) req.session.datasets = [];
     if(!req.session.commands) req.session.commands = [];
     next();
-});
-// middleware route to support CORS and preflighted requests
-app.use(function(req, res, next) {
-  //Enabling CORS
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  res.header('Content-Type', 'application/json');
-  if (req.method == 'OPTIONS') {
-    res.header('Access-Control-Allow-Methods', 'GET,PUT, POST, DELETE');
-    return res.status(200).json({});
-  }
-  // make sure we go to the next routes
-  next();
 });
 
 app.route('/')
