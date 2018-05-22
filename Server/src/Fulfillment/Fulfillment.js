@@ -148,7 +148,7 @@ module.exports.dialogflowFulfillment = (request, response) => {
                 }
                 if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test} on ${testAttr}\nChosen attribute for x-axis: ${attr}\nChosen chart: ${chart}`)
 
-                plotChart.plotChart(fileLink, chart, test, testAttr, testOrig, attr, response);
+                plotChart.plotChart(fileLink, chart, test, testAttr, testOrig, attr, null, null, response);
 
             }
         }

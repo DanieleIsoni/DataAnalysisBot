@@ -5,7 +5,7 @@ const fLog = '[FULFILLMENT] ';
 module.exports.dataDescription = function (fileName, fileLink, response){
     const options = {
         mode: 'text',
-        scriptPath: 'Server/src/Python/',
+        scriptPath: 'Server/src/Fulfillment/Python/',
         args: [`${fileLink}`]
     };
     PythonShell.run('dataDescription.py', options, function (err, results) {

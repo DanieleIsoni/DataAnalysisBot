@@ -2,11 +2,11 @@ const PythonShell = require('python-shell');
 const DEV_CONFIG = (process.env.DEVELOPMENT_CONFIG == 'true');
 const fLog = '[FULFILLMENT] ';
 
-module.exports.plotChart = (fileLink, chart, test, testAttr, testOrig, attr, response) => {
+module.exports.plotChart = (fileLink, chart, test, testAttr, testOrig, attr, xLabelColor, yLabelColor, response) => {
     const options = {
         mode: 'text',
-        scriptPath: 'Server/src/Python/',
-        args: [`${fileLink}`, `${test}`, `${testAttr}`, `${testOrig}`, `${attr}`]
+        scriptPath: 'Server/src/Fulfillment/Python/',
+        args: [`${fileLink}`, `${test}`, `${testAttr}`, `${testOrig}`, `${attr}`, `${xLabelColor}`, `${yLabelColor}`]
     };
 
     switch(chart) {

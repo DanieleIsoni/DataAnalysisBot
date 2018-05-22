@@ -12,7 +12,7 @@ const fLog = '[FULFILLMENT] ';
 module.exports.storeAttributes = function (fileName, fileLink, response, session){
     const options = {
         mode: 'text',
-        scriptPath: 'Server/src/Python/',
+        scriptPath: 'Server/src/Fulfillment/Python/',
         args: [`${fileLink}`]
     };
     PythonShell.run('getAttributes.py', options, function (err, results) {
