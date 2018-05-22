@@ -12,7 +12,7 @@ class Jupyter{
         if(who == "me"){    
             this.cells.push({"cell_type": "markdown", "metadata": { "who": "me" }, "source": ["### &#x1F539; " + messaggio]});
         }else{
-            this.cells.push({"cell_type": "markdown", "metadata": { "who": "bot" }, "source": ["&#x1F538; " + messaggio + "\n *** "]});
+            this.cells.push({"cell_type": "markdown", "metadata": { "who": "bot" }, "source": ["&#x1F538; " + messaggio + "\n"]});
         }
     }
 
