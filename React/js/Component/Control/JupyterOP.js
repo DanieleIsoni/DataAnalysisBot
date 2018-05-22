@@ -57,7 +57,7 @@ class ConnectedJupyter extends React.Component{
                 var messaggi_jup = Jup.readJupyter(json.cells);
 
                 messaggi_jup.map(mes => {
-                    f.addMessaggio({id: uuidv1(), who: mes.who, what: mes.what, messaggio: mes.messaggio, output: mes.output});
+                    f.addMessaggio({id: uuidv1(), who: mes.who, what: mes.what, messaggio: mes.messaggio, output: mes.output, code: mes.code});
                 });
             };
         })(this.props);
