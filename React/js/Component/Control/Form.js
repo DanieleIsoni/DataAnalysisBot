@@ -105,7 +105,7 @@ class ConnectedForm extends React.Component {
             url: "https://data-analysis-bot.herokuapp.com/clientWebHook/",
             method: 'post', 
             validateStatus: function (status) {
-                return status < 500; // Reject only if the status code is greater than or equal to 500
+                return status < 500;
             },
             data: {"message": {
                 "text": value
@@ -116,7 +116,6 @@ class ConnectedForm extends React.Component {
             }
         })
         .then(response => {
-            console.log(response);
             if(response.status == 200){
                 this.actionController(response.data.action);
                 this.props.editMessaggio(udelete,{id: uuidv1(), who: "bot", what: "markdown", messaggio: response.data.message, output: response.data.outputs, code: response.data.code});

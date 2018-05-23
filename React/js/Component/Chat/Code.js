@@ -1,10 +1,9 @@
 import React from "react";
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import docco from 'react-syntax-highlighter/styles/hljs/atom-one-light'; 
+import docco from 'react-syntax-highlighter/styles/hljs/xcode'; 
 
 const Code = (props) => {
-    const codeString = '' + props.code;
-    return <SyntaxHighlighter showLineNumbers='true' language='python' style={docco}>{codeString}</SyntaxHighlighter>;  
+    return <SyntaxHighlighter showLineNumbers='true' language='python' style={docco}>{props.code}</SyntaxHighlighter>;  
 }
 
 export default Code;

@@ -120,14 +120,15 @@
     width: 45px;
     height: 45px;
     z-index: 100;
-    border: none;
-    background: #333;
+    border: none !important;
+    background: #333 !important;
     color: #999;
     font-weight: 500;
     border-radius: 10px;
     transition: background 0.3s;
     cursor: pointer;
     margin-right: 10px;
+
 }
 
 .button-board i{
@@ -135,7 +136,7 @@
 }
 
 .button-board:hover{
-    background: rgba(0,0,0,0.2);
+    background:#363a3d !important;
     transition: background 0.4s;
 }
 
@@ -197,8 +198,8 @@
 
 .group_lateral{
     width: 100%;
-    background: #333;
-    border: none;
+    background: #333 !important;
+    border: none !important;
 }
 
 .group_lateral:hover{
