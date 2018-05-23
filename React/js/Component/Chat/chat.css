@@ -86,7 +86,7 @@
 }
 
 .me{
-    background: rgba(0, 153, 255, 0.9);
+    background: #4285f4;
     color: white;
     border-radius: 25px 5px 25px 25px;
     float: right !important;
@@ -148,7 +148,7 @@
 }
 
 .code_command{
-    color: #2196F3 !important;
+    color: #4285f4 !important;
     cursor: pointer;
     position: relative;
     display: block;

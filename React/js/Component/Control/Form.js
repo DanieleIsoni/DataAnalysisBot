@@ -105,7 +105,7 @@ class ConnectedForm extends React.Component {
             url: "https://data-analysis-bot.herokuapp.com/clientWebHook/",
             method: 'post', 
             validateStatus: function (status) {
-                return status < 500; // Reject only if the status code is greater than or equal to 500
+                return status < 500;
             },
             data: {"message": {
                 "text": value

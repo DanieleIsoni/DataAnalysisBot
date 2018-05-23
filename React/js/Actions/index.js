@@ -10,5 +10,4 @@ export const deleteVariabile = id => ({ type: DELETE_VARIABLE, payload: id });
 export const addMessaggio = messaggio => ({ type: ADD_MESSAGGIO, payload: messaggio });
 export const editMessaggio = (id, messaggio) => ({ type: EDIT_MESSAGGIO, payload: {id: id, messaggio: messaggio} });
 export const clearMessaggi = () => ({ type: CLEAR_MESSAGGI });
-
 export const addHints = hints => ({type: ADD_HINTS, payload: hints});

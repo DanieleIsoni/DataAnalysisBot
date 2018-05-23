@@ -15,7 +15,6 @@ class ConnectedMessages extends React.Component {
         super(props);
         this.state = {
             selected: '',
-            nIn: 0,
             openCode: ''
         }
         this.handleListClick = this.handleListClick.bind(this);
