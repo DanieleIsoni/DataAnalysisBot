@@ -35,14 +35,14 @@ if len(sys.argv) > 1:
         attr = None
 
     if sys.argv[6] != 'null':
-        xLabelColor = sys.argv[6]
+        xLabelFontdict = sys.argv[6]
     else:
-        xLabelColor = None
+        xLabelFontdict = None
 
     if sys.argv[7] != 'null':
-        yLabelColor = sys.argv[6]
+        yLabelFontdict = sys.argv[6]
     else:
-        yLabelColor = None
+        yLabelFontdict = None
 
     try:
         data_set = pd.read_csv(url, sep=',', na_values=["?"])
@@ -67,7 +67,7 @@ if len(sys.argv) > 1:
         x.columns = x.columns.droplevel()
 
         # Define a function for a bar plot
-        def barplot(x_data, y_data, x_label, y_label, title, xlabel_color, ylabel_color):
+        def barplot(x_data, y_data, x_label, y_label, title, xlabel_fontdict, ylabel_fontdict):
             _, ax = plt.subplots()
             # Draw bars, position them in the center of the tick mark on the x-axis
             ax.bar(x_data, y_data, color='#539caf', align='center')
@@ -75,11 +75,10 @@ if len(sys.argv) > 1:
 
             x_font = {}
             y_font = {}
-
-            if xlabel_color is not None:
-                x_font.color = xlabel_color
-            if ylabel_color is not None:
-                y_font.color = ylabel_color
+            if xlabel_fontdict is not None:
+                x_font = xlabel_fontdict
+            if ylabel_fontdict is not None:
+                y_font = ylabel_fontdict
 
             ax.set_xlabel(xlabel=x_label, fontdict=x_font)
             ax.set_ylabel(ylabel=y_label, fontdict=y_font)
@@ -89,8 +88,8 @@ if len(sys.argv) > 1:
                 x_label=attr,
                 y_label=testOrig+' '+testAttr,
                 title=testOrig+' '+testAttr+' per '+attr,
-                xlabel_color=xLabelColor,
-                ylabel_color=yLabelColor)
+                xlabel_fontdict=xLabelFontdict,
+                ylabel_fontdict=yLabelFontdict)
 
         figfile = BytesIO()
         plt.savefig(figfile, format='png')
