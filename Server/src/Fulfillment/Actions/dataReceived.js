@@ -9,10 +9,29 @@ const sessionEntityTypesClient = new dialogflow.SessionEntityTypesClient({
 });
 const fLog = '[FULFILLMENT] ';
 
-module.exports.storeAttributes = function (fileName, fileLink, response, session){
+module.exports.dataReceived = (contexts, action, session, response) => {
+    const data_received = contexts.find(obj => {
+        return obj.name === `${session}/contexts/data_received`;
+    });
+
+    if (data_received) {
+        let fileName = data_received.parameters.file_name;
+        let fileLink = data_received.parameters.file_link;
+
+        storeAttributes(fileName, fileLink, response, session);
+    } else {
+        console.error(`${fLog}Context not found for action ${action}`);
+        response.send({
+            fulfillmentText: `Something went wrong. Try in a few minutes`,
+        });
+    }
+};
+
+
+let storeAttributes = function (fileName, fileLink, response, session){
     const options = {
         mode: 'text',
-        scriptPath: 'Server/src/Python/',
+        scriptPath: 'Server/src/Fulfillment/Python/',
         args: [`${fileLink}`]
     };
     PythonShell.run('getAttributes.py', options, function (err, results) {

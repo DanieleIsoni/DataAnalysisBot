@@ -2,10 +2,29 @@ const PythonShell = require('python-shell');
 const DEV_CONFIG = (process.env.DEVELOPMENT_CONFIG == 'true');
 const fLog = '[FULFILLMENT] ';
 
-module.exports.dataDescription = function (fileName, fileLink, response){
+module.exports.dataDescriptionRequest = (contexts, action, session, response) => {
+    const data_received = contexts.find(obj => {
+        return obj.name === `${session}/contexts/data_received`;
+    });
+
+    if (data_received) {
+        let fileName = data_received.parameters.file_name;
+        let fileLink = data_received.parameters.file_link;
+
+        dataDescription(fileName, fileLink, response);
+    } else {
+        console.error(`${fLog}Context not found for action ${action}`);
+        response.send({
+            fulfillmentText: `Something went wrong. Try in a few minutes`
+        });
+    }
+};
+
+
+let dataDescription = (fileName, fileLink, response) => {
     const options = {
         mode: 'text',
-        scriptPath: 'Server/src/Python/',
+        scriptPath: 'Server/src/Fulfillment/Python/',
         args: [`${fileLink}`]
     };
     PythonShell.run('dataDescription.py', options, function (err, results) {
