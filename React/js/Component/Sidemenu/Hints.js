@@ -2,6 +2,8 @@ import React from "react";
 import { connect } from "react-redux";
 import axios from 'axios';
 import uuidv1 from "uuid";
+import { Translate } from 'react-localize-redux';
+import { withLocalize } from 'react-localize-redux';
 
 const mapHints = state => {
     return { hints: state.hints.present };
@@ -10,6 +12,7 @@ const mapHints = state => {
 class ConnectedList extends React.Component {
     constructor(props){
         super(props);
+        this.props.addTranslation(props.lang);
         this.toggle = this.toggle.bind(this);
         this.state = {
             dropdownOpen: "none"
@@ -29,7 +32,7 @@ class ConnectedList extends React.Component {
     render() {
         return (
             <div className="request_type">
-                <div className="side_subtitle"><h5><i className="material-icons">question_answer</i> Possible queries</h5></div>
+                <div className="side_subtitle"><h5><i className="material-icons">question_answer</i><Translate id="queries">Language</Translate></h5></div>
                 {
                     this.props.hints.map((el, n) => (
                         <div key={uuidv1()} id={el.name} className="hint_container">
@@ -52,16 +55,16 @@ class ConnectedList extends React.Component {
                     (this.state.dropdownOpen != 'none') ? 
                     (this.state.dropdownOpen == "operation") ? 
                         <div className="hint_container red_container">
-                            <div className="head_hint"><h5>Operation</h5></div>
-                            <div className="body_hint">Type of math and statistics operation, like "Average", "Maximum", "std". <br />
-                            You can uso the abbreviation alias, avg, max, min...
+                            <div className="head_hint"><h5><Translate id="op.title">Operation</Translate></h5></div>
+                            <div className="body_hint"><Translate id="op.body">Type of math and statistics operation, like "Average", "Maximum", "std".
+                            You can uso the abbreviation alias, avg, max, min...</Translate>
                             </div>
                         </div>
                         :
                         <div className="hint_container blue_container">
-                            <div className="head_hint"><h5>Attribute</h5></div>
-                            <div className="body_hint">Attribute is the name of the columns and row assigned to the loaded dataset. <br />
-                            If the first line of the dataset doesn't have the name of the column the system takes makes the name numerics
+                            <div className="head_hint"><h5><Translate id="attr.title">Attribute</Translate></h5></div>
+                            <div className="body_hint"><Translate id="attr.body">Attribute is the name of the columns and row assigned to the loaded dataset.
+                            If the first line of the dataset doesnt have the name of the column the system takes makes the name numerics</Translate>
                             </div>
                         </div>
                     :
@@ -73,4 +76,4 @@ class ConnectedList extends React.Component {
 }
 
 const HintList = connect(mapHints)(ConnectedList);
-export default HintList;
+export default withLocalize(HintList);

@@ -4,6 +4,8 @@ import axios from 'axios';
 import uuidv1 from "uuid";
 import { deleteVariabile, addHints, addMessaggio } from "../../Actions/index";
 import Action from '../../Constants/Actions';
+import { Translate } from 'react-localize-redux';
+import { withLocalize } from 'react-localize-redux';
 
 const mapVariabili = state => {
     return { variabili: state.variabili.present };
@@ -20,6 +22,7 @@ const mapDeleteVar = dispatch => {
 class ConnectedList extends React.Component {
     constructor(props){
         super(props);
+        this.props.addTranslation(props.lang);
         this.deleteVariable = this.deleteVariable.bind(this);
     }
 
@@ -51,7 +54,7 @@ class ConnectedList extends React.Component {
                             </div>
                         ))
                     :
-                        <span className="side_message"><i className="material-icons">notification_important</i>No variable uploaded!</span>
+                        <span className="side_message"><i className="material-icons">notification_important</i><Translate id="novar">No Variable uploaded!</Translate></span>
                     }
             </div>
         );
@@ -59,4 +62,4 @@ class ConnectedList extends React.Component {
 }
 
 const List = connect(mapVariabili, mapDeleteVar)(ConnectedList);
-export default List;
+export default withLocalize(List);

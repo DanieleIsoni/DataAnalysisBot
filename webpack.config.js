@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const config = {
     entry:  __dirname + '/React/js/index.js',
@@ -21,7 +22,24 @@ const config = {
               use: [ 'style-loader', 'css-loader' ]
           }
         ]
-      }
+      },
+      plugins: [
+        new webpack.optimize.AggressiveMergingPlugin()
+      ],
+      optimization: {
+        minimizer: [
+            new UglifyJsPlugin({
+                cache: true,
+                parallel: true,
+                uglifyOptions: {
+                  compress: true,
+                  ecma: 6,
+                  mangle: true
+                },
+                sourceMap: false
+              })
+        ]
+      },
 };
 
 module.exports = config;
