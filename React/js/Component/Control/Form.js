@@ -116,7 +116,6 @@ class ConnectedForm extends React.Component {
             }
         })
         .then(response => {
-            console.log(response);
             if(response.status == 200){
                 this.actionController(response.data.action);
                 this.props.editMessaggio(udelete,{id: uuidv1(), who: "bot", what: "markdown", messaggio: response.data.message, output: response.data.outputs, code: response.data.code});
