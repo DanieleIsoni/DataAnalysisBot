@@ -50,7 +50,7 @@ class ConnectedMessages extends React.Component {
                                         <span className="incode-markdown">{n}</span>
                                         <div className="markdown">
                                             <div className={el.who}>
-                                            {el.messaggio}<br/>
+                                            {el.messaggio}
                                             {
                                                 (el.id === this.state.openCode) ?
                                                 <a className="code_command" onClick={(e) => this.openCode(e, el.id)}><i className="material-icons">code</i> Close</a>
