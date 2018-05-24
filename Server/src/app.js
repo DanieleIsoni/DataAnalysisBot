@@ -29,6 +29,7 @@ if (APP_NAME){
     // Heroku case
     baseUrl = `https://${APP_NAME}.herokuapp.com`;
 } else {
+    baseUrl = null;
     console.error('Set up the url of your service here and remove exit code!');
     process.exit(1);
 }
@@ -202,14 +203,18 @@ app.listen(REST_PORT, function () {
 
     tmpPath = path.join(__dirname, '../../tmp');
 
-    fs.mkdir(tmpPath , err => {
-        if (err) {
-            return console.error(`ERROR: ${err}`);
-        }
+    if(!fs.existsSync(tmpPath)) {
+        fs.mkdir(tmpPath, err => {
+            if (err) {
+                return console.error(`ERROR: ${err}`);
+            }
 
-        console.log(`Temp Directory created in ${tmpPath}`);
+            console.log(`Temp Directory created in ${tmpPath}`);
 
-    });
+        });
+    } else {
+        console.info(`Temp Dir already exists in ${tmpPath}`);
+    }
 
     aiConfig = new DialogFlowConfig(
         GOOGLE_APPLICATION_CREDENTIALS,

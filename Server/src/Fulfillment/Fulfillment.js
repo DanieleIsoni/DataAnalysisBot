@@ -34,9 +34,9 @@ module.exports.dialogflowFulfillment = (request, response) => {
         case 'plot.chart':
             plotChart.plotChart(contexts, parameters, action, session, response);
             break;
-        // case 'plot.chart.fu.label':
-        //     plotChart.plotChartFuLabel(contexts, parameters, action, session, response);
-        //     break;
+        case 'plot.chart.fu.label':
+            plotChart.plotChartFuLabel(contexts, parameters, action, session, response);
+            break;
         default:
             console.log(`${fLog}No action matched`);
             response.send({

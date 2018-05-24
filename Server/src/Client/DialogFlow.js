@@ -43,14 +43,15 @@ module.exports = class DialogFlow {
 
     constructor(aiConfig, baseUrl) {
         this._aiConfig = aiConfig;
-        this._bot = new TelegramBot(aiConfig.telegramToken);
-        if(aiConfig.devConfig) console.log(`${cLog}TelegramWebHook: ${baseUrl}/${aiConfig.clientWebHook}`);
-        this._bot
-            .setWebHook(`${baseUrl}/${aiConfig.clientWebHook}`)
-            .catch(err => {
-                console.error(`${cLog}ERROR: ${err}`);
-            });
-
+        if (baseUrl) {
+            this._bot = new TelegramBot(aiConfig.telegramToken);
+            if (aiConfig.devConfig) console.log(`${cLog}TelegramWebHook: ${baseUrl}/${aiConfig.clientWebHook}`);
+            this._bot
+                .setWebHook(`${baseUrl}/${aiConfig.clientWebHook}`)
+                .catch(err => {
+                    console.error(`${cLog}ERROR: ${err}`);
+                });
+        }
         this._sessionClient = new dialogFlow.SessionsClient({
            keyFileName: aiConfig.googleAppCreds
         });
@@ -208,7 +209,7 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, chatId, req, 
     promise
         .then(responses => {
             let response = responses[0];
-            if (aiConfig.devConfig) console.log(`${cLog}Response:\n${JSON.stringify(response, null, '\t')}`);
+            if (aiConfig.devConfig) console.log(`${cLog}Response:\n${JSON.stringify(response, null, '   ')}`);
             if(response.queryResult) {
                 let responseText = response.queryResult.fulfillmentText;
                 let action = response.queryResult.action;
