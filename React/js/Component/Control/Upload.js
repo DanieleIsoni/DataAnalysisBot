@@ -51,7 +51,7 @@ class ConnectedUpload extends React.Component {
         if(file){
             var formdata = new FormData();
             formdata.append('file', file);
-
+            this.props.addMessaggio({"id": uuidv1(), "who": "me", "what": "markdown", "messaggio": "Uploading file...", "output": []});
             axios({
                 url: 'https://data-analysis-bot.herokuapp.com/upload',
                 data: formdata,
