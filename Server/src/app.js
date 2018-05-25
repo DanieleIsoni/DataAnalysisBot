@@ -12,6 +12,7 @@ const fs = require('fs');
 const path = require('path');
 const PythonShell = require('python-shell');
 const sslRedirect = require('heroku-ssl-redirect');
+const compression = require('compression');
 
 const REST_PORT = (process.env.PORT || 5000);
 const DEV_CONFIG = (process.env.DEVELOPMENT_CONFIG === 'true');
@@ -45,6 +46,7 @@ let sessions = new Map();
 const app = express();
 
 app.use(sslRedirect(['production', 'development']));
+app.use(compression());
 app.use(bodyParser.json());
 app.use(session({ secret: 'data-analysis-bot', resave: true, saveUninitialized: true}));
 app.use(fileUpload());

@@ -55,6 +55,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "body-parser": "^1.18.2",
+    "compression": "^1.7.2",
     "console-stamp": "^0.2.6",
     "cors": "^2.8.4",
     "css-loader": "^0.28.11",
