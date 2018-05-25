@@ -15,7 +15,11 @@ class App extends React.Component {
             languages: [
               { name: 'English', code: 'en' },
               { name: 'Russian', code: 'ru' }
-            ]
+            ],
+            options: {
+                renderToStaticMarkup: false,
+                renderInnerHtml: true
+              }
         });
         this.state = { side: "none" }
         this.handleClick = this.handleClick.bind(this);
