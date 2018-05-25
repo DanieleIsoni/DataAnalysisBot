@@ -40,7 +40,7 @@
 
 .chat-thread li img{
     position: relative;
-    max-width: 60%;
+    height: 400px;
     display: block;
 }
 
@@ -168,6 +168,13 @@
     box-shadow: 0 1px 1px 0 #C7C7C7 inset;
     background: #f1f1f1;
     border-radius: 5px;
+}
+
+.container_base64{
+    position: relative;
+    display: block;
+    height: auto;
+    width: 70%;
 }
 
 .openCode{

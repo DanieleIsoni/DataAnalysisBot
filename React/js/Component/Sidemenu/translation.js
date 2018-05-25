@@ -6,7 +6,7 @@ const json = {
     "lang": ["Language", "язык"],
     "op": {
         "title": ["Operation", "операция"],
-        "body": ["Type of math and statistics operation, like \"Average\", \"Maximum\", \"std\". You can uso the abbreviation alias, avg, max, min...", 
+        "body": ["Type of math and statistics operation, like 'Average', 'Maximum', 'std'. You can uso the abbreviation alias, avg, max, min...", 
         "тип математической операции, как средний, максимальный, минимальный..."]
     },
     "attr": {

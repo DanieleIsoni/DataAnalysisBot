@@ -48,8 +48,8 @@ class ConnectedList extends React.Component {
                 {
                     (this.props.variabili.length) ? 
                         this.props.variabili.map((el, n) => (
-                            <div key={el.id} className={(this.props.selected == el.id) ? 'variable-container selected-var' : 'variable-container'} id={el.name} onClick={() => this.props.onClick(el)}>
-                                {el.name} 
+                            <div key={el.id} className={(this.props.selected == el.id) ? 'variable-container selected-var' : 'variable-container'} id={el.name}>
+                                <span onClick={() => this.props.onClick(el)}>{el.name}</span>
                                 <span className="delete_var" onClick={(e) => this.deleteVariable(e, el.id, n)}><i className="material-icons close_var">close</i></span>
                             </div>
                         ))
