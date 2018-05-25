@@ -7,6 +7,10 @@ import Upload from "./Upload";
 import Jupyter from './JupyterOP';
 import UndoRedo from './UndoRedo';
 import Action from '../../Constants/Actions';
+import { Translate } from 'react-localize-redux';
+import controlTranslation from './translation';
+import { withLocalize } from 'react-localize-redux';
+import { renderToString } from 'react-dom/server';
 
 import './control.css';
 
@@ -32,6 +36,7 @@ class ConnectedForm extends React.Component {
             comandi: [],
             selectedCommand: 0
         }
+        this.props.addTranslation(controlTranslation);
 
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -156,14 +161,14 @@ class ConnectedForm extends React.Component {
         return (
             <div className="control">
                 <UndoRedo />
-                <input type="text" name="input" id="dialog" autoComplete="off" placeholder="Ask me something!" value={this.state.inputValue} onKeyDown={ this.handleKeyDown } onKeyPress={this.handleKeyPress} onChange={this.handleChange}/>
+                <input type="text" name="input" id="dialog" autoComplete="off" placeholder={renderToString(<Translate id="sugg">Ask me something</Translate>)} value={this.state.inputValue} onKeyDown={ this.handleKeyDown } onKeyPress={this.handleKeyPress} onChange={this.handleChange}/>
                 <Upload addMessaggio={this.props.addMessaggio}/>
                 <Jupyter />
-                <button className="button-board-lateral" onClick={this.clearSession}>Clear</button>
+                <button className="button-board-lateral" onClick={this.clearSession}><Translate id="clear">Clear</Translate></button>
             </div>
         );
     }
 }
 
 const Form = connect(mapVariabili, mapAddMessaggioEvent)(ConnectedForm);
-export default Form;
+export default withLocalize(Form);
