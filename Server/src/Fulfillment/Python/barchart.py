@@ -40,7 +40,7 @@ if len(sys.argv) > 1:
         xLabelFontdict = None
 
     if sys.argv[7] != 'null':
-        yLabelFontdict = sys.argv[6]
+        yLabelFontdict = sys.argv[7]
     else:
         yLabelFontdict = None
 

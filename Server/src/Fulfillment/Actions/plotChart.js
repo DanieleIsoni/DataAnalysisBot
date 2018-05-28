@@ -1,5 +1,8 @@
 const PythonShell = require('python-shell');
 const DEV_CONFIG = (process.env.DEVELOPMENT_CONFIG == 'true');
+const GOOGLE_APPLICATION_CREDENTIALS = process.env.GOOGLE_APPLICATION_CREDENTIALS;
+const PROJECT_ID = process.env.PROJECT_ID;
+const structjson = require('../../Client/Methods/structjson');
 const fLog = '[FULFILLMENT] ';
 
 module.exports.plotChart = (contexts, parameters, action, session, response) => {
@@ -53,9 +56,9 @@ module.exports.plotChartFuLabel = (contexts, parameters, action, session, respon
         let chart = plot_chart.parameters.Chart;
         let axis = plotchart_followup_label.parameters.Axis;
         if (axis === 'x'){
-            xlabel = updateAxContext.updateAxContext();
+            xlabel = updateAxContext(axis, plotchart_followup_label.parameters, xlabel, session);
         } else if (axis === 'y'){
-            ylabel = updateAxContext.updateAxContext();
+            ylabel = updateAxContext(axis, plotchart_followup_label.parameters, ylabel, session);
         }
 
         // let color = plotchart_followup_label.parameters.color === '' ? null : plotchart_followup_label.parameters.color;
@@ -66,7 +69,7 @@ module.exports.plotChartFuLabel = (contexts, parameters, action, session, respon
         }
         if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test} on ${testAttr}\nChosen attribute for x-axis: ${attr}\nChosen chart: ${chart}`);
 
-        plotChartWrap(fileLink, chart, test, testAttr, testOrig, attr, xLabelColor, yLabelColor, response);
+        plotChartWrap(fileLink, chart, test, testAttr, testOrig, attr, xlabel, ylabel, response);
 
     }
 };
@@ -168,4 +171,102 @@ except urllib.error.HTTPError as err:
             });
     }
 
+};
+
+let updateAxContext = (axis, params, label, session) => {
+    /**
+     * Label format:
+     * {
+     *      'family': 'serif',
+     *      'color':  'darkred',
+     *      'weight': 'normal',
+     *      'size': 16,
+     * }
+     */
+
+    let result = {};
+
+    const dialogflow = require('dialogflow');
+
+    const contextsClient = new dialogflow.ContextsClient({
+        keyFileName: GOOGLE_APPLICATION_CREDENTIALS
+    });
+
+    let sessionId = session.split('/')[session.split('/').length-1];
+    const sessionPath = contextsClient.sessionPath(PROJECT_ID, sessionId);
+
+    let family = params.FontFamily;
+    let color = params.color;
+
+    if (label) {
+
+        let contextPath = label.name;
+
+        const getContextRequest = {
+            name: contextPath
+        };
+
+        let res;
+
+        result = contextsClient
+            .getContext(getContextRequest)
+            .then(responses => {
+                const context = responses[0];
+
+                const parametersJson = structjson.structProtoToJson(context.parameters);
+                if (family) parametersJson.family = family;
+                if (color) parametersJson.color = color;
+                context.parameters = structjson.jsonToStructProto(parametersJson);
+
+                const updateContextRequest = {
+                    context: context
+                };
+
+                return contextsClient.updateContext(updateContextRequest);
+            })
+            .then(responses => {
+                console.log(`Context updated: ${contextPath}`);
+                if (DEV_CONFIG) console.log(`Context updated RESPONSE: ${responses[0]}`);
+                return structjson.structProtoToJson(responses[0].parameters);
+            })
+            .catch(err => {
+                console.error(`ERROR: ${err}`);
+            });
+    } else {
+        const labelContextPath = contextsClient.contextPath(
+            PROJECT_ID,
+            sessionId,
+            `${axis}label`
+        );
+
+        label = {
+            parent: sessionPath,
+            context: {
+                name: labelContextPath,
+                lifespanCount: 5,
+                parameters: {}
+            },
+        };
+
+
+
+        if (family) label.context.parameters.family = family;
+        if (color) label.context.parameters.color = color;
+
+        label.context.parameters = structjson.jsonToStructProto(label.context.parameters);
+
+        result = contextsClient
+            .createContext(label)
+            .then(responses => {
+                console.log(`Context created: ${labelContextPath}`);
+                if (DEV_CONFIG) console.log(`Context created RESPONSE: ${JSON.stringify(responses[0], null, '   ')}`);
+                return structjson.structProtoToJson(label.context.parameters)
+            })
+            .catch(err => {
+                console.error(`ERROR: ${err}`);
+            });
+
+    }
+
+    return result;
 };
