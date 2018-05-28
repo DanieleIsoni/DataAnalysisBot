@@ -1,13 +1,10 @@
-import sys, json
+import sys
 import pandas as pd
-from pandas.io.json import json_normalize 
-import json
-import csv
 import io
 
 def read_in():
     lines = sys.stdin.read()
-    return lines;
+    return lines
 
 def main():
     lines = read_in()

@@ -25,7 +25,7 @@ module.exports.plotChart = (contexts, parameters, action, session, response) => 
         }
         if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test} on ${testAttr}\nChosen attribute for x-axis: ${attr}\nChosen chart: ${chart}`);
 
-        plotChartWrap(fileLink, chart, test, testAttr, testOrig, attr, null, null, response);
+        plotChartPy(fileLink, chart, test, testAttr, testOrig, attr, null, null, response);
 
     }
 };
@@ -56,30 +56,50 @@ module.exports.plotChartFuLabel = (contexts, parameters, action, session, respon
         let chart = plot_chart.parameters.Chart;
         let axis = plotchart_followup_label.parameters.Axis;
         if (axis === 'x'){
-            xlabel = updateAxContext(axis, plotchart_followup_label.parameters, xlabel, session);
+            updateAxContext(axis, plotchart_followup_label.parameters, xlabel, session)
+                .then(result => {
+                    xlabel = result;
+
+                    if (!chart || chart === '') {
+                        chart = 'barchart';
+                    }
+                    if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test} on ${testAttr}\nChosen attribute for x-axis: ${attr}\nChosen chart: ${chart}`);
+
+                    console.log(`LABEL: ${JSON.stringify(xlabel)}`);
+
+                    plotChartPy(fileLink, chart, test, testAttr, testOrig, attr, xlabel, ylabel, response);
+                })
+                .catch(err => console.log(`ERROR: ${err}`));
         } else if (axis === 'y'){
-            ylabel = updateAxContext(axis, plotchart_followup_label.parameters, ylabel, session);
-        }
+            updateAxContext(axis, plotchart_followup_label.parameters, ylabel, session)
+                .then(result => {
+                    ylabel = result;
 
-        // let color = plotchart_followup_label.parameters.color === '' ? null : plotchart_followup_label.parameters.color;
-        // let xLabelColor = axis === 'x' ? color : null;
-        // let yLabelColor = axis === 'y' ? color : null;
-        if (!chart || chart === '') {
-            chart = 'barchart';
-        }
-        if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test} on ${testAttr}\nChosen attribute for x-axis: ${attr}\nChosen chart: ${chart}`);
+                    if (!chart || chart === '') {
+                        chart = 'barchart';
+                    }
+                    if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test} on ${testAttr}\nChosen attribute for x-axis: ${attr}\nChosen chart: ${chart}`);
 
-        plotChartWrap(fileLink, chart, test, testAttr, testOrig, attr, xlabel, ylabel, response);
+                    console.log(`LABEL: ${JSON.stringify(ylabel)}`);
+
+                    plotChartPy(fileLink, chart, test, testAttr, testOrig, attr, xlabel, ylabel, response);
+                })
+                .catch(err => console.log(`ERROR: ${err}`));
+        }
 
     }
 };
 
 
-let plotChartWrap = (fileLink, chart, test, testAttr, testOrig, attr, xLabel, yLabel, response) => {
+let plotChartPy = (fileLink, chart, test, testAttr, testOrig, attr, xLabel, yLabel, response) => {
+
+    xLabel = `${JSON.stringify(xLabel)}`.replace(':', ': ').replace('{', '[').replace('}', ']');
+    yLabel = `${JSON.stringify(yLabel)}`.replace(':', ': ').replace('{', '[').replace('}', ']');
+
     const options = {
         mode: 'text',
         scriptPath: 'Server/src/Fulfillment/Python/',
-        args: [`${fileLink}`, `${test}`, `${testAttr}`, `${testOrig}`, `${attr}`, `${xLabel}`, `${yLabel}`]
+        args: [`${fileLink}`, `${test}`, `${testAttr}`, `${testOrig}`, `${attr}`, xLabel, yLabel]
     };
 
     switch(chart) {
@@ -174,6 +194,7 @@ except urllib.error.HTTPError as err:
 };
 
 let updateAxContext = (axis, params, label, session) => {
+    return new Promise((resolve, reject) => {
     /**
      * Label format:
      * {
@@ -183,8 +204,6 @@ let updateAxContext = (axis, params, label, session) => {
      *      'size': 16,
      * }
      */
-
-    let result = {};
 
     const dialogflow = require('dialogflow');
 
@@ -206,9 +225,9 @@ let updateAxContext = (axis, params, label, session) => {
             name: contextPath
         };
 
-        let res;
+        let contextToReturn;
 
-        result = contextsClient
+        contextsClient
             .getContext(getContextRequest)
             .then(responses => {
                 const context = responses[0];
@@ -218,6 +237,9 @@ let updateAxContext = (axis, params, label, session) => {
                 if (color) parametersJson.color = color;
                 context.parameters = structjson.jsonToStructProto(parametersJson);
 
+                contextToReturn = parametersJson;
+                console.log(`CONTEXT: ${JSON.stringify(contextToReturn)}`);
+
                 const updateContextRequest = {
                     context: context
                 };
@@ -226,11 +248,11 @@ let updateAxContext = (axis, params, label, session) => {
             })
             .then(responses => {
                 console.log(`Context updated: ${contextPath}`);
-                if (DEV_CONFIG) console.log(`Context updated RESPONSE: ${responses[0]}`);
-                return structjson.structProtoToJson(responses[0].parameters);
+                if (DEV_CONFIG) console.log(`Context updated RESPONSE: ${JSON.stringify(responses[0], null, '   ')}`);
+                resolve(contextToReturn);
             })
             .catch(err => {
-                console.error(`ERROR: ${err}`);
+                reject(err);
             });
     } else {
         const labelContextPath = contextsClient.contextPath(
@@ -252,21 +274,21 @@ let updateAxContext = (axis, params, label, session) => {
 
         if (family) label.context.parameters.family = family;
         if (color) label.context.parameters.color = color;
+        let contextToReturn = label.context.parameters;
+        console.log(`CONTEXT: ${JSON.stringify(contextToReturn)}`);
 
         label.context.parameters = structjson.jsonToStructProto(label.context.parameters);
 
-        result = contextsClient
+        contextsClient
             .createContext(label)
             .then(responses => {
                 console.log(`Context created: ${labelContextPath}`);
                 if (DEV_CONFIG) console.log(`Context created RESPONSE: ${JSON.stringify(responses[0], null, '   ')}`);
-                return structjson.structProtoToJson(label.context.parameters)
+                resolve(contextToReturn);
             })
             .catch(err => {
-                console.error(`ERROR: ${err}`);
+                reject(err);
             });
 
     }
-
-    return result;
-};
+})};

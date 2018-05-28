@@ -4,9 +4,11 @@ import urllib
 import sys
 from io import BytesIO
 import base64
+import json
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+
 
 if len(sys.argv) > 1:
     if sys.argv[1] != 'null':
@@ -34,13 +36,13 @@ if len(sys.argv) > 1:
     else:
         attr = None
 
-    if sys.argv[6] != 'null':
-        xLabelFontdict = sys.argv[6]
+    if sys.argv[6] != 'null' and sys.argv[6] != 'undefined':
+        xLabelFontdict = json.loads(sys.argv[6].replace('[', '{').replace(']', '}'))
     else:
         xLabelFontdict = None
 
-    if sys.argv[7] != 'null':
-        yLabelFontdict = sys.argv[7]
+    if sys.argv[7] != 'null' and sys.argv[7] != 'undefined':
+        yLabelFontdict = json.loads(sys.argv[7].replace('[', '{').replace(']', '}'))
     else:
         yLabelFontdict = None
 
@@ -57,8 +59,8 @@ if len(sys.argv) > 1:
         }.get(test)
 
         testMod = {
-            'maximum': 'max',
-            'minimum': 'min',
+            'maximum': 'amax',
+            'minimum': 'amin',
             'mean': 'mean',
             'std': 'std',
             'var': 'var'
