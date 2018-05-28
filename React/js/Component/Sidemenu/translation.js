@@ -17,6 +17,7 @@ const json = {
     "ana": ["Analysis", "анализ"],
     "plot": ["Plotting", "черчения"],
     "ana_cont": ["Analysis continuation", "анализ продолжение"],
+    "basic": ["Basic Description", "основное описание"]
 }
 
 export default json;
