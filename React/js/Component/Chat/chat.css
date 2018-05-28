@@ -224,6 +224,19 @@
     will-change: transform;
 }
 
+.choices{
+    display: flex;
+    margin: 10px 20px;
+}
+
+.choices div{
+    background: #f6f7f9;
+    border-radius: 40px;
+    padding: 10px 15px;
+    margin-right: 10px;
+    color: #555;
+}
+
 @keyframes updown {
     to { transform: translateY(3px) }
 }

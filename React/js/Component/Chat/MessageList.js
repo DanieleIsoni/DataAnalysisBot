@@ -20,9 +20,7 @@ class ConnectedMessages extends React.Component {
         this.handleListClick = this.handleListClick.bind(this);
     }
 
-    scrollToBottom(){
-        this.messagesEnd.scrollIntoView({ behavior: "smooth" });
-    }
+    scrollToBottom(){ this.messagesEnd.scrollIntoView({ behavior: "smooth" }); }
       
     componentDidMount() { this.scrollToBottom(); }
     componentDidUpdate() { this.scrollToBottom(); }
@@ -32,9 +30,7 @@ class ConnectedMessages extends React.Component {
     }
 
     openCode(e, id){
-        this.setState({
-            openCode: (this.state.openCode) ? '' : id
-        });
+        this.setState({ openCode: (this.state.openCode) ? '' : id });
     }
 
     render(){
@@ -90,7 +86,13 @@ class ConnectedMessages extends React.Component {
                                             <div className="resultdiv" key={i}>
                                                 {
                                                     (al.type == "image/png") ? 
-                                                    <img src={"data:image/gif;base64," + al.content}/> 
+                                                    <div>
+                                                        <img src={"data:image/gif;base64," + al.content}/> 
+                                                        <div className="choices">
+                                                            <div>Change Label Color</div>
+                                                            <div>Change Label Font</div>
+                                                        </div>
+                                                    </div>
                                                     :
                                                     <pre>{al.content}</pre>
                                                 }
