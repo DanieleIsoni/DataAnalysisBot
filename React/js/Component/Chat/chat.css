@@ -312,4 +312,7 @@
     .incode{
         display: none;
     }
+    .outcode{
+        display: none;
+    }
 }
