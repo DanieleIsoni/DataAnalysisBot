@@ -167,6 +167,24 @@
     cursor: pointer;
 }
 
+.asse{
+    color: #FBC02D;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.color{
+    color: #43A047;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.font{
+    color: #F06292;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 .operation, .attribute{
     padding: 0 5px;
 }
@@ -199,22 +217,49 @@
     box-shadow: 0 0 8px 1px rgba(0,0,0,0.1);
 }
 
-.red_container{
+.operation_container{
     background: rgba(255, 54, 54, 0.12);
     box-shadow: inset 0 0 0 1px rgba(255, 54, 54, 0.25);  
 }
 
-.red_container .head_hint h5{
+.operation_container .head_hint h5{
     color: #EF5350;
 }
 
-.blue_container{
+.attribute_container{
     background: rgba(66,133,244,0.149);
     box-shadow: inset 0 0 0 1px rgba(0, 123, 255, 0.25);  
 }
 
-.blue_container .head_hint h5{
+.attribute_container .head_hint h5{
     color: #4285f4;
+}
+
+.asse_container{
+    background: rgba(253, 216, 53, 0.149);
+    box-shadow: inset 0 0 0 1px rgba(253, 216, 53, 0.25);  
+}
+
+.asse_container .head_hint h5{
+    color: #FBC02D;
+}
+
+.color_container{
+    background: rgba(67, 160, 71, 0.149);
+    box-shadow: inset 0 0 0 1px rgba(67, 160, 71, 0.25);  
+}
+
+.color_container .head_hint h5{
+    color: #43A047;
+}
+
+.font_container{
+    background: rgba(240, 98, 146, 0.149);
+    box-shadow: inset 0 0 0 1px rgba(240, 98, 146, 0.25);  
+}
+
+.font_container .head_hint h5{
+    color: #F06292;
 }
 
 /* TABLE */

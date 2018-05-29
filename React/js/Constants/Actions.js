@@ -25,7 +25,7 @@ let actions = {
             <div> Give me the <span className="operation">  Operation  </span> of <span className="attribute">  Attribute  </span></div>, 
             <div><span className="operation">  Operation  </span> of  <span className="attribute">  Attribute  </span></div>]},
         {name: <Translate id="plot">Plotting</Translate>, esempi: [<div>Can you plot the <span className="operation">  Operation  </span> <span className="attribute">  Attribute  </span> by <span className="attribute">  Attribute  </span> </div>]},
-        {name: "Edit plot", esempi: [<div></div>, <div></div>]}
+        {name: <Translate id="edit">Edit plot</Translate>, esempi: [<div>Change the color of the label of <span className="asse"> Axis  </span> to <span className="color"> Color  </span> </div>, <div>Change the <span className="asse"> Axis  </span> label font to <span className="font"> Font </span></div>]}
     ]
 }
 
