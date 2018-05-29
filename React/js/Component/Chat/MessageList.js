@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { addMessaggio } from "../../Actions/index";
 import { CSSTransitionGroup } from 'react-transition-group';
 import Code from './Code';
+var fileDownload = require('js-file-download');
 
 const mapMessaggi = state => {
     return { messaggi: state.messaggi.present };
@@ -31,6 +32,13 @@ class ConnectedMessages extends React.Component {
 
     openCode(e, id){
         this.setState({ openCode: (this.state.openCode) ? '' : id });
+    }
+
+    downloadPlot(e, image){
+        var img = "data:image/png;base64," + image;
+        var data = img.replace(/^data:image\/\w+;base64,/, "");
+        var buf = new Buffer(data, 'base64');
+        fileDownload(buf, "plot.png");
     }
 
     render(){
@@ -89,6 +97,7 @@ class ConnectedMessages extends React.Component {
                                                     <div>
                                                         <img src={"data:image/gif;base64," + al.content}/> 
                                                         <div className="choices">
+                                                            <div className="download" onClick={(e) => this.downloadPlot(e, al.content)}>Download <i className="material-icons">bar_chart</i></div>
                                                             <div className="next">Change <i className="material-icons">keyboard_arrow_right</i></div> 
                                                             <div className="choice">Label Color</div>
                                                             <div className="choice">Label Font</div>

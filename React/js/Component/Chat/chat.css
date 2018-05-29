@@ -227,6 +227,8 @@
 .choices{
     display: flex;
     margin: 10px 50px 20px 50px;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 .choices .next{
@@ -234,13 +236,14 @@
     border: 2px solid #2196F3;
     color:  #2196F3;
     margin-right: 20px;
+    cursor: default;
 }
 
 .next:hover{
     box-shadow: none;
 }
 
-.choices .choice{
+.choices div{
     background: #f6f7f9;
     border-radius: 40px;
     padding: 7px 15px;
@@ -249,13 +252,28 @@
     color: #555;
     transition: box-shadow 0.3s;
     cursor: pointer;
-    box-shadow: inset 0 0 0 1px #e9eaeb;
+    border: 2px solid #e9eaeb;
 }
 
 .choices .choice:hover{
     background: #f6f7f9;
     box-shadow: 0 3px 15px -1px rgba(0,0,0,0.2);
     transition: box-shadow 0.3s;
+}
+
+.download{
+    background: white !important;
+    border: 2px solid #009688 !important;
+    color:  #009688 !important;
+    transition: all 0.3s;
+}
+
+.download:hover{
+    background: #009688 !important;
+    border: 2px solid #009688;
+    color: white !important;
+    transition: all 0.3s;
+    box-shadow: none;
 }
 
 @keyframes updown {
