@@ -90,8 +90,8 @@ class ConnectedMessages extends React.Component {
                                                         <img src={"data:image/gif;base64," + al.content}/> 
                                                         <div className="choices">
                                                             <div className="next">Change <i className="material-icons">keyboard_arrow_right</i></div> 
-                                                            <div>Label Color</div>
-                                                            <div>Label Font</div>
+                                                            <div className="choice">Label Color</div>
+                                                            <div className="choice">Label Font</div>
                                                         </div>
                                                     </div>
                                                     :
