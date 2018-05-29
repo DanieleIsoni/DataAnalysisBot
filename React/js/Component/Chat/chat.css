@@ -226,15 +226,36 @@
 
 .choices{
     display: flex;
-    margin: 10px 20px;
+    margin: 10px 50px 20px 50px;
+}
+
+.choices .next{
+    background: white !important;
+    border: 2px solid #2196F3;
+    color:  #2196F3;
+    margin-right: 20px;
+}
+
+.next:hover{
+    box-shadow: none;
 }
 
 .choices div{
     background: #f6f7f9;
     border-radius: 40px;
-    padding: 10px 15px;
+    padding: 7px 15px;
     margin-right: 10px;
+    font-size: 16px;
     color: #555;
+    transition: box-shadow 0.3s;
+    cursor: pointer;
+    box-shadow: inset 0 0 0 1px #e9eaeb;
+}
+
+.choices div:hover{
+    background: #f6f7f9;
+    box-shadow: 0 3px 15px -1px rgba(0,0,0,0.2);
+    transition: box-shadow 0.3s;
 }
 
 @keyframes updown {
@@ -242,6 +263,15 @@
 }
 
 @media (max-width: 768px) {
+    .chat-thread li img{
+        width: 100%;
+        height: auto;
+    }
+
+    .choices{
+        margin: 10px 50px 20px -80px;
+    }
+
     .chat-thread:before{
         width: 0px;
         display: none;

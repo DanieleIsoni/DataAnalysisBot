@@ -70,16 +70,18 @@ class ConnectedForm extends React.Component {
             case "initial":
             case "input.welcome":
             case "input.unknown":
+            case "data.description.request":
                 if(this.props.variabili.length > 0){
-                    
                     this.props.addHints(Action["after_file"]);
                 }else{
                     this.props.addHints(Action["initial"]);
                 }
                 break;
             case "data.received":
-            case "plot.chart":
                 this.props.addHints(Action["after_file"]);
+                break;
+            case "plot.chart":
+                this.props.addHints(Action["after_plot"]);
                 break;
             case "test.request":
             case "test.request.fu.attribute":
