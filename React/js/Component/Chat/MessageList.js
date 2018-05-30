@@ -94,7 +94,7 @@ class ConnectedMessages extends React.Component {
                                                         <pre>Grafico non generato</pre>
                                                         :
                                                         <div>
-                                                            <img className="plot_img" src={"data:image/gif;base64," + al.content}/> 
+                                                            <img className={(this.props.messaggi.length-1 == n) ? "active_choice" : "plot_img"} src={"data:image/gif;base64," + al.content}/> 
                                                             <UrlContext.Consumer>
                                                                 {url => <Choices {...this.props} image={al.content} url={url} /> }
                                                             </UrlContext.Consumer>

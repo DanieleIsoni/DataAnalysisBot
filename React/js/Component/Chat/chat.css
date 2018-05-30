@@ -226,10 +226,14 @@
 }
 
 .choices{
-    display: flex;
+    display: none;
     margin: 10px 50px 20px 50px;
     align-items: center;
     flex-wrap: wrap;
+}
+
+.active_choice + .choices{
+    display: flex !important;
 }
 
 .choices .next{
