@@ -31,7 +31,7 @@ class ConnectedSidemenu extends React.Component {
     }
 
     handleClick (el) {
-        axios.get('https://data-analysis-bot.herokuapp.com/variable/' + el.name, {responseType: 'json'})
+        axios.get(this.props.url + '/variable/' + el.name, {responseType: 'json'})
         .then(response => {
             if(typeof response.data.schema != "undefined"){
                 this.setState({
@@ -75,7 +75,7 @@ class ConnectedSidemenu extends React.Component {
             <Col xs="12" md="4" className="gestione" style={{"display": this.props.show}}>
                 <div className="variable-context">
                     <div className="side_subtitle"><h5><i className="material-icons">list</i> <Translate id="var">Variables</Translate> <span className="var_num">{this.props.variabili.length}</span></h5></div>
-                    <List onClick={this.handleClick} selected={this.state.idVar} lang={sideTranslation}/>
+                    <List onClick={this.handleClick} selected={this.state.idVar} lang={sideTranslation} url={this.props.url}/>
                 </div>
                 {dettaglioVariabile}
                 <Hints lang={sideTranslation}/>

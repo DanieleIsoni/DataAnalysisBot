@@ -234,16 +234,17 @@
 
 .choices .next{
     background: white !important;
-    border: 2px solid #2196F3;
-    color:  #2196F3;
-    cursor: default;
+    border: 2px solid #2196F3 !important;
+    color:  #2196F3 !important;
+    cursor: default !important;
+    padding: 7px !important;
 }
 
 .next:hover{
     box-shadow: none;
 }
 
-.choices div{
+.choices .choice, .choices .download, .choices .next, .choices .menu_font{
     background: #f6f7f9;
     border-radius: 40px;
     padding: 7px 15px;
@@ -277,6 +278,52 @@
     box-shadow: none;
 }
 
+.toggle_per{
+    padding: 0 !important;
+    background: rgba(0,0,0,0) !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: #555 !important;
+}
+
+.toggle_per:focus{
+    box-shadow: none !important;
+}
+
+.input_color{
+    width: 90% !important;
+    margin: 0px auto;
+}
+
+.select_axis{
+    display: flex;
+    justify-content: space-evenly;
+    align-content: center;
+}
+
+.axes{
+    background: white;
+    border: 2px solid #2196F3;
+    color:  #2196F3;
+    width: 33px;
+    height: 33px;
+    border-radius: 50%;
+    text-align: center;
+    cursor: pointer;
+}
+
+.select_axis .active{
+    background: #2196F3;
+    color: white;
+}
+
+.axes:hover{
+    background: #2196F3;
+    color: white;
+}
+
+
+
 @keyframes updown {
     to { transform: translateY(3px) }
 }
@@ -288,7 +335,7 @@
     }
 
     .choices{
-        margin: 10px 20px 20px 20px;
+        margin: 10px 25px 20px 25px;
         justify-content: space-between;
     }
 

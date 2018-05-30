@@ -2,14 +2,16 @@ import React from "react";
 import axios from 'axios';
 import uuidv1 from "uuid";
 import { connect } from "react-redux";
-import { addMessaggio } from "../../Actions/index";
+import { addMessaggio, editMessaggio } from "../../Actions/index";
 import { CSSTransitionGroup } from 'react-transition-group';
 import Code from './Code';
-var fileDownload = require('js-file-download');
+import Choices from './Choices';
+import { UrlContext } from '../../Config/Url';
 
 const mapMessaggi = state => {
     return { messaggi: state.messaggi.present };
 };
+
 
 class ConnectedMessages extends React.Component {
     constructor(props){
@@ -34,17 +36,11 @@ class ConnectedMessages extends React.Component {
         this.setState({ openCode: (this.state.openCode) ? '' : id });
     }
 
-    downloadPlot(e, image){
-        var img = "data:image/png;base64," + image;
-        var data = img.replace(/^data:image\/\w+;base64,/, "");
-        var buf = new Buffer(data, 'base64');
-        fileDownload(buf, "plot.png");
-    }
 
     render(){
         const list = this.props.messaggi.map((el, n) => {
             return(
-                <li key={el.id} onClick={(e) => this.handleListClick(e, el.id)} >              
+                <li key={el.id} id={el.id} onClick={(e) => this.handleListClick(e, el.id)} >              
                     {
                         (el.code != null) ? 
                             (
@@ -94,15 +90,15 @@ class ConnectedMessages extends React.Component {
                                             <div className="resultdiv" key={i}>
                                                 {
                                                     (al.type == "image/png") ? 
-                                                    <div>
-                                                        <img src={"data:image/gif;base64," + al.content}/> 
-                                                        <div className="choices">
-                                                            <div className="download" onClick={(e) => this.downloadPlot(e, al.content)}>Download <i className="material-icons">bar_chart</i></div>
-                                                            <div className="next">Change <i className="material-icons">keyboard_arrow_right</i></div> 
-                                                            <div className="choice">Label Color</div>
-                                                            <div className="choice">Label Font</div>
+                                                        (al.content == "define") ? 
+                                                        <pre>Grafico non generato</pre>
+                                                        :
+                                                        <div>
+                                                            <img className="plot_img" src={"data:image/gif;base64," + al.content}/> 
+                                                            <UrlContext.Consumer>
+                                                                {url => <Choices {...this.props} image={al.content} url={url} /> }
+                                                            </UrlContext.Consumer>
                                                         </div>
-                                                    </div>
                                                     :
                                                     <pre>{al.content}</pre>
                                                 }

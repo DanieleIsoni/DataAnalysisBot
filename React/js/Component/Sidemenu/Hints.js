@@ -1,6 +1,5 @@
 import React from "react";
 import { connect } from "react-redux";
-import axios from 'axios';
 import uuidv1 from "uuid";
 import { Translate } from 'react-localize-redux';
 import { withLocalize } from 'react-localize-redux';

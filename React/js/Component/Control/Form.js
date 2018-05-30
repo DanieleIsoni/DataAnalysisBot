@@ -45,7 +45,7 @@ class ConnectedForm extends React.Component {
     }
 
     componentDidMount(){
-        axios.get('https://data-analysis-bot.herokuapp.com/messages')
+        axios.get(this.props.url + '/messages')
         .then(response => {
             response.data.messages.map(messaggio => {
                 this.props.addMessaggio({id: uuidv1(), who: messaggio.who, what: "markdown", messaggio: messaggio.message, output: messaggio.outputs, code: messaggio.code});
@@ -58,7 +58,7 @@ class ConnectedForm extends React.Component {
     }
 
     clearSession(e) {
-        axios.get('https://data-analysis-bot.herokuapp.com/clear')
+        axios.get(this.props.url + '/clear')
         .then(response => {
             this.props.clearMessaggi();
         })
@@ -109,7 +109,7 @@ class ConnectedForm extends React.Component {
         this.props.addMessaggio({id: udelete, who: "bot", what: "markdown", messaggio: <div className="loading"></div>, output: []});
 
         axios({
-            url: "https://data-analysis-bot.herokuapp.com/clientWebHook/",
+            url: this.props.url + "/clientWebHook/",
             method: 'post', 
             validateStatus: function (status) {
                 return status < 500;
@@ -164,7 +164,7 @@ class ConnectedForm extends React.Component {
             <div className="control">
                 <UndoRedo />
                 <input type="text" name="input" id="dialog" autoComplete="off" placeholder={renderToString(<Translate id="sugg">Ask me something</Translate>)} value={this.state.inputValue} onKeyDown={ this.handleKeyDown } onKeyPress={this.handleKeyPress} onChange={this.handleChange}/>
-                <Upload addMessaggio={this.props.addMessaggio}/>
+                <Upload addMessaggio={this.props.addMessaggio} url={this.props.url}/>
                 <Jupyter />
                 <button className="button-board-lateral" onClick={this.clearSession}><Translate id="clear">Clear</Translate></button>
             </div>
