@@ -3,7 +3,6 @@ import axios from 'axios';
 import uuidv1 from "uuid";
 import { connect } from "react-redux";
 import { addMessaggio, editMessaggio } from "../../Actions/index";
-
 import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 var fileDownload = require('js-file-download');
 
