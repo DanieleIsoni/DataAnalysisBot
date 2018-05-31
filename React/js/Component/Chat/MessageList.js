@@ -2,13 +2,16 @@ import React from "react";
 import axios from 'axios';
 import uuidv1 from "uuid";
 import { connect } from "react-redux";
-import { addMessaggio } from "../../Actions/index";
+import { addMessaggio, editMessaggio } from "../../Actions/index";
 import { CSSTransitionGroup } from 'react-transition-group';
 import Code from './Code';
+import Choices from './Choices';
+import { UrlContext } from '../../Config/Url';
 
 const mapMessaggi = state => {
     return { messaggi: state.messaggi.present };
 };
+
 
 class ConnectedMessages extends React.Component {
     constructor(props){
@@ -20,9 +23,7 @@ class ConnectedMessages extends React.Component {
         this.handleListClick = this.handleListClick.bind(this);
     }
 
-    scrollToBottom(){
-        this.messagesEnd.scrollIntoView({ behavior: "smooth" });
-    }
+    scrollToBottom(){ this.messagesEnd.scrollIntoView({ behavior: "smooth" }); }
       
     componentDidMount() { this.scrollToBottom(); }
     componentDidUpdate() { this.scrollToBottom(); }
@@ -32,15 +33,14 @@ class ConnectedMessages extends React.Component {
     }
 
     openCode(e, id){
-        this.setState({
-            openCode: (this.state.openCode) ? '' : id
-        });
+        this.setState({ openCode: (this.state.openCode) ? '' : id });
     }
+
 
     render(){
         const list = this.props.messaggi.map((el, n) => {
             return(
-                <li key={el.id} onClick={(e) => this.handleListClick(e, el.id)} >              
+                <li key={el.id} id={el.id} onClick={(e) => this.handleListClick(e, el.id)} >              
                     {
                         (el.code != null) ? 
                             (
@@ -90,7 +90,15 @@ class ConnectedMessages extends React.Component {
                                             <div className="resultdiv" key={i}>
                                                 {
                                                     (al.type == "image/png") ? 
-                                                    <img src={"data:image/gif;base64," + al.content}/> 
+                                                        (al.content == "define") ? 
+                                                        <pre>Grafico non generato</pre>
+                                                        :
+                                                        <div>
+                                                            <img className="plot_img" src={"data:image/gif;base64," + al.content}/> 
+                                                            <UrlContext.Consumer>
+                                                                {url => <Choices {...this.props} image={al.content} url={url} /> }
+                                                            </UrlContext.Consumer>
+                                                        </div>
                                                     :
                                                     <pre>{al.content}</pre>
                                                 }

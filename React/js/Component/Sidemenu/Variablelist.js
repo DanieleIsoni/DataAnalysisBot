@@ -35,7 +35,7 @@ class ConnectedList extends React.Component {
     }
 
     deleteVariable(e, id, n) {
-        axios.get('https://data-analysis-bot.herokuapp.com/delete/' + n)
+        axios.get(this.props.url + '/delete/' + n)
         .then(response => {
             this.props.deleteVariabile(id);
             this.props.addMessaggio({id: uuidv1(), who: "bot", what: "markdown", messaggio: response.data, output: []});

@@ -95,7 +95,7 @@ button[disabled]{
   
   .switch > span {
     position: absolute;
-    top: 5px;
+    top: 4px;
     pointer-events: none;
     font-weight: bold;
     font-size: 12px;
@@ -170,7 +170,7 @@ button[disabled]{
     top: 4px;
     left: 4px;
     bottom: 4px;
-    width: 35px;
+    width: 30px;
     background-color: #fff;
     -webkit-border-radius: 52px;
     -moz-border-radius: 52px;
@@ -187,7 +187,7 @@ button[disabled]{
   }
   
   input.check-toggle-round-flat:checked + label:after {
-    margin-left: 27px;
+    margin-left: 30px;
   }
 
   /* ++++++++ */

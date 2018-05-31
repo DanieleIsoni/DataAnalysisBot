@@ -6,6 +6,7 @@ import { withLocalize } from 'react-localize-redux';
 import Chat from "./Component/Chat/Chat";
 import Sidemenu from "./Component/Sidemenu/Sidemenu";
 import Form from "./Component/Control/Form";
+import { UrlContext } from './Config/Url';
 /* ---------- */
 
 class App extends React.Component {
@@ -34,8 +35,12 @@ class App extends React.Component {
             <Container fluid={true} >
                 <Row>
                     <Chat />
-                    <Sidemenu show={this.state.side}/>
-                    <Form />
+                    <UrlContext.Consumer>
+                        {url => <Sidemenu {...this.props} show={this.state.side} url={url}/> }
+                    </UrlContext.Consumer>
+                    <UrlContext.Consumer>
+                        {url => <Form {...this.props} url={url}/> }
+                    </UrlContext.Consumer>
                 </Row>   
                 <div className="openSide" onClick={this.handleClick}><i className="material-icons">keyboard_arrow_down</i></div>
             </Container>   

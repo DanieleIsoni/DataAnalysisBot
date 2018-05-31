@@ -1,6 +1,5 @@
 import React from "react";
 import { connect } from "react-redux";
-import axios from 'axios';
 import uuidv1 from "uuid";
 import { Translate } from 'react-localize-redux';
 import { withLocalize } from 'react-localize-redux';
@@ -20,16 +19,35 @@ class ConnectedList extends React.Component {
     }
 
     toggle(e){
-        if(e.target.className == "operation"){
-            this.setState({ dropdownOpen: (this.state.dropdownOpen == "none" || this.state.dropdownOpen == "attribute") ? "operation" : "none"});
-        }else if(e.target.className == "attribute"){
-            this.setState({ dropdownOpen: (this.state.dropdownOpen == "none" || this.state.dropdownOpen == "operation") ? "attribute" : "none"});
-        }else{
-            this.setState({ dropdownOpen: 'none' });
+        switch(e.target.className){
+            case "operation":
+                this.setState({ dropdownOpen: (this.state.dropdownOpen == "none" || this.state.dropdownOpen != "operation") ? "operation" : "none"});
+                break;
+            case "attribute":
+                this.setState({ dropdownOpen: (this.state.dropdownOpen == "none" || this.state.dropdownOpen != "attribute") ? "attribute" : "none"});
+                break;
+            case "color":
+                this.setState({ dropdownOpen: (this.state.dropdownOpen == "none" || this.state.dropdownOpen != "color") ? "color" : "none"});
+                break;
+            case "asse":
+                this.setState({ dropdownOpen: (this.state.dropdownOpen == "none" || this.state.dropdownOpen != "asse") ? "asse" : "none"});
+                break;
+            case "font":
+                this.setState({ dropdownOpen: (this.state.dropdownOpen == "none" || this.state.dropdownOpen != "font") ? "font" : "none"});
+                break;
+            default:
+                this.setState({ dropdownOpen: 'none' });
         }
     }
 
     render() {
+        let dialog =               
+            <div className={this.state.dropdownOpen + "_container hint_container"}>
+                <div className="head_hint"><h5><Translate id={this.state.dropdownOpen + ".title"}></Translate></h5></div>
+                <div className="body_hint"><Translate id={this.state.dropdownOpen + ".body"}></Translate>
+                </div>
+            </div>
+
         return (
             <div className="request_type">
                 <div className="side_subtitle"><h5><i className="material-icons">question_answer</i><Translate id="queries">Language</Translate></h5></div>
@@ -53,20 +71,7 @@ class ConnectedList extends React.Component {
                 }   
                 {
                     (this.state.dropdownOpen != 'none') ? 
-                    (this.state.dropdownOpen == "operation") ? 
-                        <div className="hint_container red_container">
-                            <div className="head_hint"><h5><Translate id="op.title">Operation</Translate></h5></div>
-                            <div className="body_hint"><Translate id="op.body">Type of math and statistics operation, like "Average", "Maximum", "std".
-                            You can uso the abbreviation alias, avg, max, min...</Translate>
-                            </div>
-                        </div>
-                        :
-                        <div className="hint_container blue_container">
-                            <div className="head_hint"><h5><Translate id="attr.title">Attribute</Translate></h5></div>
-                            <div className="body_hint"><Translate id="attr.body">Attribute is the name of the columns and row assigned to the loaded dataset.
-                            If the first line of the dataset doesnt have the name of the column the system takes makes the name numerics</Translate>
-                            </div>
-                        </div>
+                    dialog
                     :
                     ""
                 }
