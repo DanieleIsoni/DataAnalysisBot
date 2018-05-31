@@ -6,6 +6,7 @@ import { deleteVariabile, addHints, addMessaggio } from "../../Actions/index";
 import Action from '../../Constants/Actions';
 import { Translate } from 'react-localize-redux';
 import { withLocalize } from 'react-localize-redux';
+import Upload from '../Control/Upload';
 
 const mapVariabili = state => {
     return { variabili: state.variabili.present };
@@ -54,8 +55,9 @@ class ConnectedList extends React.Component {
                             </div>
                         ))
                     :
-                        <span className="side_message"><i className="material-icons">notification_important</i><Translate id="novar">No Variable uploaded!</Translate></span>
+                        ""//<span className="side_message"><i className="material-icons">notification_important</i><Translate id="novar">No Variable uploaded!</Translate></span>
                     }
+                    <Upload addMessaggio={this.props.addMessaggio} url={this.props.url} theme={"side_add"} text={"Add Variable"}/>
             </div>
         );
     }
