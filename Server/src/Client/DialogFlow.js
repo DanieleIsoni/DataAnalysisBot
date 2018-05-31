@@ -121,7 +121,7 @@ module.exports = class DialogFlow {
                     }
                         break;
                 }
-                processRequest(DialogFlow, promise, this.aiConfig, this.bot, chatId, req, res, react);
+                processRequest(DialogFlow, promise, this.aiConfig, this.bot, chatId, req, res, react, sessionPath);
             } else if(chatId){
                 if (!this._sessionIds.has(chatId)) {
                     this._sessionIds.set(chatId, uuid.v1());
@@ -149,7 +149,7 @@ module.exports = class DialogFlow {
                                 }
                             };
                             promise = this.sessionClient.detectIntent(request);
-                            processRequest(DialogFlow, promise, this.aiConfig, this._bot, chatId, req, res, react);
+                            processRequest(DialogFlow, promise, this.aiConfig, this._bot, chatId, req, res, react, sessionPath);
                         });
                 } else if (messageDoc && chatId && messageDoc.file_name && messageDoc.file_link){
                     let event = {
@@ -167,7 +167,7 @@ module.exports = class DialogFlow {
                         }
                     };
                     promise = this.sessionClient.detectIntent(request);
-                    processRequest(DialogFlow, promise, this.aiConfig, this._bot, chatId, req, res, react);
+                    processRequest(DialogFlow, promise, this.aiConfig, this._bot, chatId, req, res, react, sessionPath);
                 } else {
                     let message = `You haven't sent anything, what should I do?`;
                     console.log(`${cLog}Empty message`);
@@ -205,7 +205,7 @@ module.exports = class DialogFlow {
     }
 };
 
-let processRequest = function (DialogFlow, promise, aiConfig, bot, chatId, req, res, react){
+let processRequest = function (DialogFlow, promise, aiConfig, bot, chatId, req, res, react, sessionPath){
     promise
         .then(responses => {
             let response = responses[0];
@@ -218,6 +218,9 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, chatId, req, 
                 let webhookPayload = response.queryResult.webhookPayload;
                 let codeToSend = webhookPayload && webhookPayload.fields && webhookPayload.fields.code ? webhookPayload.fields.code.stringValue : null;
                 let image = webhookPayload && webhookPayload.fields && webhookPayload.fields.image ? webhookPayload.fields.image.stringValue : null;
+
+                const contextsClient = new dialogFlow.ContextsClient({keyFileName: aiConfig.googleAppCreds});
+                contextsClient.listContexts({parent: sessionPath}).then(responses => {console.log(`LIST CONTEXT:\n${JSON.stringify(responses[0], null, '   ')}`)}).catch(err => console.log(`ERROR: ${err}`));
 
                 if (responseText || webhookStatus.code === 0) {
                     console.log(`${cLog}Response as text message with message: ${responseText}`);

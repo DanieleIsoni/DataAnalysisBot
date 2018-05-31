@@ -12,6 +12,12 @@ module.exports.plotChart = (contexts, parameters, action, session, response) => 
     const plot_chart = contexts.find(obj => {
         return obj.name === `${session}/contexts/plot_chart`;
     });
+    let xlabel = contexts.find(obj => {
+        return obj.name === `${session}/contexts/xlabel`;
+    });
+    let ylabel = contexts.find(obj => {
+        return obj.name === `${session}/contexts/ylabel`;
+    });
 
     if (data_received && plot_chart) {
         let fileLink = data_received.parameters.file_link;
@@ -23,9 +29,12 @@ module.exports.plotChart = (contexts, parameters, action, session, response) => 
         if (!chart || chart === '') {
             chart = 'barchart';
         }
+
+        if (xlabel) xlabel.lifespanCount = 5;
+        if (ylabel) ylabel.lifespanCount = 5;
         if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test} on ${testAttr}\nChosen attribute for x-axis: ${attr}\nChosen chart: ${chart}`);
 
-        plotChartPy(fileLink, chart, test, testAttr, testOrig, attr, null, null, response);
+        plotChartPy(fileLink, chart, test, testAttr, testOrig, attr, xlabel, ylabel, response);
 
     }
 };
@@ -93,13 +102,31 @@ module.exports.plotChartFuLabel = (contexts, parameters, action, session, respon
 
 let plotChartPy = (fileLink, chart, test, testAttr, testOrig, attr, xLabel, yLabel, response) => {
 
-    xLabel = `${JSON.stringify(xLabel)}`.replace(':', ': ').replace('{', '[').replace('}', ']');
-    yLabel = `${JSON.stringify(yLabel)}`.replace(':', ': ').replace('{', '[').replace('}', ']');
+    console.log(`XLABEL: ${JSON.stringify(xLabel, null, '   ')}\nYLABEL: ${JSON.stringify(yLabel, null, '   ')}`);
+
+    let xLabelPy = null;
+    let yLabelPy = null;
+    if (xLabel != null) {
+        xLabelPy = {};
+        if (xLabel.parameters.color) xLabelPy.color = xLabel.parameters.color;
+        if (xLabel.parameters.family) xLabelPy.family = xLabel.parameters.family;
+        xLabelPy = `${JSON.stringify(xLabelPy)}`.replace(':', ': ').replace('{', '[').replace('}', ']');
+        if (xLabelPy === '[]') xLabelPy = null;
+        console.log(`PYTHON LABEL: ${xLabelPy}`);
+    }
+    if (yLabel != null) {
+        yLabelPy = {};
+        if (yLabel.parameters.color) yLabelPy.color = yLabel.parameters.color;
+        if (yLabel.parameters.family) yLabelPy.family = yLabel.parameters.family;
+        yLabelPy = `${JSON.stringify(yLabelPy)}`.replace(':', ': ').replace('{', '[').replace('}', ']');
+        if (yLabelPy === '[]') yLabelPy = null;
+        console.log(`PYTHON LABEL: ${yLabelPy}`);
+    }
 
     const options = {
         mode: 'text',
         scriptPath: 'Server/src/Fulfillment/Python/',
-        args: [`${fileLink}`, `${test}`, `${testAttr}`, `${testOrig}`, `${attr}`, xLabel, yLabel]
+        args: [`${fileLink}`, `${test}`, `${testAttr}`, `${testOrig}`, `${attr}`, xLabelPy, yLabelPy]
     };
 
     switch(chart) {
@@ -173,8 +200,18 @@ except urllib.error.HTTPError as err:
                     payload: {
                         code: codeToSend,
                         image: `${result}`
-                    }
+                    },
+                    outputContexts: []
                 };
+
+                if (xLabel != null) {
+                    xLabel.lifespanCount = 5;
+                    resToSend.outputContexts.push(xLabel);
+                }
+                if (yLabel != null) {
+                    yLabel.lifespanCount = 5;
+                    resToSend.outputContexts.push(yLabel);
+                }
 
                 if (DEV_CONFIG) console.log(`${fLog}SENT RES: ${JSON.stringify(resToSend, null, '   ')}`);
 
@@ -205,90 +242,104 @@ let updateAxContext = (axis, params, label, session) => {
      * }
      */
 
-    const dialogflow = require('dialogflow');
-
-    const contextsClient = new dialogflow.ContextsClient({
-        keyFileName: GOOGLE_APPLICATION_CREDENTIALS
-    });
-
+    // const dialogflow = require('dialogflow');
+    //
+    // const contextsClient = new dialogflow.ContextsClient({
+    //     keyFileName: GOOGLE_APPLICATION_CREDENTIALS
+    // });
+    //
     let sessionId = session.split('/')[session.split('/').length-1];
-    const sessionPath = contextsClient.sessionPath(PROJECT_ID, sessionId);
+    // const sessionPath = contextsClient.sessionPath(PROJECT_ID, sessionId);
 
     let family = params.FontFamily;
-    let color = params.color;
+    let color = params.Color;
 
     if (label) {
+        label.lifespanCount = 5;
 
-        let contextPath = label.name;
+        if (family) label.parameters.family = family;
+        if (color) label.parameters.color = color;
 
-        const getContextRequest = {
-            name: contextPath
-        };
+        console.log(`CONTEXT: ${JSON.stringify(label)}`);
+        resolve(label);
 
-        let contextToReturn;
 
-        contextsClient
-            .getContext(getContextRequest)
-            .then(responses => {
-                const context = responses[0];
-
-                const parametersJson = structjson.structProtoToJson(context.parameters);
-                if (family) parametersJson.family = family;
-                if (color) parametersJson.color = color;
-                context.parameters = structjson.jsonToStructProto(parametersJson);
-
-                contextToReturn = parametersJson;
-                console.log(`CONTEXT: ${JSON.stringify(contextToReturn)}`);
-
-                const updateContextRequest = {
-                    context: context
-                };
-
-                return contextsClient.updateContext(updateContextRequest);
-            })
-            .then(responses => {
-                console.log(`Context updated: ${contextPath}`);
-                if (DEV_CONFIG) console.log(`Context updated RESPONSE: ${JSON.stringify(responses[0], null, '   ')}`);
-                resolve(contextToReturn);
-            })
-            .catch(err => {
-                reject(err);
-            });
+        // let contextPath = label.name;
+        //
+        // const getContextRequest = {
+        //     name: contextPath
+        // };
+        //
+        // let contextToReturn;
+        //
+        // contextsClient
+        //     .getContext(getContextRequest)
+        //     .then(responses => {
+        //         const context = responses[0];
+        //
+        //         const parametersJson = structjson.structProtoToJson(context.parameters);
+        //         if (family) parametersJson.family = family;
+        //         if (color) parametersJson.color = color;
+        //         context.parameters = structjson.jsonToStructProto(parametersJson);
+        //
+        //         contextToReturn = parametersJson;
+        //         console.log(`CONTEXT: ${JSON.stringify(contextToReturn)}`);
+        //
+        //         const updateContextRequest = {
+        //             context: context
+        //         };
+        //
+        //         return contextsClient.updateContext(updateContextRequest);
+        //     })
+        //     .then(responses => {
+        //         console.log(`Context updated: ${contextPath}`);
+        //         if (DEV_CONFIG) console.log(`Context updated RESPONSE: ${JSON.stringify(responses[0], null, '   ')}`);
+        //
+        //         resolve(contextToReturn);
+        //     })
+        //     .catch(err => {
+        //         reject(err);
+        //     });
     } else {
-        const labelContextPath = contextsClient.contextPath(
-            PROJECT_ID,
-            sessionId,
-            `${axis}label`
-        );
+        const labelContextPath = `projects/${PROJECT_ID}/agent/sessions/${sessionId}/contexts/${axis}label`;
 
+        // label = {
+        //     parent: sessionPath,
+        //     context: {
+        //         name: labelContextPath,
+        //         lifespanCount: 5,
+        //         parameters: {}
+        //     },
+        // };
         label = {
-            parent: sessionPath,
-            context: {
-                name: labelContextPath,
-                lifespanCount: 5,
-                parameters: {}
-            },
+            name: labelContextPath,
+            lifespanCount: 5,
+            parameters: {}
         };
 
+        if (family) label.parameters.family = family;
+        if (color) label.parameters.color = color;
+        console.log(`CONTEXT: ${JSON.stringify(label)}`);
+        resolve(label);
 
+        // if (family) label.context.parameters.family = family;
+        // if (color) label.context.parameters.color = color;
+        // let contextToReturn = label.context.parameters;
+        // console.log(`CONTEXT: ${JSON.stringify(contextToReturn)}`);
+        //
+        // label.context.parameters = structjson.jsonToStructProto(label.context.parameters);
 
-        if (family) label.context.parameters.family = family;
-        if (color) label.context.parameters.color = color;
-        let contextToReturn = label.context.parameters;
-        console.log(`CONTEXT: ${JSON.stringify(contextToReturn)}`);
-
-        label.context.parameters = structjson.jsonToStructProto(label.context.parameters);
-
-        contextsClient
-            .createContext(label)
-            .then(responses => {
-                console.log(`Context created: ${labelContextPath}`);
-                if (DEV_CONFIG) console.log(`Context created RESPONSE: ${JSON.stringify(responses[0], null, '   ')}`);
-                resolve(contextToReturn);
-            })
-            .catch(err => {
-                reject(err);
-            });
+        // contextsClient
+        //     .createContext(label)
+        //     .then(responses => {
+        //         console.log(`Context created: ${labelContextPath}`);
+        //         console.log(`Context created RESPONSE: ${JSON.stringify(responses[0], null, '   ')}`);
+        //
+        //         resolve(contextToReturn);
+        //     })
+        //     .catch(err => {
+        //         reject(err);
+        //     });
 
     }
 })};
