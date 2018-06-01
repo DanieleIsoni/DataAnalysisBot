@@ -49,7 +49,6 @@ if len(sys.argv) > 1:
     try:
         data_set = pd.read_csv(url, sep=',', na_values=["?"])
 
-
         x = {
             'maximum': data_set[[attr, testAttr]].groupby(attr).agg([np.max]),
             'minimum': data_set[[attr, testAttr]].groupby(attr).agg([np.min]),

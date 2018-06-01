@@ -1,8 +1,6 @@
 const PythonShell = require('python-shell');
 const DEV_CONFIG = (process.env.DEVELOPMENT_CONFIG == 'true');
-const GOOGLE_APPLICATION_CREDENTIALS = process.env.GOOGLE_APPLICATION_CREDENTIALS;
 const PROJECT_ID = process.env.PROJECT_ID;
-const structjson = require('../../Client/Methods/structjson');
 const fLog = '[FULFILLMENT] ';
 
 module.exports.plotChart = (contexts, parameters, action, session, response) => {
@@ -65,35 +63,22 @@ module.exports.plotChartFuLabel = (contexts, parameters, action, session, respon
         let chart = plot_chart.parameters.Chart;
         let axis = plotchart_followup_label.parameters.Axis;
         if (axis === 'x'){
-            updateAxContext(axis, plotchart_followup_label.parameters, xlabel, session)
-                .then(result => {
-                    xlabel = result;
+            xlabel = updateAxContext(axis, plotchart_followup_label.parameters, xlabel, session);
+            if (!chart || chart === '') {
+                chart = 'barchart';
+            }
+            if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test} on ${testAttr}\nChosen attribute for x-axis: ${attr}\nChosen chart: ${chart}`);
 
-                    if (!chart || chart === '') {
-                        chart = 'barchart';
-                    }
-                    if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test} on ${testAttr}\nChosen attribute for x-axis: ${attr}\nChosen chart: ${chart}`);
-
-                    console.log(`LABEL: ${JSON.stringify(xlabel)}`);
-
-                    plotChartPy(fileLink, chart, test, testAttr, testOrig, attr, xlabel, ylabel, response);
-                })
-                .catch(err => console.log(`ERROR: ${err}`));
+            plotChartPy(fileLink, chart, test, testAttr, testOrig, attr, xlabel, ylabel, response);
         } else if (axis === 'y'){
-            updateAxContext(axis, plotchart_followup_label.parameters, ylabel, session)
-                .then(result => {
-                    ylabel = result;
+            ylabel = updateAxContext(axis, plotchart_followup_label.parameters, ylabel, session);
 
-                    if (!chart || chart === '') {
-                        chart = 'barchart';
-                    }
-                    if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test} on ${testAttr}\nChosen attribute for x-axis: ${attr}\nChosen chart: ${chart}`);
+            if (!chart || chart === '') {
+                chart = 'barchart';
+            }
+            if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test} on ${testAttr}\nChosen attribute for x-axis: ${attr}\nChosen chart: ${chart}`);
 
-                    console.log(`LABEL: ${JSON.stringify(ylabel)}`);
-
-                    plotChartPy(fileLink, chart, test, testAttr, testOrig, attr, xlabel, ylabel, response);
-                })
-                .catch(err => console.log(`ERROR: ${err}`));
+            plotChartPy(fileLink, chart, test, testAttr, testOrig, attr, xlabel, ylabel, response);
         }
 
     }
@@ -101,8 +86,6 @@ module.exports.plotChartFuLabel = (contexts, parameters, action, session, respon
 
 
 let plotChartPy = (fileLink, chart, test, testAttr, testOrig, attr, xLabel, yLabel, response) => {
-
-    console.log(`XLABEL: ${JSON.stringify(xLabel, null, '   ')}\nYLABEL: ${JSON.stringify(yLabel, null, '   ')}`);
 
     let xLabelPy = null;
     let yLabelPy = null;
@@ -112,7 +95,6 @@ let plotChartPy = (fileLink, chart, test, testAttr, testOrig, attr, xLabel, yLab
         if (xLabel.parameters.family) xLabelPy.family = xLabel.parameters.family;
         xLabelPy = `${JSON.stringify(xLabelPy)}`.replace(':', ': ').replace('{', '[').replace('}', ']');
         if (xLabelPy === '[]') xLabelPy = null;
-        console.log(`PYTHON LABEL: ${xLabelPy}`);
     }
     if (yLabel != null) {
         yLabelPy = {};
@@ -120,7 +102,6 @@ let plotChartPy = (fileLink, chart, test, testAttr, testOrig, attr, xLabel, yLab
         if (yLabel.parameters.family) yLabelPy.family = yLabel.parameters.family;
         yLabelPy = `${JSON.stringify(yLabelPy)}`.replace(':', ': ').replace('{', '[').replace('}', ']');
         if (yLabelPy === '[]') yLabelPy = null;
-        console.log(`PYTHON LABEL: ${yLabelPy}`);
     }
 
     const options = {
@@ -231,7 +212,6 @@ except urllib.error.HTTPError as err:
 };
 
 let updateAxContext = (axis, params, label, session) => {
-    return new Promise((resolve, reject) => {
     /**
      * Label format:
      * {
@@ -242,14 +222,7 @@ let updateAxContext = (axis, params, label, session) => {
      * }
      */
 
-    // const dialogflow = require('dialogflow');
-    //
-    // const contextsClient = new dialogflow.ContextsClient({
-    //     keyFileName: GOOGLE_APPLICATION_CREDENTIALS
-    // });
-    //
     let sessionId = session.split('/')[session.split('/').length-1];
-    // const sessionPath = contextsClient.sessionPath(PROJECT_ID, sessionId);
 
     let family = params.FontFamily;
     let color = params.Color;
@@ -260,57 +233,11 @@ let updateAxContext = (axis, params, label, session) => {
         if (family) label.parameters.family = family;
         if (color) label.parameters.color = color;
 
-        console.log(`CONTEXT: ${JSON.stringify(label)}`);
-        resolve(label);
+        return label;
 
-
-        // let contextPath = label.name;
-        //
-        // const getContextRequest = {
-        //     name: contextPath
-        // };
-        //
-        // let contextToReturn;
-        //
-        // contextsClient
-        //     .getContext(getContextRequest)
-        //     .then(responses => {
-        //         const context = responses[0];
-        //
-        //         const parametersJson = structjson.structProtoToJson(context.parameters);
-        //         if (family) parametersJson.family = family;
-        //         if (color) parametersJson.color = color;
-        //         context.parameters = structjson.jsonToStructProto(parametersJson);
-        //
-        //         contextToReturn = parametersJson;
-        //         console.log(`CONTEXT: ${JSON.stringify(contextToReturn)}`);
-        //
-        //         const updateContextRequest = {
-        //             context: context
-        //         };
-        //
-        //         return contextsClient.updateContext(updateContextRequest);
-        //     })
-        //     .then(responses => {
-        //         console.log(`Context updated: ${contextPath}`);
-        //         if (DEV_CONFIG) console.log(`Context updated RESPONSE: ${JSON.stringify(responses[0], null, '   ')}`);
-        //
-        //         resolve(contextToReturn);
-        //     })
-        //     .catch(err => {
-        //         reject(err);
-        //     });
     } else {
         const labelContextPath = `projects/${PROJECT_ID}/agent/sessions/${sessionId}/contexts/${axis}label`;
 
-        // label = {
-        //     parent: sessionPath,
-        //     context: {
-        //         name: labelContextPath,
-        //         lifespanCount: 5,
-        //         parameters: {}
-        //     },
-        // };
         label = {
             name: labelContextPath,
             lifespanCount: 5,
@@ -319,27 +246,7 @@ let updateAxContext = (axis, params, label, session) => {
 
         if (family) label.parameters.family = family;
         if (color) label.parameters.color = color;
-        console.log(`CONTEXT: ${JSON.stringify(label)}`);
-        resolve(label);
-
-        // if (family) label.context.parameters.family = family;
-        // if (color) label.context.parameters.color = color;
-        // let contextToReturn = label.context.parameters;
-        // console.log(`CONTEXT: ${JSON.stringify(contextToReturn)}`);
-        //
-        // label.context.parameters = structjson.jsonToStructProto(label.context.parameters);
-
-        // contextsClient
-        //     .createContext(label)
-        //     .then(responses => {
-        //         console.log(`Context created: ${labelContextPath}`);
-        //         console.log(`Context created RESPONSE: ${JSON.stringify(responses[0], null, '   ')}`);
-        //
-        //         resolve(contextToReturn);
-        //     })
-        //     .catch(err => {
-        //         reject(err);
-        //     });
+        return label;
 
     }
-})};
+};

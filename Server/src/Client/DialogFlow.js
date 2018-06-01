@@ -219,9 +219,6 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, chatId, req, 
                 let codeToSend = webhookPayload && webhookPayload.fields && webhookPayload.fields.code ? webhookPayload.fields.code.stringValue : null;
                 let image = webhookPayload && webhookPayload.fields && webhookPayload.fields.image ? webhookPayload.fields.image.stringValue : null;
 
-                const contextsClient = new dialogFlow.ContextsClient({keyFileName: aiConfig.googleAppCreds});
-                contextsClient.listContexts({parent: sessionPath}).then(responses => {console.log(`LIST CONTEXT:\n${JSON.stringify(responses[0], null, '   ')}`)}).catch(err => console.log(`ERROR: ${err}`));
-
                 if (responseText || webhookStatus.code === 0) {
                     console.log(`${cLog}Response as text message with message: ${responseText}`);
                     if (react != 'true' && image == null) {
