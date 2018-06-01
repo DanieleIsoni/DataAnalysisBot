@@ -90,8 +90,8 @@ class ConnectedUpload extends React.Component {
 
     render(){
         return (
-            <div>
-                <Button className="button-board round" onClick={this.toggle}><i className="material-icons">attach_file</i></Button>
+            <div style={(this.props.theme == "form_add") ? {} : {display: 'inline-block'}}>
+                <Button className={(this.props.theme == "form_add") ? "button-board round" : "attach_side"} onClick={this.toggle}>{this.props.text}</Button>
                     <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
                         <form action="/" method="POST" encType="multipart/form-data" className="form-upload" onSubmit={this.handleSubmit}>
                             <ModalHeader>Upload a file </ModalHeader>   

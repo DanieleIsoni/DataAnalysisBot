@@ -205,3 +205,27 @@
 .group_lateral:hover{
     background-color: #3b4044 !important;
 }
+
+.attach_side{
+    position: relative;
+    display: inline-block;
+    padding: 7px 15px 7px 40px;
+    background: white url("http://ssl.gstatic.com/ui/v1/icons/mail/rfr/compose_efab_1x.png");
+    background-repeat: no-repeat;
+    background-position: 10% 50%;
+    box-shadow: 0 1px 2px 0 rgba(60,64,67,0.302), 0 1px 3px 1px rgba(60,64,67,0.149);
+    border: none !important;
+    border-radius: 30px;
+    color: #888;
+    cursor: pointer;
+    margin-bottom: 0 !important;
+}
+
+.attach_side:hover{
+    box-shadow: 0 1px 3px 0 rgba(60,64,67,0.302), 0 4px 8px 3px rgba(60,64,67,0.149);
+    background: #fafafb url("http://ssl.gstatic.com/ui/v1/icons/mail/rfr/compose_efab_1x.png");
+    background-repeat: no-repeat;
+    color: #888;
+    background-position: 10% 50%;
+    transition: all 0.3s;
+}

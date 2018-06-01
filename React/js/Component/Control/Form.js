@@ -163,8 +163,8 @@ class ConnectedForm extends React.Component {
         return (
             <div className="control">
                 <UndoRedo />
-                <input type="text" name="input" id="dialog" autoComplete="off" placeholder={renderToString(<Translate id="sugg">Ask me something</Translate>)} value={this.state.inputValue} onKeyDown={ this.handleKeyDown } onKeyPress={this.handleKeyPress} onChange={this.handleChange}/>
-                <Upload addMessaggio={this.props.addMessaggio} url={this.props.url}/>
+                <input type="text" name="input" id="dialog" autoComplete="off" placeholder={(this.state.inputValue.length == 0) ? renderToString(<Translate id="sugg"></Translate>) : ""} value={this.state.inputValue} onKeyDown={ this.handleKeyDown } onKeyPress={this.handleKeyPress} onChange={this.handleChange}/>
+                <Upload addMessaggio={this.props.addMessaggio} url={this.props.url} theme={"form_add"} text={<i className="material-icons">attach_file</i>}/>
                 <Jupyter />
                 <button className="button-board-lateral" onClick={this.clearSession}><Translate id="clear">Clear</Translate></button>
             </div>

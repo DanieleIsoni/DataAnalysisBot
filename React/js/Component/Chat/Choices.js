@@ -3,7 +3,6 @@ import axios from 'axios';
 import uuidv1 from "uuid";
 import { connect } from "react-redux";
 import { addMessaggio, editMessaggio } from "../../Actions/index";
-
 import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 var fileDownload = require('js-file-download');
 
@@ -157,9 +156,7 @@ class ConChoices extends React.Component{
                                 <div id="y" className={(this.state.asse == "y-axis") ? "axes active" : "axes"}>y</div>
                             </div>                                                               
                         <DropdownItem divider></DropdownItem>
-                        <DropdownItem onClick={(e) => this.setFontLabel(e, "cursive")}>Cursive</DropdownItem>
                         <DropdownItem onClick={(e) => this.setFontLabel(e, "monospace")}>monospace</DropdownItem>
-                        <DropdownItem onClick={(e) => this.setFontLabel(e, "fantasy")}>Fantasy</DropdownItem>
                         <DropdownItem onClick={(e) => this.setFontLabel(e, "serif")}>serif</DropdownItem>
                         <DropdownItem onClick={(e) => this.setFontLabel(e, "sans")}>sans</DropdownItem>
                     </DropdownMenu>
