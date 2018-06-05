@@ -38,11 +38,13 @@ if len(sys.argv) > 1:
 
     if sys.argv[6] != 'null' and sys.argv[6] != 'undefined':
         xLabelFontdict = json.loads(sys.argv[6].replace('[', '{').replace(']', '}'))
+        xLabelFontdict['color'] = xLabelFontdict['color'].replace(' ', '')
     else:
         xLabelFontdict = None
 
     if sys.argv[7] != 'null' and sys.argv[7] != 'undefined':
         yLabelFontdict = json.loads(sys.argv[7].replace('[', '{').replace(']', '}'))
+        yLabelFontdict['color'] = yLabelFontdict['color'].replace(' ', '')
     else:
         yLabelFontdict = None
 
