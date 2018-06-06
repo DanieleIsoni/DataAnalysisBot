@@ -34,7 +34,8 @@ class ConnectedForm extends React.Component {
         this.state = {
             inputValue: '',
             comandi: [],
-            selectedCommand: 0
+            selectedCommand: 0,
+            type: 'Natural'
         }
         this.props.addTranslation(controlTranslation);
 
@@ -156,7 +157,19 @@ class ConnectedForm extends React.Component {
     }
 
     handleChange(evt){
+        var text = evt.target.value;
+        var python = this.checkPython(text);
+        if(python){
+            this.setState({type: "Python"});
+        }else{
+            this.setState({type: "Natural"});
+        }
         this.setState({ inputValue: evt.target.value });
+    }
+
+    checkPython(text){
+        var pattern =/([\/\+\-\*\[\]\(\)\:])+/;
+        return pattern.test(text);  // returns a boolean 
     }
 
     render(){
@@ -164,6 +177,7 @@ class ConnectedForm extends React.Component {
             <div className="control">
                 <UndoRedo />
                 <input type="text" name="input" id="dialog" autoComplete="off" placeholder={(this.state.inputValue.length == 0) ? renderToString(<Translate id="sugg"></Translate>) : ""} value={this.state.inputValue} onKeyDown={ this.handleKeyDown } onKeyPress={this.handleKeyPress} onChange={this.handleChange}/>
+                <span class="type_of">{this.state.type}</span>
                 <Upload addMessaggio={this.props.addMessaggio} url={this.props.url} theme={"form_add"} text={<i className="material-icons">attach_file</i>}/>
                 <Jupyter />
                 <button className="button-board-lateral" onClick={this.clearSession}><Translate id="clear">Clear</Translate></button>

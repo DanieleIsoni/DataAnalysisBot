@@ -13,6 +13,11 @@
     align-content: space-between;
 }
 
+.type_of{
+    color: #4285f4;
+    margin-right: 10px;
+    font-weight: 500;
+}
 
 .button-board-lateral{
     width: 32%;
