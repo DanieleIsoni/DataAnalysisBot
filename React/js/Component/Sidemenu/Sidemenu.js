@@ -79,7 +79,7 @@ class ConnectedSidemenu extends React.Component {
                 </div>
                 {dettaglioVariabile}
                 <Hints lang={sideTranslation}/>
-                <div className="side_subtitle"><h5><i className="material-icons">language</i><Translate id="lang">Language</Translate></h5><Language /></div>
+                <div className="side_subtitle"><h5><i className="material-icons">language</i><Translate id="lang">Language</Translate> (Test)</h5><Language /></div>
             </Col>
         );
     }
