@@ -4,3 +4,4 @@ export const EDIT_MESSAGGIO = "EDIT_MESSAGGIO";
 export const CLEAR_MESSAGGI = "CLEAR_MESSAGGI";
 export const DELETE_VARIABLE= "DELETE_VARIABLE";
 export const ADD_HINTS = "ADD_HINTS";
+export const SET_VAR = "SET_VAR";

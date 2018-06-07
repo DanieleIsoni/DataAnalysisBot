@@ -1,5 +1,4 @@
-import { ADD_MESSAGGIO, EDIT_MESSAGGIO } from "../Constants/action-types";
-import { CLEAR_MESSAGGI } from "../Constants/action-types";
+import { ADD_MESSAGGIO, EDIT_MESSAGGIO, CLEAR_MESSAGGI } from "../Constants/action-types";
 import undoable from 'redux-undo'
 
 const messaggi = (state = [], action) => {

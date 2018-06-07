@@ -1,7 +1,7 @@
 import React from "react";
 import axios from 'axios';
 import { connect } from "react-redux";
-import { addVariabile, addMessaggio, addHints } from "../../Actions/index";
+import { addVariabile, addMessaggio, addHints, setActiveVariable} from "../../Actions/index";
 import uuidv1 from "uuid";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
@@ -10,8 +10,13 @@ var MODAL_REF = 'MODAL';
 const mapAddVariabileEvent = dispatch => {
     return {
       addVariabile: variabile => dispatch(addVariabile(variabile)),
-      addHints: hints => dispatch(addHints(hints))
+      addHints: hints => dispatch(addHints(hints)),
+      setActiveVariable: vari => dispatch(setActiveVariable(vari))
     };
+};
+
+const mapActive = state => {
+    return { activeVar: state.active };
 };
 
 class ConnectedUpload extends React.Component {
@@ -49,8 +54,10 @@ class ConnectedUpload extends React.Component {
         this.setState({ showLoader: true });
 
         if(file){
+            var send_active = (this.props.activeVar == null || typeof this.props.activeVar == 'undefined') ? "empty" : this.props.activeVar;
             var formdata = new FormData();
             formdata.append('file', file);
+            formdata.append('variabile',send_active);
             this.props.addMessaggio({"id": uuidv1(), "who": "me", "what": "markdown", "messaggio": "Uploading file...", "output": []});
             axios({
                 url: this.props.url + '/upload',
@@ -69,6 +76,8 @@ class ConnectedUpload extends React.Component {
                 if(response.status == 200){
                     this.props.addVariabile({ "name": file.name, "id": uuidv1() });
                     this.props.addMessaggio({"id": uuidv1(), "who": "bot", "what": "markdown", "messaggio": response.data.message, "output": []});
+
+                    this.props.setActiveVariable(file.name);
                 }else{
                     this.props.addMessaggio({"id": uuidv1(), "who": "bot", "what": "markdown error", "messaggio": response.data.message, "output": []});
                 }      
@@ -115,5 +124,5 @@ class ConnectedUpload extends React.Component {
     }
 }
 
-const Upload = connect(null, mapAddVariabileEvent)(ConnectedUpload);
+const Upload = connect(mapActive, mapAddVariabileEvent)(ConnectedUpload);
 export default Upload;

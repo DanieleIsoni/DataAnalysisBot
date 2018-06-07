@@ -94,7 +94,8 @@
 
 .selected-var{
     box-shadow: 0 1px 3px 0 rgba(60,64,67,0.302), 0 4px 8px 3px rgba(60,64,67,0.149);
-    background: #fafafb;
+    background: #4285f4;
+    color: white;
 }
 
 .close_var{

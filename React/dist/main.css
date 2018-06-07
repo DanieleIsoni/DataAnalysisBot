@@ -1,9 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 @import url('https://fonts.googleapis.com/css?family=Source+Code+Pro');
 
-*{
-    box-sizing: border-box;
-}
+*{ box-sizing: border-box; }
 
 html, body{
     margin: 0;
@@ -14,15 +12,9 @@ html, body{
 
 .material-icons{
     vertical-align: middle;
-    /* Support for all WebKit browsers. */
     -webkit-font-smoothing: antialiased;
-    /* Support for Safari and Chrome. */
     text-rendering: optimizeLegibility;
-
-    /* Support for Firefox. */
     -moz-osx-font-smoothing: grayscale;
-
-    /* Support for IE. */
     font-feature-settings: 'liga';
 }
 
@@ -31,6 +23,9 @@ html, body{
     padding: 0 !important;
     background: #f1f1f1;
     overflow: hidden;
+    opacity: 0;
+    transform: scale(2);
+    animation: show_up 0.2s forwards;
 }
 
 #content{ height: 100%; }
@@ -41,29 +36,15 @@ html, body{
 }
 
 button:disabled,
-button[disabled]{
-    opacity: 0.3;
-}
+button[disabled]{ opacity: 0.3; }
 
-::-webkit-scrollbar {
-    width: 6px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-    border-radius: 10px;
-}
- 
-/* Handle */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { border-radius: 10px; }
 ::-webkit-scrollbar-thumb {
     background: #ddd; 
     border-radius: 10px;
 }
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-    background: #ddd; 
-}
+::-webkit-scrollbar-thumb:hover { background: #ddd; }
 
 /* Animazioni chat */
 .example-enter .markdown div, .example-enter pre{
@@ -206,6 +187,10 @@ button[disabled]{
     .openSide{
         display: none;
     }
+
+    #dialog{
+        padding: 0 50px !important;
+    }
 }
 
 @media (max-width: 768px) {
@@ -226,6 +211,10 @@ button[disabled]{
     .openSide i{
         line-height: 40px;
     }
+
+    .type_of{
+        display: none;
+    }
 }
 
 @media (max-width: 768px) {
@@ -242,6 +231,9 @@ button[disabled]{
     }
 }
 
-
-
-  
+@keyframes show_up{
+    to{
+        transform: scale(1);
+        opacity: 1;
+    }
+}

@@ -93,7 +93,6 @@ class ConChoices extends React.Component{
         if(e.key == 'Enter'){
             let value = e.target.value;
             this.setState({ inputValue: ''});
-
             this.setColorLabel(null, value);
         }
     }

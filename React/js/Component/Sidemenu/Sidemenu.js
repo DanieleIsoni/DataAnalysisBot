@@ -11,9 +11,17 @@ const JsonTable = require('ts-react-json-table');
 import { Translate } from 'react-localize-redux';
 import sideTranslation from './translation';
 import { withLocalize } from 'react-localize-redux';
+import { setActiveVariable} from "../../Actions/index";
+
+
+const mapSetActive = dispatch => {
+    return {
+      setActiveVariable: vari => dispatch(setActiveVariable(vari))
+    };
+};
 
 const mapVariabili = state => {
-    return { variabili: state.variabili.present };
+    return { variabili: state.variabili.present, activeVar: state.active };
 };
 
 class ConnectedSidemenu extends React.Component {
@@ -39,6 +47,8 @@ class ConnectedSidemenu extends React.Component {
                     selectedVar: el.name,
                     contentVar: response.data
                 });
+
+                this.props.setActiveVariable(this.state.selectedVar);
             }
         })
     }
@@ -75,15 +85,15 @@ class ConnectedSidemenu extends React.Component {
             <Col xs="12" md="4" className="gestione" style={{"display": this.props.show}}>
                 <div className="variable-context">
                     <div className="side_subtitle"><h5><i className="material-icons">list</i> <Translate id="var">Variables</Translate> <span className="var_num">{this.props.variabili.length}</span></h5></div>
-                    <List onClick={this.handleClick} selected={this.state.idVar} lang={sideTranslation} url={this.props.url}/>
+                    <List onClick={this.handleClick} selected={this.state.selectedVar} lang={sideTranslation} url={this.props.url}/>
                 </div>
                 {dettaglioVariabile}
                 <Hints lang={sideTranslation}/>
-                <div className="side_subtitle"><h5><i className="material-icons">language</i><Translate id="lang">Language</Translate></h5><Language /></div>
+                <div className="side_subtitle"><h5><i className="material-icons">language</i><Translate id="lang">Language</Translate> (Test)</h5><Language /></div>
             </Col>
         );
     }
 }
 
-const Sidemenu = connect(mapVariabili)(ConnectedSidemenu);
+const Sidemenu = connect(mapVariabili, mapSetActive)(ConnectedSidemenu);
 export default withLocalize(Sidemenu);
