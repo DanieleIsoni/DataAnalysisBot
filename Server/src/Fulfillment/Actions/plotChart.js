@@ -1,3 +1,4 @@
+const Common = require('../../Common');
 const PythonShell = require('python-shell');
 const DEV_CONFIG = (process.env.DEVELOPMENT_CONFIG == 'true');
 const PROJECT_ID = process.env.PROJECT_ID;
@@ -18,7 +19,8 @@ module.exports.plotChart = (contexts, parameters, action, session, response) => 
     });
 
     if (data_received && plot_chart) {
-        let fileLink = data_received.parameters.file_link;
+        let fileLink = Common.variablesLink.get(Common.variable);
+        console.log(`CHART Path variable: ${fileLink}`);
         let test = parameters.CompositeTest.Test;
         let testAttr = parameters.CompositeTest.Attribute;
         let testOrig = plot_chart.parameters.CompositeTest['Test.original'];
@@ -55,7 +57,8 @@ module.exports.plotChartFuLabel = (contexts, parameters, action, session, respon
     });
 
     if (data_received && plot_chart && plotchart_followup_label) {
-        let fileLink = data_received.parameters.file_link;
+        let fileLink = Common.variablesLink.get(Common.variable);
+        console.log(`CHART.LABEL Path variable: ${fileLink}`);
         let test = plot_chart.parameters.CompositeTest.Test;
         let testAttr = plot_chart.parameters.CompositeTest.Attribute;
         let testOrig = plot_chart.parameters.CompositeTest['Test.original'];

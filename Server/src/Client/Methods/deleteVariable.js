@@ -7,6 +7,7 @@ const contextsClient = new dialogflow.ContextsClient({
     keyFileName: gappCred,
     projectId: PROJECT_ID
 });
+const Common = require('../../Common');
 
 module.exports.deleteVariable = (req, res, tmpPath, dialogSessionId) => {
 
@@ -20,14 +21,21 @@ module.exports.deleteVariable = (req, res, tmpPath, dialogSessionId) => {
         if (fs.existsSync(path_)) {
             fs.unlinkSync(path_);
         }
+        if(Common.variablesLink.has(name))
+            Common.variablesLink.delete(name);
 
-        req.session.datasets.splice(id,1);
+        req.session.datasets.forEach((el ,index) => {
+            if(el.name === name){
+                req.session.datasets.splice(index,1);
+            }
+        });
 
-        clearContexts(PROJECT_ID, dialogSessionId);
+        if(Common.variablesLink.size === 0)
+            clearContexts(PROJECT_ID, dialogSessionId);
 
         ret = `Variable ${name} deleted`;
     } catch (e) {
-        ret = `Variable ${name} not deleted due to some server errors`
+        ret = `Variable ${name} not deleted due to some server errors`;
         console.error(`ERROR: ${e}`);
         res.status(400);
     }

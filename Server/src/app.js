@@ -31,8 +31,8 @@ if (APP_NAME){
     baseUrl = `https://${APP_NAME}.herokuapp.com`;
 } else {
     baseUrl = null;
-    console.error('Set up the url of your service here and remove exit code!');
-    process.exit(1);
+    // console.error('Set up the url of your service here and remove exit code!');
+    // process.exit(1);
 }
 
 // console timestamps
@@ -141,6 +141,7 @@ app.route('/upload')
             let stream = req.files.file.data;
             let name = req.files.file.name;
             let file = req.files.file;
+            let variable = req.body.variabile;
 
             let fileLink = `${path_}/${name}`;
 
@@ -169,6 +170,7 @@ app.route('/upload')
 
             req.body = {
                 react: 'true',
+                variabile: variable,
                 message: {
                     document: {
                         file_name: name,

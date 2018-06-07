@@ -11,3 +11,4 @@ package-lock.json
 */.nyc_output
 React/coverage
 React/es
+tmp/

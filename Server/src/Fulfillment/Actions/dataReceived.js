@@ -7,6 +7,8 @@ const sessionEntityTypesClient = new dialogflow.SessionEntityTypesClient({
     keyFileName: gappCred,
     projectId: PROJECT_ID
 });
+const Common = require('../../Common');
+
 const fLog = '[FULFILLMENT] ';
 
 module.exports.dataReceived = (contexts, action, session, response) => {
@@ -69,6 +71,7 @@ let storeAttributes = function (fileName, fileLink, response, session){
                 let res = responses[0];
 
                 if (res) {
+                    Common.variablesLink.set(fileName,fileLink);
                     let message = `Stored ${fileName} which contains: ${attributes.join(', ')}\nWhat do you want to do with this data?`;
                     response.send({
                         fulfillmentText: message

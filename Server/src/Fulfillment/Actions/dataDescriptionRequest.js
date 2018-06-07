@@ -1,3 +1,4 @@
+const Common = require('../../Common');
 const PythonShell = require('python-shell');
 const DEV_CONFIG = (process.env.DEVELOPMENT_CONFIG == 'true');
 const fLog = '[FULFILLMENT] ';
@@ -8,8 +9,9 @@ module.exports.dataDescriptionRequest = (contexts, action, session, response) =>
     });
 
     if (data_received) {
-        let fileName = data_received.parameters.file_name;
-        let fileLink = data_received.parameters.file_link;
+        let fileName = Common.variable;
+        let fileLink = Common.variablesLink.get(Common.variable);
+        console.log(`DESCRIPTION variable: ${fileName}\nPath variable: ${fileLink}`);
 
         dataDescription(fileName, fileLink, response);
     } else {

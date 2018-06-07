@@ -3,6 +3,7 @@ const uuid = require('node-uuid');
 const TelegramBot = require('node-telegram-bot-api');
 const fs = require('fs');
 const path = require('path');
+const Common = require('../Common');
 
 const structjson = require('./Methods/structjson');
 
@@ -63,6 +64,11 @@ module.exports = class DialogFlow {
 
         let updateObject = req.body;
         let react = req.body.react;
+        console.log('VARIABILE: '+req.body.variabile);
+        if (req.body.variabile != null)
+            Common.variable = req.body.variabile;
+        else
+            return DialogFlow.createResponse(res, 400, 'Something went wrong. Retry in a few minutes.');
 
         if (updateObject && updateObject.message) {
             let msg = updateObject.message;
@@ -251,7 +257,7 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, chatId, req, 
                         });
                         console.log(`${cLog}Outputs:\n${JSON.stringify(messages, null, '   ')}`);
                         console.log(`${cLog}FulfillmentMessages processed`);
-                    } else if (messages.lenght = 0 || webhookStatus === null){
+                    } else if (messages.length = 0 || webhookStatus === null){
                         messages = null;
                     }
 

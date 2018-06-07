@@ -1,3 +1,4 @@
+const Common = require('../../Common');
 const PythonShell = require('python-shell');
 const DEV_CONFIG = (process.env.DEVELOPMENT_CONFIG === 'true');
 const fLog = '[FULFILLMENT] ';
@@ -11,7 +12,8 @@ module.exports.testRequest = (contexts, parameters, action, session, response) =
     });
 
     if (data_received && test_request) {
-        let fileLink = data_received.parameters.file_link;
+        let fileLink = Common.variablesLink.get(Common.variable);
+        console.log(`TEST Path variable: ${fileLink}`);
         let test = parameters.Test;
         let test_original = test_request.parameters['Test.original'];
         let attr = parameters.Attribute;
@@ -38,7 +40,8 @@ module.exports.testRequestFuAttribute = (contexts, parameters, action, session, 
     });
 
     if (test_request && data_received && testrequest_followup_attribute) {
-        let fileLink = data_received.parameters.file_link;
+        let fileLink = Common.variablesLink.get(Common.variable);
+        console.log(`TEST.ATTR Path variable: ${fileLink}`);
         let test = test_request.parameters.Test;
         let test_original = test_request.parameters['Test.original'];
         let attr = parameters.Attribute;
@@ -65,7 +68,8 @@ module.exports.testRequestFuTest = (contexts, parameters, action, session, respo
     });
 
     if (test_request && data_received && testrequest_followup_test) {
-        let fileLink = data_received.parameters.file_link;
+        let fileLink = Common.variablesLink.get(Common.variable);
+        console.log(`TEST.TEST Path variable: ${fileLink}`);
         let test = parameters.Test;
         let test_original = testrequest_followup_test.parameters['Test.original'];
         let attr = test_request.parameters.Attribute;
