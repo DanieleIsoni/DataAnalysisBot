@@ -1,7 +1,7 @@
 import React from "react";
 import axios from 'axios';
 import { connect } from "react-redux";
-import { addVariabile, addMessaggio, clearMessaggi, editMessaggio, addHints } from "../../Actions/index";
+import { addVariabile, addMessaggio, clearMessaggi, editMessaggio, addHints, setActiveVariable } from "../../Actions/index";
 import uuidv1 from "uuid";
 import Upload from "./Upload";
 import Jupyter from './JupyterOP';
@@ -20,12 +20,14 @@ const mapAddMessaggioEvent = dispatch => {
       editMessaggio: (id, messaggio) => dispatch(editMessaggio(id, messaggio)),
       addVariabile: variabile => dispatch(addVariabile(variabile)),
       clearMessaggi: () => dispatch(clearMessaggi()),
-      addHints: hints => dispatch(addHints(hints))
+      addHints: hints => dispatch(addHints(hints)),
+      setActiveVariable: vari => dispatch(setActiveVariable(vari))
     };
 };
 
 const mapVariabili = state => {
-    return { variabili: state.variabili.present };
+    return { variabili: state.variabili.present,
+        activeVar: state.active };
 };
 
 class ConnectedForm extends React.Component {
@@ -35,7 +37,9 @@ class ConnectedForm extends React.Component {
             inputValue: '',
             comandi: [],
             selectedCommand: 0,
-            type: 'Natural'
+            type: 'NL',
+            temp_mex: '',
+            waiting_var: false
         }
         this.props.addTranslation(controlTranslation);
 
@@ -51,11 +55,22 @@ class ConnectedForm extends React.Component {
             response.data.messages.map(messaggio => {
                 this.props.addMessaggio({id: uuidv1(), who: messaggio.who, what: "markdown", messaggio: messaggio.message, output: messaggio.outputs, code: messaggio.code});
             })
-            response.data.variables.map(variabile => {
+            response.data.variables.map((variabile, n) => {
                 this.props.addVariabile({ "name": variabile.name, "id": uuidv1() }); 
+                if(n == response.data.variables.length-1){
+                    this.props.setActiveVariable(variabile.name);
+                    console.log("Variabile: " + variabile.name);
+                }
             })
             this.actionController("initial");
         }); 
+    }
+
+    componentDidUpdate(){
+        if(this.state.waiting_var && this.props.activeVar != null){
+            this.sendMessage(this.state.temp_mex);
+            this.setState({temp_mex: '', waiting_var: false});
+        }
     }
 
     clearSession(e) {
@@ -66,6 +81,7 @@ class ConnectedForm extends React.Component {
     }
 
     actionController (azione) {
+        this.setState({ action: azione });
         console.log(azione);
         switch(azione){
             case "initial":
@@ -95,47 +111,56 @@ class ConnectedForm extends React.Component {
         }
     }
 
-    sendMessage(event){
-        var value = event.target.value;
-            
+    sendMessage(value){     
         var comands = this.state.comandi;
         comands.push(value);
-        this.setState({ inputValue: '', comandi: comands});
+        this.setState({ inputValue: '', comandi: comands });
 
-        if(value != ""){
+        if(value != "" && this.state.type != "Py")
             this.props.addMessaggio({id: uuidv1(), who: "me", what: "markdown", messaggio: value, output: []});
+        else
+            this.props.addMessaggio({id: uuidv1(), who: "me", what: "code", messaggio: value, output: []});
+
+        if(this.props.activeVar == null && this.props.variabili.length > 0){
+            this.setState({temp_mex: value, waiting_var: true});
+            this.props.addMessaggio({id: uuidv1(), who: "bot", what: "markdown", messaggio: "Specify a variable! Select it...", output: []});
+        }else{
+            var udelete = uuidv1();
+            this.props.addMessaggio({id: udelete, who: "bot", what: "markdown", messaggio: <div className="loading"></div>, output: []});
+        
+            axios({
+                url: this.props.url + "/clientWebHook/",
+                method: 'post', 
+                validateStatus: function (status) {
+                    return status < 500;
+                },
+                data: {
+                        "message": {
+                        "text": value
+                        },
+                    "react": "true",
+                    "variabile": this.props.activeVar 
+                    //"python": (this.state.type == "Py") ? "true" : "false"
+                }, headers: {
+                    'accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if(response.status == 200){
+                    this.actionController(response.data.action);
+                    this.props.editMessaggio(udelete,{id: uuidv1(), who: "bot", what: "markdown", messaggio: response.data.message, output: response.data.outputs, code: response.data.code});
+                }else{
+                    this.props.editMessaggio(udelete,{id: uuidv1(), who: "bot", what: "markdown error", messaggio: response.data.message, output: response.data.outputs, code: response.data.code});
+                }
+            })
         }
-
-        var udelete = uuidv1();
-        this.props.addMessaggio({id: udelete, who: "bot", what: "markdown", messaggio: <div className="loading"></div>, output: []});
-
-        axios({
-            url: this.props.url + "/clientWebHook/",
-            method: 'post', 
-            validateStatus: function (status) {
-                return status < 500;
-            },
-            data: {"message": {
-                "text": value
-                },"react": "true"
-            }, headers: {
-                'accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => {
-            if(response.status == 200){
-                this.actionController(response.data.action);
-                this.props.editMessaggio(udelete,{id: uuidv1(), who: "bot", what: "markdown", messaggio: response.data.message, output: response.data.outputs, code: response.data.code});
-            }else{
-                this.props.editMessaggio(udelete,{id: uuidv1(), who: "bot", what: "markdown error", messaggio: response.data.message, output: response.data.outputs, code: response.data.code});
-            }
-        })
     }
 
     handleKeyPress(event) {
         if(event.key == 'Enter'){
-            this.sendMessage(event);
+            var value = event.target.value;
+            this.sendMessage(value);
         }
     }
 
@@ -160,15 +185,15 @@ class ConnectedForm extends React.Component {
         var text = evt.target.value;
         var python = this.checkPython(text);
         if(python){
-            this.setState({type: "Python"});
+            this.setState({type: "Py"});
         }else{
-            this.setState({type: "Natural"});
+            this.setState({type: "NL"});
         }
         this.setState({ inputValue: evt.target.value });
     }
 
     checkPython(text){
-        var pattern =/([\/\+\-\*\[\]\(\)\:])+/;
+        var pattern =/([\/\+\-\*\[\]\(\)\:]|import|if|case|.*\..*)+/;
         return pattern.test(text);  // returns a boolean 
     }
 
@@ -176,11 +201,19 @@ class ConnectedForm extends React.Component {
         return (
             <div className="control">
                 <UndoRedo />
-                <input type="text" name="input" id="dialog" autoComplete="off" placeholder={(this.state.inputValue.length == 0) ? renderToString(<Translate id="sugg"></Translate>) : ""} value={this.state.inputValue} onKeyDown={ this.handleKeyDown } onKeyPress={this.handleKeyPress} onChange={this.handleChange}/>
-                <span class="type_of">{this.state.type}</span>
+                <div className="input_container">
+                    <input type="text" name="input" id="dialog" autoComplete="off" placeholder={(this.state.inputValue.length == 0) ? renderToString(<Translate id="sugg"></Translate>) : ""} value={this.state.inputValue} onKeyDown={ this.handleKeyDown } onKeyPress={this.handleKeyPress} onChange={this.handleChange}/>
+                    <span className={(this.state.type == "NL" ? "type_of" : "type_of type_py")}>{this.state.type}</span>
+                    {
+                        (this.props.activeVar != null) ?
+                        <span className="var_sel">{this.props.activeVar}</span>
+                        :
+                        ''
+                    }
+                </div>
                 <Upload addMessaggio={this.props.addMessaggio} url={this.props.url} theme={"form_add"} text={<i className="material-icons">attach_file</i>}/>
                 <Jupyter />
-                <button className="button-board-lateral" onClick={this.clearSession}><Translate id="clear">Clear</Translate></button>
+                <button className="button-board-lateral" onClick={this.clearSession}><i className="material-icons">clear_all</i> <Translate id="clear"></Translate></button>
             </div>
         );
     }

@@ -12,7 +12,6 @@ const mapMessaggi = state => {
     return { messaggi: state.messaggi.present };
 };
 
-
 class ConnectedMessages extends React.Component {
     constructor(props){
         super(props);
@@ -35,7 +34,6 @@ class ConnectedMessages extends React.Component {
     openCode(e, id){
         this.setState({ openCode: (this.state.openCode) ? '' : id });
     }
-
 
     render(){
         const list = this.props.messaggi.map((el, n) => {
@@ -63,7 +61,7 @@ class ConnectedMessages extends React.Component {
                                     (el.id === this.state.openCode) ?
                                         <div className="line">
                                             <span className="incode">In [ {n} ]: </span>
-                                                <Code code={el.code} />   
+                                            <Code code={el.code} />   
                                         </div>
                                         :
                                         ""
@@ -75,7 +73,12 @@ class ConnectedMessages extends React.Component {
                             <div className="line">
                                 <span className="incode-markdown">{n}</span>
                                 <div className={el.what}>
-                                    <div className={el.who}>{el.messaggio}</div>
+                                    {
+                                        (el.what == "code") ? 
+                                            <Code code={el.messaggio} />
+                                        :
+                                        <div className={el.who}>{el.messaggio}</div>
+                                    }
                                 </div>
                             </div>
                         )
@@ -115,10 +118,7 @@ class ConnectedMessages extends React.Component {
 
         return(
             <ul className="chat-thread">
-                <CSSTransitionGroup
-                    transitionName="example"
-                    transitionEnterTimeout={500}
-                    transitionLeaveTimeout={300}>
+                <CSSTransitionGroup transitionName="example" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
                     {list}
                     <li style={{ float:"left", clear: "both" }} ref={(el) => { this.messagesEnd = el; }}></li>
                 </CSSTransitionGroup>

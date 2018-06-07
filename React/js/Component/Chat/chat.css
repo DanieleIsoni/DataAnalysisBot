@@ -70,16 +70,20 @@
     display: inline-block;
 }
 
-.markdown, pre{  
+.markdown, pre, .code{  
     flex-grow: 1;
 }
 
-.markdown div{
+.markdown div, .code pre{
     padding: 6px 20px;
     position: relative;
     max-width: 60%;
     float: left; 
     margin: 0 15px;
+}
+
+.code pre{
+    float: right !important;
 }
 
 .error .bot{

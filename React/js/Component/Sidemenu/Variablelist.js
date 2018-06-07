@@ -7,9 +7,10 @@ import Action from '../../Constants/Actions';
 import { Translate } from 'react-localize-redux';
 import { withLocalize } from 'react-localize-redux';
 import Upload from '../Control/Upload';
+import { setActiveVariable} from "../../Actions/index";
 
 const mapVariabili = state => {
-    return { variabili: state.variabili.present };
+    return { variabili: state.variabili.present, activeVar: state.active };
 };
 
 const mapDeleteVar = dispatch => {
@@ -17,6 +18,7 @@ const mapDeleteVar = dispatch => {
       deleteVariabile: id => dispatch(deleteVariabile(id)),
       addHints: hints => dispatch(addHints(hints)),
       addMessaggio: messaggio => dispatch(addMessaggio(messaggio)),
+      setActiveVariable: vari => dispatch(setActiveVariable(vari))
     };
 };
 
@@ -35,7 +37,10 @@ class ConnectedList extends React.Component {
         }     
     }
 
-    deleteVariable(e, id, n) {
+    deleteVariable(e, id, n, name) {
+        if(name == this.props.activeVar){
+            this.props.setActiveVariable(null);
+        }
         axios.get(this.props.url + '/delete/' + n)
         .then(response => {
             this.props.deleteVariabile(id);
@@ -49,9 +54,9 @@ class ConnectedList extends React.Component {
                 {
                     (this.props.variabili.length) ? 
                         this.props.variabili.map((el, n) => (
-                            <div key={el.id} className={(this.props.selected == el.id) ? 'variable-container selected-var' : 'variable-container'} id={el.name}>
+                            <div key={el.id} className={(this.props.activeVar == el.name) ? 'variable-container selected-var' : 'variable-container'} id={el.name}>
                                 <span onClick={() => this.props.onClick(el)}>{el.name}</span>
-                                <span className="delete_var" onClick={(e) => this.deleteVariable(e, el.id, n)}><i className="material-icons close_var">close</i></span>
+                                <span className="delete_var" onClick={(e) => this.deleteVariable(e, el.id, n, el.name)}><i className="material-icons close_var">close</i></span>
                             </div>
                         ))
                     :

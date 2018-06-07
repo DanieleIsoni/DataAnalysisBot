@@ -1,7 +1,7 @@
 import React from "react";
 import axios from 'axios';
 import { connect } from "react-redux";
-import { addVariabile, addMessaggio, addHints } from "../../Actions/index";
+import { addVariabile, addMessaggio, addHints, setActiveVariable} from "../../Actions/index";
 import uuidv1 from "uuid";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
@@ -10,8 +10,13 @@ var MODAL_REF = 'MODAL';
 const mapAddVariabileEvent = dispatch => {
     return {
       addVariabile: variabile => dispatch(addVariabile(variabile)),
-      addHints: hints => dispatch(addHints(hints))
+      addHints: hints => dispatch(addHints(hints)),
+      setActiveVariable: vari => dispatch(setActiveVariable(vari))
     };
+};
+
+const mapActive = state => {
+    return { activeVar: state.active };
 };
 
 class ConnectedUpload extends React.Component {
@@ -69,6 +74,10 @@ class ConnectedUpload extends React.Component {
                 if(response.status == 200){
                     this.props.addVariabile({ "name": file.name, "id": uuidv1() });
                     this.props.addMessaggio({"id": uuidv1(), "who": "bot", "what": "markdown", "messaggio": response.data.message, "output": []});
+                    if(this.props.activeVar == null){
+                        this.props.setActiveVariable(file.name);
+                        console.log(this.props.activeVar);
+                    }
                 }else{
                     this.props.addMessaggio({"id": uuidv1(), "who": "bot", "what": "markdown error", "messaggio": response.data.message, "output": []});
                 }      
@@ -96,6 +105,7 @@ class ConnectedUpload extends React.Component {
                         <form action="/" method="POST" encType="multipart/form-data" className="form-upload" onSubmit={this.handleSubmit}>
                             <ModalHeader>Upload a file </ModalHeader>   
                             <ModalBody>
+                                {this.props.activeVar}
                                     <input type="file" name="file" id="file" accept=".xls,.xlsx,.csv,.data" className="hidden_input" onChange={this.handlefileupload} ref={input => { this.fileInput = input; }} />
                                     <label className="upload-file" htmlFor="file">
                                         <span className="file-name">{this.state.filename}</span><span className="file-size">{(this.state.filesize) ? this.state.filesize / 1000 + "KB" : ""}</span>
@@ -115,5 +125,5 @@ class ConnectedUpload extends React.Component {
     }
 }
 
-const Upload = connect(null, mapAddVariabileEvent)(ConnectedUpload);
+const Upload = connect(mapActive, mapAddVariabileEvent)(ConnectedUpload);
 export default Upload;
