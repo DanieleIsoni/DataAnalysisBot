@@ -24,7 +24,8 @@ html, body{
     background: #f1f1f1;
     overflow: hidden;
     opacity: 0;
-    animation: show_up 1s forwards;
+    transform: scale(2);
+    animation: show_up 0.2s forwards;
 }
 
 #content{ height: 100%; }
@@ -186,6 +187,10 @@ button[disabled]{ opacity: 0.3; }
     .openSide{
         display: none;
     }
+
+    #dialog{
+        padding: 0 50px !important;
+    }
 }
 
 @media (max-width: 768px) {
@@ -228,6 +233,7 @@ button[disabled]{ opacity: 0.3; }
 
 @keyframes show_up{
     to{
+        transform: scale(1);
         opacity: 1;
     }
 }

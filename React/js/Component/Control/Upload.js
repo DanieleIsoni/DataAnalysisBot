@@ -54,8 +54,10 @@ class ConnectedUpload extends React.Component {
         this.setState({ showLoader: true });
 
         if(file){
+            var send_active = (this.props.activeVar == null || typeof this.props.activeVar == 'undefined') ? "empty" : this.props.activeVar;
             var formdata = new FormData();
             formdata.append('file', file);
+            formdata.append('variabile',send_active);
             this.props.addMessaggio({"id": uuidv1(), "who": "me", "what": "markdown", "messaggio": "Uploading file...", "output": []});
             axios({
                 url: this.props.url + '/upload',
@@ -74,10 +76,8 @@ class ConnectedUpload extends React.Component {
                 if(response.status == 200){
                     this.props.addVariabile({ "name": file.name, "id": uuidv1() });
                     this.props.addMessaggio({"id": uuidv1(), "who": "bot", "what": "markdown", "messaggio": response.data.message, "output": []});
-                    if(this.props.activeVar == null){
-                        this.props.setActiveVariable(file.name);
-                        console.log(this.props.activeVar);
-                    }
+
+                    this.props.setActiveVariable(file.name);
                 }else{
                     this.props.addMessaggio({"id": uuidv1(), "who": "bot", "what": "markdown error", "messaggio": response.data.message, "output": []});
                 }      
@@ -105,7 +105,6 @@ class ConnectedUpload extends React.Component {
                         <form action="/" method="POST" encType="multipart/form-data" className="form-upload" onSubmit={this.handleSubmit}>
                             <ModalHeader>Upload a file </ModalHeader>   
                             <ModalBody>
-                                {this.props.activeVar}
                                     <input type="file" name="file" id="file" accept=".xls,.xlsx,.csv,.data" className="hidden_input" onChange={this.handlefileupload} ref={input => { this.fileInput = input; }} />
                                     <label className="upload-file" htmlFor="file">
                                         <span className="file-name">{this.state.filename}</span><span className="file-size">{(this.state.filesize) ? this.state.filesize / 1000 + "KB" : ""}</span>

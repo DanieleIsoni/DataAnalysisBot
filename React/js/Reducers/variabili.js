@@ -6,8 +6,10 @@ const variabili = (state = [], action) => {
         case ADD_VARIABILE:
             return [...state, action.payload];
         case DELETE_VARIABLE:
-            let  {[action.payload]: deleted, ...newState} = state;
-            return newState;
+            return [    
+                ...state.slice(0, action.payload),
+                ...state.slice(action.payload + 1)
+            ]
         default:
             return state;
     }

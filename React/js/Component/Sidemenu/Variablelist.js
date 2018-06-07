@@ -43,8 +43,9 @@ class ConnectedList extends React.Component {
         }
         axios.get(this.props.url + '/delete/' + n)
         .then(response => {
-            this.props.deleteVariabile(id);
+            this.props.deleteVariabile(n);
             this.props.addMessaggio({id: uuidv1(), who: "bot", what: "markdown", messaggio: response.data, output: []});
+            console.log("Deleting " + id + "...");
         }) 
     }
 

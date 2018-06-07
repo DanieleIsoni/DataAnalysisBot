@@ -2,7 +2,7 @@ import { ADD_VARIABILE,ADD_MESSAGGIO, EDIT_MESSAGGIO, CLEAR_MESSAGGI, DELETE_VAR
 
 // Variabili
 export const addVariabile = variabile => ({ type: ADD_VARIABILE, payload: variabile });
-export const deleteVariabile = id => ({ type: DELETE_VARIABLE, payload: id });
+export const deleteVariabile = variabile => ({ type: DELETE_VARIABLE, payload: variabile });
 
 // Messaggi
 export const addMessaggio = messaggio => ({ type: ADD_MESSAGGIO, payload: messaggio });

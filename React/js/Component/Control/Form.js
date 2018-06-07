@@ -116,10 +116,12 @@ class ConnectedForm extends React.Component {
         comands.push(value);
         this.setState({ inputValue: '', comandi: comands });
 
-        if(value != "" && this.state.type != "Py")
-            this.props.addMessaggio({id: uuidv1(), who: "me", what: "markdown", messaggio: value, output: []});
-        else
-            this.props.addMessaggio({id: uuidv1(), who: "me", what: "code", messaggio: value, output: []});
+        if(value != ""){
+            if(this.state.type != "Py")
+                this.props.addMessaggio({id: uuidv1(), who: "me", what: "markdown", messaggio: value, output: []});
+            else
+                this.props.addMessaggio({id: uuidv1(), who: "me", what: "code", messaggio: value, output: []});
+        }
 
         if(this.props.activeVar == null && this.props.variabili.length > 0){
             this.setState({temp_mex: value, waiting_var: true});
@@ -139,7 +141,7 @@ class ConnectedForm extends React.Component {
                         "text": value
                         },
                     "react": "true",
-                    "variabile": this.props.activeVar 
+                    "variabile": (this.props.activeVar == null || typeof this.props.activeVar == 'undefined') ? "empty" : this.props.activeVar
                     //"python": (this.state.type == "Py") ? "true" : "false"
                 }, headers: {
                     'accept': 'application/json',
