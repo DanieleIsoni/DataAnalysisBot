@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { addVariabile, addMessaggio, addHints, setActiveVariable} from "../../Actions/index";
 import uuidv1 from "uuid";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { uploadFile } from '../../Actions/Axios'
 
 var MODAL_REF = 'MODAL';
 
@@ -50,40 +51,13 @@ class ConnectedUpload extends React.Component {
     handleSubmit(e){
         e.preventDefault();
         var file = this.fileInput.files[0];
-
         this.setState({ showLoader: true });
 
         if(file){
             var send_active = (this.props.activeVar == null || typeof this.props.activeVar == 'undefined') ? "empty" : this.props.activeVar;
-            var formdata = new FormData();
-            formdata.append('file', file);
-            formdata.append('variabile',send_active);
-            this.props.addMessaggio({"id": uuidv1(), "who": "me", "what": "markdown", "messaggio": "Uploading file...", "output": []});
-            axios({
-                url: this.props.url + '/upload',
-                data: formdata,
-                method: 'post', 
-                validateStatus: function (status) {
-                    return status < 500; // Reject only if the status code is greater than or equal to 500
-                },
-                onUploadProgress: (progressEvent) => {
-                    const totalLength = progressEvent.lengthComputable ? progressEvent.total : progressEvent.target.getResponseHeader('content-length') || progressEvent.target.getResponseHeader('x-decompressed-content-length');
-                    if (totalLength !== null) {
-                        this.setState({ progress: Math.round( (progressEvent.loaded * 100) / totalLength ) })
-                    }
-                }
-            }).then(response => {
-                if(response.status == 200){
-                    this.props.addVariabile({ "name": file.name, "id": uuidv1() });
-                    this.props.addMessaggio({"id": uuidv1(), "who": "bot", "what": "markdown", "messaggio": response.data.message, "output": []});
-
-                    this.props.setActiveVariable(file.name);
-                }else{
-                    this.props.addMessaggio({"id": uuidv1(), "who": "bot", "what": "markdown error", "messaggio": response.data.message, "output": []});
-                }      
-        
+            uploadFile(file, send_active).then(() => {
                 this.setState({ modal: false, filename: "Upload file...", showLoader: false });
-            })
+            });
         }else{
             this.setState({ modal: false, filename: "Upload file..." });
         }

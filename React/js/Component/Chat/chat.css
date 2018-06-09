@@ -59,6 +59,11 @@
     flex-grow: 1;
 }
 
+.mycode pre{
+    width: 70%; 
+    float: right;
+}
+
 .output-area{
     margin-top: 0;
     display: flex;
@@ -233,15 +238,15 @@
 }
 
 .choices{
-    display: none;
+    display: flex !important;
     margin: 10px 50px 20px 50px;
     align-items: center;
     flex-wrap: wrap;
 }
 
-.active_choice + .choices{
+/*.active_choice + .choices{
     display: flex !important;
-}
+}*/
 
 .choices .next{
     background: white !important;

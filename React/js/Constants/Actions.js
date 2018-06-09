@@ -31,11 +31,12 @@ let actions = {
 
 export default actions;
 
-/*  TIPI DI AZIONI IN ARRIVO
+/*  Incoming Dialogflow action
     input.welcome   
     input.unknown
     data.received
         plot.chart
+            plot.chart.fu.label
         data.description.request
         test.request
             test.request.fu.attribute

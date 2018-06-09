@@ -9,31 +9,26 @@ class Jupyter{
     }
 
     addMarkdown(who, messaggio){
-        if(who == "me"){    
+        if(who == "me")   
             this.cells.push({"cell_type": "markdown", "metadata": { "who": "me" }, "source": ["### &#x1F539; " + messaggio]});
-        }else{
+        else
             this.cells.push({"cell_type": "markdown", "metadata": { "who": "bot" }, "source": ["&#x1F538; " + messaggio + "\n"]});
-        }
     }
 
     addCode(outputs, code){
         var outs = [];
-
         outputs.map((output, i) => {
             var dati = (output.type == "image/png") ? {"image/png": output.content} : {"text/plain": [output.content]}
             var result_type = (output.type == "image/png") ? "display_data" : "execute_result";
             var data_out = "";
             if(output.content != null){
-                if(output.type == "image/png"){
+                if(output.type == "image/png")
                     data_out = {"data": dati, "metadata": {}, "output_type": result_type};
-                }else{
+                else
                     data_out = {"data": dati, "metadata": {}, "execution_count": 1, "output_type": result_type}
-                }
             }
             outs.push(data_out);
         });
-
-
         this.cells.push({"cell_type": "code", "execution_count": 1, "metadata": { "who": "bot" }, "outputs": outs, "source": [code]});
     }
 
@@ -52,9 +47,7 @@ class Jupyter{
                     }else{
                         outs.push({type: field, content: op.data[field]});
                     }
-                });
-
-                
+                });   
             }
             
             var messages = [];
@@ -65,13 +58,10 @@ class Jupyter{
                 }else{
                     code = el.source.join("");
                 }
-                
                 messages.push(mes);
             });
-
             messaggi.push({who: el.metadata.who, what: el.cell_type, messaggio: messages.join(""), output: outs, code: code});
         });
-
         return messaggi;
     }
 }

@@ -9,10 +9,8 @@ const messaggi = (state = [], action) => {
             return [];
         case EDIT_MESSAGGIO:
             return state.map( (item, index) => {
-                if(index !== state.length-1) {
-                    return item;
-                }
-                
+                if(index !== state.length-1) return item;
+                                
                 return {
                     ...item,
                     output: action.payload.messaggio.output,
@@ -21,12 +19,10 @@ const messaggi = (state = [], action) => {
                     what: action.payload.messaggio.what
                 }; 
             });
-
         default:
             return state;
     }
 };
 
 const undoableMessaggi = undoable(messaggi);
-
 export default undoableMessaggi;
