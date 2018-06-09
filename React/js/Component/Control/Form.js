@@ -11,6 +11,7 @@ import { Translate } from 'react-localize-redux';
 import controlTranslation from './translation';
 import { withLocalize } from 'react-localize-redux';
 import { renderToString } from 'react-dom/server';
+import Code from '../Chat/Code';
 
 import './control.css';
 
@@ -39,7 +40,8 @@ class ConnectedForm extends React.Component {
             selectedCommand: 0,
             type: 'NL',
             temp_mex: '',
-            waiting_var: false
+            waiting_var: false,
+            focused: false
         }
         this.props.addTranslation(controlTranslation);
 
@@ -47,6 +49,7 @@ class ConnectedForm extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleKeyDown = this.handleKeyDown.bind(this);
         this.clearSession = this.clearSession.bind(this);
+        this.handleFocus = this.handleFocus.bind(this);
     }
 
     componentDidMount(){
@@ -67,6 +70,10 @@ class ConnectedForm extends React.Component {
     }
 
     componentDidUpdate(){
+        if(this.state.type == "Py"){
+            this.updateTextArea();
+        }
+        
         if(this.state.waiting_var && this.props.activeVar != null){
             this.sendMessage(this.state.temp_mex);
             this.setState({temp_mex: '', waiting_var: false});
@@ -82,7 +89,6 @@ class ConnectedForm extends React.Component {
 
     actionController (azione) {
         this.setState({ action: azione });
-        console.log(azione);
         switch(azione){
             case "initial":
             case "input.welcome":
@@ -98,6 +104,7 @@ class ConnectedForm extends React.Component {
                 this.props.addHints(Action["after_file"]);
                 break;
             case "plot.chart":
+            case "plot.chart.fu.label":
                 this.props.addHints(Action["after_plot"]);
                 break;
             case "test.request":
@@ -107,7 +114,6 @@ class ConnectedForm extends React.Component {
                 break;
             default:
                 this.props.addHints(Action["initial"]);
-                break;
         }
     }
 
@@ -161,8 +167,13 @@ class ConnectedForm extends React.Component {
 
     handleKeyPress(event) {
         if(event.key == 'Enter'){
-            var value = event.target.value;
-            this.sendMessage(value);
+            if(event.shiftKey){
+
+            }else{
+                var value = event.target.value;
+                event.preventDefault();
+                this.sendMessage(value);
+            }
         }
     }
 
@@ -185,13 +196,31 @@ class ConnectedForm extends React.Component {
 
     handleChange(evt){
         var text = evt.target.value;
+        this.setState({ inputValue: evt.target.value });
+
+        this.textarea.style.height = '30px';
+        this.textarea.style.height = this.textarea.scrollHeight + 'px';
+
         var python = this.checkPython(text);
         if(python){
             this.setState({type: "Py"});
+            this.updateTextArea();
         }else{
             this.setState({type: "NL"});
         }
-        this.setState({ inputValue: evt.target.value });
+    }
+
+    updateTextArea(){
+        this.preview.style.bottom = '40px';
+        this.preview.style.bottom = this.control.clientHeight-1 + 'px';
+    }
+
+    handleFocus(e, focus){
+        if(focus){
+            this.setState({ focused: true });
+        }else{
+            this.setState({ focused: false });
+        }
     }
 
     checkPython(text){
@@ -200,22 +229,30 @@ class ConnectedForm extends React.Component {
     }
 
     render(){
+        const editor_code = 
+            <div className="preview_py" style={{display: (this.state.type == "Py") ? "block" : "none" }} ref={div => this.preview = div}>
+                <Code code={this.state.inputValue} theme="dark" line="false"/>
+            </div>;
+
         return (
-            <div className="control">
+            <div className="control" ref={div => this.control = div}>      
+                {editor_code}
                 <UndoRedo />
-                <div className="input_container">
-                    <input type="text" name="input" id="dialog" autoComplete="off" placeholder={(this.state.inputValue.length == 0) ? renderToString(<Translate id="sugg"></Translate>) : ""} value={this.state.inputValue} onKeyDown={ this.handleKeyDown } onKeyPress={this.handleKeyPress} onChange={this.handleChange}/>
-                    <span className={(this.state.type == "NL" ? "type_of" : "type_of type_py")}>{this.state.type}</span>
-                    {
-                        (this.props.activeVar != null) ?
-                        <span className="var_sel">{this.props.activeVar}</span>
-                        :
-                        ''
-                    }
+                <div className={(this.state.focused) ? "input_container input_cont_focused" : "input_container"}>
+                    { /*<input type="text" name="input" id="dialog" autoComplete="off" placeholder={(this.state.inputValue.length == 0) ? renderToString(<Translate id="sugg"></Translate>) : ""} value={this.state.inputValue} onKeyDown={ this.handleKeyDown } onKeyPress={this.handleKeyPress} onChange={this.handleChange}/> */ }
+                    <textarea rows="1" id="dialog" autoComplete="on" onBlur={(e) => this.handleFocus(e, false)} onFocus={(e) => this.handleFocus(e, true)}  ref={input => this.textarea = input} placeholder={(this.state.inputValue.length == 0) ? renderToString(<Translate id="sugg"></Translate>) : ""} value={this.state.inputValue} onKeyPress={this.handleKeyPress} onChange={this.handleChange}></textarea>
+                    
+                        <span className={(this.state.type == "NL" ? "type_of" : "type_of type_py")}>{this.state.type}</span>
+                        {
+                            (this.props.activeVar != null) ?
+                            <span className="var_sel">{this.props.activeVar}</span>
+                            :
+                            ''
+                        }
                 </div>
-                <Upload addMessaggio={this.props.addMessaggio} url={this.props.url} theme={"form_add"} text={<i className="material-icons">attach_file</i>}/>
+                {/*<Upload addMessaggio={this.props.addMessaggio} url={this.props.url} theme={"form_add"} text={<i className="material-icons">attach_file</i>}/>*/}
                 <Jupyter />
-                <button className="button-board-lateral" onClick={this.clearSession}><i className="material-icons">clear_all</i> <Translate id="clear"></Translate></button>
+                <button className="button-board-lateral" onClick={this.clearSession}><i className="material-icons" style={{color: "#EF5350"}}>clear_all</i> <Translate id="clear"></Translate></button>
             </div>
         );
     }

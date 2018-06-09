@@ -61,7 +61,7 @@ class ConnectedMessages extends React.Component {
                                     (el.id === this.state.openCode) ?
                                         <div className="line">
                                             <span className="incode">In [ {n} ]: </span>
-                                            <Code code={el.code} />   
+                                            <Code code={el.code} line="true"/>   
                                         </div>
                                         :
                                         ""

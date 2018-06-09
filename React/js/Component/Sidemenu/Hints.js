@@ -18,6 +18,10 @@ class ConnectedList extends React.Component {
         };
     }
 
+    componentDidUpdate(){
+        console.log(this.props.hints);
+    }
+
     toggle(e){
         switch(e.target.className){
             case "operation":

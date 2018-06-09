@@ -187,9 +187,8 @@ button[disabled]{ opacity: 0.3; }
     .openSide{
         display: none;
     }
-
-    #dialog{
-        padding: 0 50px !important;
+    .control{
+        padding: 0px 0px;
     }
 }
 
@@ -220,10 +219,15 @@ button[disabled]{ opacity: 0.3; }
 @media (max-width: 768px) {
     .control{
         height: 120px;
+        padding: 6px 15px;
+    }
+
+    #dialog{
+        padding-left: 10px;
     }
 
     .suggest_panel{
-        bottom: 120px;
+        bottom: 110px;
     }
 
     .openSide{

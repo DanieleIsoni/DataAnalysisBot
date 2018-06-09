@@ -16,14 +16,10 @@ const mapDispatchToProps = dispatch => {
   
 let UndoRedo = ({ canUndo, canRedo, onUndo, onRedo }) => (
     <div>
-        <button className="button-board round" onClick={onUndo} disabled={!canUndo}><i className="material-icons">undo</i></button>
-        <button className="button-board round" onClick={onRedo} disabled={!canRedo}><i className="material-icons">redo</i></button>
+        <button className="undoredo" onClick={onUndo} disabled={!canUndo}><i className="material-icons">keyboard_arrow_left</i></button>
+        <button className="undoredo" onClick={onRedo} disabled={!canRedo}><i className="material-icons">keyboard_arrow_right</i></button>
     </div>
 )
 
-UndoRedo = connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(UndoRedo);
-
+UndoRedo = connect(mapStateToProps, mapDispatchToProps)(UndoRedo);
 export default UndoRedo;
