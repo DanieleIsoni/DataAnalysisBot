@@ -8,16 +8,12 @@ import { uploadFile } from '../../Actions/Axios'
 
 var MODAL_REF = 'MODAL';
 
-const mapAddVariabileEvent = dispatch => {
+const mapEvents = dispatch => {
     return {
       addVariabile: variabile => dispatch(addVariabile(variabile)),
       addHints: hints => dispatch(addHints(hints)),
       setActiveVariable: vari => dispatch(setActiveVariable(vari))
     };
-};
-
-const mapActive = state => {
-    return { activeVar: state.active };
 };
 
 class ConnectedUpload extends React.Component {
@@ -44,7 +40,6 @@ class ConnectedUpload extends React.Component {
                 modal: true
             });
         }
-
         this.sendFile.focus();
     }
 
@@ -98,5 +93,5 @@ class ConnectedUpload extends React.Component {
     }
 }
 
-const Upload = connect(mapActive, mapAddVariabileEvent)(ConnectedUpload);
+const Upload = connect(null, mapEvents)(ConnectedUpload);
 export default Upload;

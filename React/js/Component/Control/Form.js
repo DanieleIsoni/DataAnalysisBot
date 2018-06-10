@@ -59,7 +59,7 @@ class ConnectedForm extends React.Component {
             this.setState({temp_mex: value, waiting_var: true});
         }
 
-        sendMessage(value, this.state.type, this.props.activeVar, !this.state.waiting_var, this.props.activeVar);
+        sendMessage(value, this.state.type, this.props.activeVar, !this.state.waiting_var);
     }
 
     handleKeyPress(event) {
@@ -116,12 +116,14 @@ class ConnectedForm extends React.Component {
                     <textarea rows="1" id="dialog" autoComplete="on" onBlur={(e) => this.handleFocus(e, false)} onFocus={(e) => this.handleFocus(e, true)} ref={input => this.textarea = input} placeholder={(this.state.inputValue.length == 0) ? renderToString(<Translate id="sugg"></Translate>) : ""} value={this.state.inputValue} onKeyPress={this.handleKeyPress} onChange={this.handleChange}></textarea>                  
                         <span className={(this.state.type == "NL" ? "type_of" : "type_of type_py")}>{this.state.type}</span>
                         {
-                            (this.props.activeVar != null) ? <span className="var_sel">{this.props.activeVar}</span> : ''
+                            (this.props.activeVar != null) ? <span className="var_sel var_back">{this.props.activeVar}</span> : <span className="var_sel">No Context</span> 
                         }
                 </div>
                 {/*<Upload addMessaggio={this.props.addMessaggio} url={this.props.url} theme={"form_add"} text={<i className="material-icons">attach_file</i>}/>*/}
-                <Jupyter />
-                <button className="button-board-lateral" onClick={(e) => clearMessages(e)}><i className="material-icons" style={{color: "#EF5350"}}>clear_all</i> <Translate id="clear"></Translate></button>
+                <div className="group_button">
+                    <Jupyter />
+                    <button className="button-board-lateral" onClick={(e) => clearMessages(e)}><i className="material-icons" style={{color: "#EF5350"}}>clear_all</i> <Translate id="clear"></Translate></button>
+                </div>
             </div>
         );
     }

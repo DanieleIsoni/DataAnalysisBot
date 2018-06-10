@@ -11,7 +11,7 @@ function createWindow () {
 
     // Create the browser window.
     win = new BrowserWindow({width: 800, height: 600});
-    win.setFullScreen(true);
+    win.maximize();
 
     // e viene caricato il file index.html della nostra app.
     win.loadURL(url.format({

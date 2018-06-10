@@ -188,7 +188,7 @@ button[disabled]{ opacity: 0.3; }
         display: none;
     }
     .control{
-        padding: 0px 0px;
+        padding: 2px 5px;
     }
 }
 

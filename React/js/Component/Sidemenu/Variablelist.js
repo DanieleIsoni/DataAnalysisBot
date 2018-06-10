@@ -9,10 +9,6 @@ import { withLocalize } from 'react-localize-redux';
 import Upload from '../Control/Upload';
 import { setActiveVariable} from "../../Actions/index";
 
-const mapVariabili = state => {
-    return { variabili: state.variabili.present, activeVar: state.active };
-};
-
 const mapDeleteVar = dispatch => {
     return {
       deleteVariabile: id => dispatch(deleteVariabile(id)),
@@ -25,27 +21,20 @@ const mapDeleteVar = dispatch => {
 class ConnectedList extends React.Component {
     constructor(props){
         super(props);
-        this.props.addTranslation(props.lang);
         this.deleteVariable = this.deleteVariable.bind(this);
     }
 
     componentDidUpdate(){
-        if(this.props.variabili.length > 0){
-            this.props.addHints(Action["after_file"]);
-        }else{
-            this.props.addHints(Action["initial"]);
-        }     
+        if(this.props.variabili.length > 0) this.props.addHints(Action["after_file"]);  
+        else this.props.addHints(Action["initial"]);   
     }
 
     deleteVariable(e, id, n, name) {
-        if(name == this.props.activeVar){
-            this.props.setActiveVariable(null);
-        }
+        if(name == this.props.activeVar) this.props.setActiveVariable(null);
         axios.get(this.props.url + '/delete/' + n)
         .then(response => {
             this.props.deleteVariabile(n);
             this.props.addMessaggio({id: uuidv1(), who: "bot", what: "markdown", messaggio: response.data, output: []});
-            console.log("Deleting " + id + "...");
         }) 
     }
 
@@ -60,14 +49,13 @@ class ConnectedList extends React.Component {
                                 <span className="delete_var" onClick={(e) => this.deleteVariable(e, el.id, n, el.name)}><i className="material-icons close_var">close</i></span>
                             </div>
                         ))
-                    :
-                        ""//<span className="side_message"><i className="material-icons">notification_important</i><Translate id="novar">No Variable uploaded!</Translate></span>
-                    }
-                    <Upload addMessaggio={this.props.addMessaggio} url={this.props.url} theme={"side_add"} text={"Add Variable"}/>
+                    :""
+                }
+                <Upload addMessaggio={this.props.addMessaggio} url={this.props.url} theme={"side_add"} text={"Add Variable"} activeVar={this.props.activeVar}/>
             </div>
         );
     }
 }
 
-const List = connect(mapVariabili, mapDeleteVar)(ConnectedList);
-export default withLocalize(List);
+const List = connect(null, mapDeleteVar)(ConnectedList);
+export default List;

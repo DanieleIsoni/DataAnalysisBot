@@ -35,12 +35,12 @@ const actionController = (azione) => {
     }
 }
 
-export const sendMessage = (value, type, isVariableSelected, activeVar) => {
+export const sendMessage = (value, type, activeVar, isVariableSelected) => {
     if(value != ""){
         store.dispatch(addMessaggio({id: uuidv1(), who: "me", what: (type != "Py") ? "markdown" : "code", messaggio: value, output: []}));
     }
 
-    if(isVariableSelected){
+    if(!isVariableSelected){
         store.dispatch(addMessaggio({id: uuidv1(), who: "bot", what: "markdown", messaggio: "Specify a variable! Select it...", output: []}));
     }else{
         var udelete = uuidv1();
@@ -112,10 +112,22 @@ export const uploadFile = (file, send_active) => {
             }else{
                 store.dispatch(addMessaggio({"id": uuidv1(), "who": "bot", "what": "markdown error", "messaggio": response.data.message, "output": []}));
             }    
+
             actionController(response.data.action);
             
             resolve();
         });
+    });
+}
+
+export const getVariable = (name) => {
+    return new Promise((resolve, reject) => {
+        axios.get(URL_HEROKU + '/variable/' + name, {responseType: 'json'})
+        .then(response => {
+            resolve(response.data);
+        }).catch(error => {
+            reject(error);
+        })
     });
 }
 

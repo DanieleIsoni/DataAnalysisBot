@@ -14,6 +14,7 @@ class ConnectedMessages extends React.Component {
     constructor(props){
         super(props);
         this.state = { openCode: '' }
+        this.openCode = this.openCode.bind(this);
     }
 
     componentDidMount() { this.scrollToBottom(); }
