@@ -37,6 +37,7 @@ class ConnectedForm extends React.Component {
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleFocus = this.handleFocus.bind(this);
+        this.handleKeyDown = this.handleKeyDown.bind(this);
     }
 
     componentDidMount(){ getAll(); }
@@ -88,6 +89,21 @@ class ConnectedForm extends React.Component {
         }
     }
 
+    handleKeyDown(e){
+        if(e.keyCode == 9){
+            e.preventDefault();
+            var start = this.textarea.selectionStart;
+            var end = this.textarea.selectionEnd;
+
+            var val = this.textarea.value.substring(0, start) + "\t" + this.textarea.value.substring(end);
+            this.selectionStart = this.selectionEnd = start + 1;
+
+            this.setState({ inputValue: val });
+
+            console.log("Tab");
+        }
+    }
+
     updateTextArea(){
         this.preview.style.bottom = '40px';
         this.preview.style.bottom = this.control.clientHeight-1 + 'px';
@@ -98,7 +114,7 @@ class ConnectedForm extends React.Component {
     }
 
     checkPython(text){
-        var pattern =/([\/\+\-\*\[\]\(\)\:]|import|if|case|.*\..*)+/;
+        var pattern =/([\/\+\-\*\[\]\(\)\:]|import|\bif\b|\bcase\b|\bdef\b|.*\..*)+/;
         return pattern.test(text);
     }
 
@@ -113,7 +129,7 @@ class ConnectedForm extends React.Component {
                 {editor_code}
                 <UndoRedo />
                 <div className={(this.state.focused) ? "input_container input_cont_focused" : "input_container"}>
-                    <textarea rows="1" id="dialog" autoComplete="on" onBlur={(e) => this.handleFocus(e, false)} onFocus={(e) => this.handleFocus(e, true)} ref={input => this.textarea = input} placeholder={(this.state.inputValue.length == 0) ? renderToString(<Translate id="sugg"></Translate>) : ""} value={this.state.inputValue} onKeyPress={this.handleKeyPress} onChange={this.handleChange}></textarea>                  
+                    <textarea onKeyDown={this.handleKeyDown} rows="1" id="dialog" autoComplete="on" onBlur={(e) => this.handleFocus(e, false)} onFocus={(e) => this.handleFocus(e, true)} ref={input => this.textarea = input} placeholder={(this.state.inputValue.length == 0) ? renderToString(<Translate id="sugg"></Translate>) : ""} value={this.state.inputValue} onKeyPress={this.handleKeyPress} onChange={this.handleChange}></textarea>                  
                         <span className={(this.state.type == "NL" ? "type_of" : "type_of type_py")}>{this.state.type}</span>
                         {
                             (this.props.activeVar != null) ? <span className="var_sel var_back">{this.props.activeVar}</span> : <span className="var_sel">No Context</span> 
