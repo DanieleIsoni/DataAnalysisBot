@@ -188,7 +188,7 @@ button[disabled]{ opacity: 0.3; }
         display: none;
     }
     .control{
-        padding: 2px 5px;
+        padding: 5px;
     }
 }
 
@@ -232,6 +232,10 @@ button[disabled]{ opacity: 0.3; }
 
     .openSide{
         display: block;
+    }
+
+    .gestione{
+        height: 100%;
     }
 }
 

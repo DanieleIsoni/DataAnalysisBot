@@ -122,7 +122,7 @@ class ConnectedForm extends React.Component {
                 {/*<Upload addMessaggio={this.props.addMessaggio} url={this.props.url} theme={"form_add"} text={<i className="material-icons">attach_file</i>}/>*/}
                 <div className="group_button">
                     <Jupyter />
-                    <button className="button-board-lateral" onClick={(e) => clearMessages(e)}><i className="material-icons" style={{color: "#EF5350"}}>clear_all</i> <Translate id="clear"></Translate></button>
+                    <button className="button-board-lateral clear" onClick={(e) => clearMessages(e)}><i className="material-icons" style={{color: "#EF5350"}}>clear_all</i> <Translate id="clear"></Translate></button>
                 </div>
             </div>
         );

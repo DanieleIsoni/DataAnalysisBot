@@ -65,15 +65,16 @@
     width: 48%;
     z-index: 100;
     border: none;
-    background: rgba(0,0,0,0.5) !important;
+    background: rgba(0,0,0,0) !important;
     color: #eee;
     font-weight: 500;
     text-align: center;
     height: 40px;
-    border-radius: 5px;
+    border-radius: 20px;
     transition: background 0.3s;
     cursor: pointer;
     margin: 0 1%;
+    border: 1px solid  rgba(255,255,255,0.09);
 }
 
 .button-board-lateral label i{
@@ -100,6 +101,7 @@
     vertical-align: bottom;
 }
 
+
 .input_container{
     position: relative;
     width: 100%;
@@ -109,7 +111,7 @@
     min-height: 40px;
     background: rgba(255,255,255,0.03);
     width: 100%;
-    border-radius: 30px;
+    border-radius: 20px;
 }
 
 #dialog{
