@@ -55,10 +55,24 @@ let storeAttributes = function (fileName, fileLink, response, session){
                 ]
             });
         });
+        Common.variablesMap.forEach((value,key) => {
+            if (key !== fileName){
+                value.attributes.forEach(el => {
+                   entries.push({
+                        "value": `${el}`,
+                        "synonyms":[
+                            `${el}`
+                        ]
+                    });
+                });
+            }
+        });
+
+        console.log(`ENTRIES: ${JSON.stringify(entries, null, '   ')}`);
 
         let sessionEntityType = {
             name: `${session}/entityTypes/Attribute`,
-            entityOverrideMode: "ENTITY_OVERRIDE_MODE_OVERRIDE",
+            entityOverrideMode: "ENTITY_OVERRIDE_MODE_SUPPLEMENT",
             entities: entries
         };
         let request = {
