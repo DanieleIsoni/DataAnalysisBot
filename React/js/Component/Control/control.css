@@ -12,6 +12,66 @@
     align-content: space-around;
 }
 
+.lds-ellipsis {
+    display: inline-block;
+    position: relative;
+    width: 60px;
+    margin-right: 5px;
+    height: 40px;
+    overflow: hidden;
+  }
+  .lds-ellipsis div {
+    position: absolute;
+    top: 15px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #fff;
+    animation-timing-function: cubic-bezier(0, 1, 1, 0);
+  }
+  .lds-ellipsis div:nth-child(1) {
+    left: 6px;
+    animation: lds-ellipsis1 0.6s infinite;
+  }
+  .lds-ellipsis div:nth-child(2) {
+    left: 6px;
+    animation: lds-ellipsis2 0.6s infinite;
+    background: #4285f4;
+  }
+  .lds-ellipsis div:nth-child(3) {
+    left: 26px;
+    animation: lds-ellipsis2 0.6s infinite;
+    background: #EF5350;
+  }
+  .lds-ellipsis div:nth-child(4) {
+    left: 45px;
+    animation: lds-ellipsis3 0.6s infinite;
+    background: #FDD835;
+  }
+  @keyframes lds-ellipsis1 {
+    0% {
+      transform: scale(0);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  @keyframes lds-ellipsis3 {
+    0% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(0);
+    }
+  }
+  @keyframes lds-ellipsis2 {
+    0% {
+      transform: translate(0, 0);
+    }
+    100% {
+      transform: translate(19px, 0);
+    }
+  }
 
 .preview_py{
     width: 100%;
@@ -320,4 +380,73 @@
     color: #888;
     background-position: 10% 50%;
     transition: all 0.3s;
+}
+
+
+.suggest{ 
+    background: #1e1e1e;
+    height: auto;
+    position: absolute;
+    max-height: 250px;
+    overflow-y: auto;
+    box-shadow: 0px 10px 20px -10px rgba(0,0,0,0.3);
+}
+
+.suggestion{
+    display: block;
+    padding: 5px 15px;
+    margin: 2px 5px;
+    color: #4285f4;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.suggestion:hover{
+    color: white;
+    margin-left: 10px;
+    transition: all 0.3s;
+}
+
+.highlight{
+    background: #4285f4;
+    color: white;
+    border-radius: 15px;
+    padding: 3px 7px;
+}
+
+@media (min-width: 768px) {
+    .control{
+        padding: 5px;
+    }
+
+    .suggest{
+        width: 70vw;
+        bottom: 51px;
+    }
+}
+
+@media (max-width: 768px) {
+    .control{
+        height: 120px;
+        padding: 6px 15px;
+    }
+
+    #dialog{
+        padding-left: 10px;
+    }
+
+    .suggest_panel{
+        bottom: 110px;
+    }
+
+    .suggest{
+        width: 96%;
+        bottom: 125px;
+        border-radius: 20px;
+    }
+
+    .type_of{
+        display: none;
+    }
 }

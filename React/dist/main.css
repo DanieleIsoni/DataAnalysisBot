@@ -187,12 +187,17 @@ button[disabled]{ opacity: 0.3; }
     .openSide{
         display: none;
     }
-    .control{
-        padding: 5px;
-    }
 }
 
 @media (max-width: 768px) {
+    .openSide{
+        display: block;
+    }
+
+    .gestione{
+        height: 100%;
+    }
+
     .openSide{
         position: absolute;
         bottom: 130px;
@@ -209,33 +214,6 @@ button[disabled]{ opacity: 0.3; }
 
     .openSide i{
         line-height: 40px;
-    }
-
-    .type_of{
-        display: none;
-    }
-}
-
-@media (max-width: 768px) {
-    .control{
-        height: 120px;
-        padding: 6px 15px;
-    }
-
-    #dialog{
-        padding-left: 10px;
-    }
-
-    .suggest_panel{
-        bottom: 110px;
-    }
-
-    .openSide{
-        display: block;
-    }
-
-    .gestione{
-        height: 100%;
     }
 }
 

@@ -10,6 +10,7 @@ import { withLocalize } from 'react-localize-redux';
 import { renderToString } from 'react-dom/server';
 import Code from '../Chat/Code';
 import {sendMessage, clearMessages, getAll} from '../../Actions/Axios'
+import Suggest from './Suggest';
 import './control.css';
 
 const mapEvents = dispatch => {
@@ -25,12 +26,13 @@ class ConnectedForm extends React.Component {
         super(props);
         this.state = {
             inputValue: '',
-            comandi: [],
+            comandi: new Set([]),
             selectedCommand: 0,
             type: 'NL',
             temp_mex: '',
             waiting_var: false,
-            focused: false
+            focused: false,
+            loading: false
         }
         this.props.addTranslation(controlTranslation);
 
@@ -38,9 +40,14 @@ class ConnectedForm extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleFocus = this.handleFocus.bind(this);
         this.handleKeyDown = this.handleKeyDown.bind(this);
+        this.setInput = this.setInput.bind(this);
     }
 
-    componentDidMount(){ getAll(); }
+    componentDidMount(){ 
+        getAll().then(() => {
+            this.forceUpdate();
+        });
+   }
 
     componentDidUpdate(){
         if(this.state.type == "Py") this.updateTextArea();
@@ -53,14 +60,16 @@ class ConnectedForm extends React.Component {
 
     sendMessage(value){     
         var comands = this.state.comandi;
-        comands.push(value);
-        this.setState({ inputValue: '', comandi: comands });
+        comands.add(value);
+        this.setState({ inputValue: '', comandi: comands, loading: true });
 
         if(this.props.activeVar == null && this.props.variabili.length > 0){
             this.setState({temp_mex: value, waiting_var: true});
         }
 
-        sendMessage(value, this.state.type, this.props.activeVar, !this.state.waiting_var);
+        sendMessage(value, this.state.type, this.props.activeVar, !this.state.waiting_var).then(() => {
+            this.setState({ loading: false });
+        });
     }
 
     handleKeyPress(event) {
@@ -99,8 +108,6 @@ class ConnectedForm extends React.Component {
             this.selectionStart = this.selectionEnd = start + 1;
 
             this.setState({ inputValue: val });
-
-            console.log("Tab");
         }
     }
 
@@ -118,6 +125,10 @@ class ConnectedForm extends React.Component {
         return pattern.test(text);
     }
 
+    setInput(e, sug){
+        this.setState({ inputValue: sug });
+    }
+
     render(){
         const editor_code = 
             <div className="preview_py" style={{display: (this.state.type == "Py") ? "block" : "none" }} ref={div => this.preview = div}>
@@ -127,7 +138,9 @@ class ConnectedForm extends React.Component {
         return (
             <div className="control" ref={div => this.control = div}>      
                 {editor_code}
+                <Suggest input={this.state.inputValue} handleSuggest={(e, sug) => this.setInput(e, sug)} type={this.state.type} focused={this.state.focused} suggest={this.state.comandi}/>
                 <UndoRedo />
+                <div style={{display: (this.state.loading) ? "block" : "none"}} className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
                 <div className={(this.state.focused) ? "input_container input_cont_focused" : "input_container"}>
                     <textarea onKeyDown={this.handleKeyDown} rows="1" id="dialog" autoComplete="on" onBlur={(e) => this.handleFocus(e, false)} onFocus={(e) => this.handleFocus(e, true)} ref={input => this.textarea = input} placeholder={(this.state.inputValue.length == 0) ? renderToString(<Translate id="sugg"></Translate>) : ""} value={this.state.inputValue} onKeyPress={this.handleKeyPress} onChange={this.handleChange}></textarea>                  
                         <span className={(this.state.type == "NL" ? "type_of" : "type_of type_py")}>{this.state.type}</span>

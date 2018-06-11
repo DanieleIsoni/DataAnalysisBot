@@ -41,7 +41,7 @@ class ConnectedMessages extends React.Component {
                 <ul className="chat-thread">
                     <CSSTransitionGroup transitionName="example" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
                         {list}
-                        <li style={{ float:"left", clear: "both" }} ref={(el) => { this.messagesEnd = el; }}></li>
+                        <li key="toBottom" id="toBottom" style={{ clear: "both" }} ref={(el) => { this.messagesEnd = el; }}></li>
                     </CSSTransitionGroup>
                 </ul>
             </div>

@@ -197,46 +197,6 @@
     cursor: pointer;
 }
 
-.loading{
-    width: 10px;
-    height: 10px;
-    background: #777;
-    border-radius: 20px;
-    padding: 0 !important;
-    margin: 10px 15px !important;
-    animation: updown 0.9s infinite 0.3s alternate ease-in;
-    -webkit-animation: updown 0.9s infinite 0.3s alternate ease-in;
-    will-change: transform;
-}
-
-.loading:before{
-    content: '';
-    display: block;
-    width: 10px;
-    height: 10px;
-    background: #777;
-    border-radius: 20px;
-    position: absolute;
-    left: -15px;
-    animation: updown 0.9s infinite alternate ease-in;
-    -webkit-animation: updown 0.9s infinite alternate ease-in;
-    will-change: transform;
-}
-
-.loading:after{
-    content: '';
-    display: block;
-    width: 10px;
-    height: 10px;
-    background: #777;
-    border-radius: 20px;
-    position: absolute;
-    right: -15px;
-    animation: updown 0.9s infinite 0.6s alternate ease-in;
-    -webkit-animation: updown 0.9s infinite 0.6s alternate ease-in;
-    will-change: transform;
-}
-
 .choices{
     display: flex !important;
     margin: 10px 50px 20px 50px;
@@ -338,14 +298,6 @@
     color: white;
 }
 
-
-
-@keyframes updown {
-    to { transform: translateY(3px) }
-}
-@-webkit-keyframes updown {
-    to { -webkit-transform: translateY(3px) }
-}
 
 @media (max-width: 768px) {
     .chat-thread li img{

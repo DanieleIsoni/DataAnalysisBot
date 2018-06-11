@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import { addMessaggio, editMessaggio, clearMessaggi, addHints, addVariabile, setActiveVariable } from "./index";
 import Action from '../Constants/Actions';
 import { URL_HEROKU } from "./../Config/Url";
+import { ActionCreators } from 'redux-undo'
 
 const actionController = (azione) => {
     switch(azione){
@@ -36,35 +37,37 @@ const actionController = (azione) => {
 }
 
 export const sendMessage = (value, type, activeVar, isVariableSelected) => {
-    if(value != ""){
-        store.dispatch(addMessaggio({id: uuidv1(), who: "me", what: (type != "Py") ? "markdown" : "code", messaggio: value, output: []}));
-    }
+    return new Promise((resolve, reject) => {
+        if(value != ""){
+            store.dispatch(addMessaggio({id: uuidv1(), who: "me", what: (type != "Py") ? "markdown" : "code", messaggio: value, output: []}));
+        }
 
-    if(!isVariableSelected){
-        store.dispatch(addMessaggio({id: uuidv1(), who: "bot", what: "markdown", messaggio: "Specify a variable! Select it...", output: []}));
-    }else{
-        var udelete = uuidv1();
-        store.dispatch(addMessaggio({id: udelete, who: "bot", what: "markdown", messaggio: <div className="loading"></div>, output: []}));
-    
-        axios({
-            url: URL_HEROKU + "/clientWebHook/",
-            method: 'post', 
-            validateStatus: function (status) {
-                return status < 500;
-            },
-            data: { "message": { "text": value }, "react": "true", 
-                    "variabile": (activeVar == null) ? "empty" : activeVar
-                    //"python": (this.state.type == "Py") ? "true" : "false"
-            }, headers: {
-                'accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => {
-            store.dispatch(editMessaggio(udelete,{id: uuidv1(), who: "bot", what: (response.status == 200) ?  "markdown" : "markdown error", messaggio: response.data.message, output: response.data.outputs, code: response.data.code}));
-            actionController(response.data.action);
-        })
-    }
+        if(!isVariableSelected){
+            store.dispatch(addMessaggio({id: uuidv1(), who: "bot", what: "markdown", messaggio: "Specify a variable! Select it...", output: []}));
+        }else{
+            axios({
+                url: URL_HEROKU + "/clientWebHook/",
+                method: 'post', 
+                validateStatus: function (status) {
+                    return status < 500;
+                },
+                data: { "message": { "text": value }, "react": "true", 
+                        "variabile": (activeVar == null) ? "empty" : activeVar
+                        //"python": (this.state.type == "Py") ? "true" : "false"
+                }, headers: {
+                    'accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                store.dispatch(addMessaggio({id: uuidv1(), who: "bot", what: (response.status == 200) ?  "markdown" : "markdown error", messaggio: response.data.message, output: response.data.outputs, code: response.data.code}));
+                actionController(response.data.action);
+                resolve();
+            }).catch((error) => {
+                reject(error);
+            });
+        }
+    });
 }
 
 
@@ -72,21 +75,26 @@ export const clearMessages = (e) => {
     axios.get(URL_HEROKU + '/clear')
     .then(response => {
         store.dispatch(clearMessaggi());
+        store.dispatch(ActionCreators.clearHistory())
     })
 }
 
 export const getAll = () => {
-    axios.get(URL_HEROKU + '/messages')
-    .then(response => {
-        response.data.messages.map(messaggio => {
-            store.dispatch(addMessaggio({id: uuidv1(), who: messaggio.who, what: "markdown", messaggio: messaggio.message, output: messaggio.outputs, code: messaggio.code}));
-        })
-        response.data.variables.map((variabile, n) => {
-            store.dispatch(addVariabile({"name": variabile.name, "id": uuidv1()}));
+    return new Promise((resolve, reject) => {
+        axios.get(URL_HEROKU + '/messages')
+        .then(response => {
+            response.data.messages.map(messaggio => {
+                store.dispatch(addMessaggio({id: uuidv1(), who: messaggio.who, what: "markdown", messaggio: messaggio.message, output: messaggio.outputs, code: messaggio.code}));
+            })
+            response.data.variables.map((variabile, n) => {
+                store.dispatch(addVariabile({"name": variabile.name, "id": uuidv1()}));
 
-            if(n == response.data.variables.length-1) store.dispatch(setActiveVariable(variabile.name));
-        })    
-    }); 
+                if(n == response.data.variables.length-1) store.dispatch(setActiveVariable(variabile.name));
+            })    
+
+            resolve();
+        }); 
+    });
 
     actionController("initial"); //TODO Send me the action on start
 }

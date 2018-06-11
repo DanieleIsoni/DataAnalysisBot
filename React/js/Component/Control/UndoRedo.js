@@ -3,7 +3,7 @@ import React from "react";
 import { connect } from "react-redux";
 
 const mapStateToProps = (state) => ({
-    canUndo: state.messaggi.past.length > 0,
+    canUndo: state.messaggi.past.length > 0 && state.messaggi.present.length > 0,
     canRedo: state.messaggi.future.length > 0,
     message: state.messaggi.present
 })
@@ -20,26 +20,25 @@ class UndoRedo extends React.Component{
         super(props);
         this.state = {
             step: 0,
-            stepToRedo: [],
-            stepToUndo: '2'
+            stepToRedo: []
         }
         this.checkStep = this.checkStep.bind(this);
     }
 
     checkStep(e, action){ //Controllo se i messaggi tra bot e umano sono uguali altrimenti tolgo solo uno
+        console.log("Messaggi: " + this.props.message);
         if(action == "undo"){
-            let stepToDo = this.state.stepToUndo;
+            let stepToDo = 2;
 
             let last = this.props.message[this.props.message.length-1];
             let prev = this.props.message[this.props.message.length-2];
 
-            if(prev.who == last.who){
+            if(prev == null || prev.who == last.who){
                 stepToDo = 1;
             }
 
-            this.setState({step: this.state.step + 1, stepToRedo: [...this.state.stepToRedo, stepToDo]});
             this.props.onUndo(stepToDo);
-            console.log("Tolte: " + stepToDo);
+            this.setState({step: this.state.step + 1, stepToRedo: [...this.state.stepToRedo, stepToDo]}, () => {console.log("Array: " + this.state.stepToRedo);});
         }else{
             let stepToDo = this.state.stepToRedo[this.state.step-1];
             this.setState({step: this.state.step - 1, stepToRedo: [...this.state.stepToRedo.slice(0, this.state.step-1), ...this.state.stepToRedo.slice(this.state.step)]});

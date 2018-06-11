@@ -5,12 +5,17 @@ import { connect } from "react-redux";
 import { addMessaggio, editMessaggio } from "../../../Actions/index";
 import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import Download from './Download';
+import {sendMessage} from './../../../Actions/Axios'
 
 const mapMessageEvent = dispatch => {
     return {
       addMessaggio: messaggio => dispatch(addMessaggio(messaggio)),
       editMessaggio: (id, messaggio) => dispatch(editMessaggio(id, messaggio)),
     };
+};
+
+const mapState = state => {
+    return { activeVar: state.active };
 };
 
 class ConChoices extends React.Component{
@@ -37,24 +42,7 @@ class ConChoices extends React.Component{
     toggleColor() { this.setState({ dropdownColor: !this.state.dropdownColor }); }
 
     sendMex(mex){
-        var udelete = uuidv1();
-        this.props.addMessaggio({id: udelete, who: "bot", what: "markdown", messaggio: <div className="loading"></div>, output: []});
-        
-        axios({
-            url: this.props.url + "/clientWebHook/",
-            method: 'post', 
-            validateStatus: function (status) {
-                return status < 500;
-            },
-            data: {"message": { "text": mex }, "react": "true" }, 
-            headers: {
-                'accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => {
-            this.props.editMessaggio(udelete,{id: uuidv1(), who: "bot", what: (response.status == 200) ?  "markdown" : "markdown error", messaggio: response.data.message, output: response.data.outputs, code: response.data.code});
-        })
+        sendMessage(mex, "NL", this.props.activeVar, false);
     }
 
     setFontLabel(e, font){
@@ -141,5 +129,5 @@ class ConChoices extends React.Component{
     }
 }
 
-const Choices = connect(null, mapMessageEvent)(ConChoices);
+const Choices = connect(mapState, mapMessageEvent)(ConChoices);
 export default Choices;
