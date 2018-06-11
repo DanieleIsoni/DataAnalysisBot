@@ -9,7 +9,7 @@ def read_in():
 def main():
     lines = read_in()
 
-    stream = io.StringIO(lines, newline=None)
+    stream = io.StringIO(u""+lines, newline=None)
     csv_input = pd.read_csv(stream, sep=None, engine='python')
     dataset = csv_input.describe().to_json(orient='table')
     print(dataset)

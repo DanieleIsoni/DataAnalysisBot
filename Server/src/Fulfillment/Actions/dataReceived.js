@@ -71,7 +71,7 @@ let storeAttributes = function (fileName, fileLink, response, session){
                 let res = responses[0];
 
                 if (res) {
-                    Common.variablesLink.set(fileName,fileLink);
+                    Common.variablesMap.set(fileName, {variableLink: fileLink, attributes: attributes});
                     let message = `Stored ${fileName} which contains: ${attributes.join(', ')}\nWhat do you want to do with this data?`;
                     response.send({
                         fulfillmentText: message

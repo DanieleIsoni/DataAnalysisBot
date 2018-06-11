@@ -12,14 +12,15 @@ module.exports.testRequest = (contexts, parameters, action, session, response) =
     });
 
     if (data_received && test_request) {
-        let fileLink = Common.variablesLink.get(Common.variable);
+        let fileLink = Common.variablesMap.get(Common.variable).variableLink;
         console.log(`TEST Path variable: ${fileLink}`);
         let test = parameters.Test;
         let test_original = test_request.parameters['Test.original'];
         let attr = parameters.Attribute;
         if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test}\nChosen attribute: ${attr}`);
-
-        executeTest(fileLink, test, test_original, attr, response);
+        if (Common.variablesMap.get(Common.variable).attributes.includes(attr)) {
+            executeTest(fileLink, test, test_original, attr, response);
+        }
     } else {
         console.error(`${fLog}Context not found for action ${action}`);
         response.send({
@@ -40,14 +41,16 @@ module.exports.testRequestFuAttribute = (contexts, parameters, action, session, 
     });
 
     if (test_request && data_received && testrequest_followup_attribute) {
-        let fileLink = Common.variablesLink.get(Common.variable);
+        let fileLink = Common.variablesMap.get(Common.variable).variableLink;
         console.log(`TEST.ATTR Path variable: ${fileLink}`);
         let test = test_request.parameters.Test;
         let test_original = test_request.parameters['Test.original'];
         let attr = parameters.Attribute;
         if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test}\nChosen attribute: ${attr}`);
 
-        executeTest(fileLink, test, test_original, attr, response);
+        if (Common.variablesMap.get(Common.variable).attributes.includes(attr)) {
+            executeTest(fileLink, test, test_original, attr, response);
+        }
     } else {
         console.error(`${fLog}Context not found for action ${action}`);
         response.send({
@@ -68,14 +71,16 @@ module.exports.testRequestFuTest = (contexts, parameters, action, session, respo
     });
 
     if (test_request && data_received && testrequest_followup_test) {
-        let fileLink = Common.variablesLink.get(Common.variable);
+        let fileLink = Common.variablesMap.get(Common.variable).variableLink;
         console.log(`TEST.TEST Path variable: ${fileLink}`);
         let test = parameters.Test;
         let test_original = testrequest_followup_test.parameters['Test.original'];
         let attr = test_request.parameters.Attribute;
         if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test}\nChosen attribute: ${attr}`);
 
-        executeTest(fileLink, test, test_original, attr, response);
+        if (Common.variablesMap.get(Common.variable).attributes.includes(attr)) {
+            executeTest(fileLink, test, test_original, attr, response);
+        }
     } else {
         console.error(`${fLog}Context not found for action ${action}`);
         response.send({

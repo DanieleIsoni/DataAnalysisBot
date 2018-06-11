@@ -21,8 +21,8 @@ module.exports.deleteVariable = (req, res, tmpPath, dialogSessionId) => {
         if (fs.existsSync(path_)) {
             fs.unlinkSync(path_);
         }
-        if(Common.variablesLink.has(name))
-            Common.variablesLink.delete(name);
+        if(Common.variablesMap.has(name))
+            Common.variablesMap.delete(name);
 
         req.session.datasets.forEach((el ,index) => {
             if(el.name === name){
@@ -30,7 +30,7 @@ module.exports.deleteVariable = (req, res, tmpPath, dialogSessionId) => {
             }
         });
 
-        if(Common.variablesLink.size === 0)
+        if(Common.variablesMap.size === 0)
             clearContexts(PROJECT_ID, dialogSessionId);
 
         ret = `Variable ${name} deleted`;

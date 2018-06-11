@@ -19,7 +19,7 @@ module.exports.plotChart = (contexts, parameters, action, session, response) => 
     });
 
     if (data_received && plot_chart) {
-        let fileLink = Common.variablesLink.get(Common.variable);
+        let fileLink = Common.variablesMap.get(Common.variable).variableLink;
         console.log(`CHART Path variable: ${fileLink}`);
         let test = parameters.CompositeTest.Test;
         let testAttr = parameters.CompositeTest.Attribute;
@@ -34,7 +34,10 @@ module.exports.plotChart = (contexts, parameters, action, session, response) => 
         if (ylabel) ylabel.lifespanCount = 5;
         if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test} on ${testAttr}\nChosen attribute for x-axis: ${attr}\nChosen chart: ${chart}`);
 
-        plotChartPy(fileLink, chart, test, testAttr, testOrig, attr, xlabel, ylabel, response);
+        if (Common.variablesMap.get(Common.variable).attributes.includes(testAttr)
+            && Common.variablesMap.get(Common.variable).attributes.includes(attr)) {
+            plotChartPy(fileLink, chart, test, testAttr, testOrig, attr, xlabel, ylabel, response);
+        }
 
     }
 };
@@ -57,7 +60,7 @@ module.exports.plotChartFuLabel = (contexts, parameters, action, session, respon
     });
 
     if (data_received && plot_chart && plotchart_followup_label) {
-        let fileLink = Common.variablesLink.get(Common.variable);
+        let fileLink = Common.variablesMap.get(Common.variable).variableLink;
         console.log(`CHART.LABEL Path variable: ${fileLink}`);
         let test = plot_chart.parameters.CompositeTest.Test;
         let testAttr = plot_chart.parameters.CompositeTest.Attribute;
@@ -65,23 +68,27 @@ module.exports.plotChartFuLabel = (contexts, parameters, action, session, respon
         let attr = plot_chart.parameters.Attribute;
         let chart = plot_chart.parameters.Chart;
         let axis = plotchart_followup_label.parameters.Axis;
-        if (axis === 'x'){
-            xlabel = updateAxContext(axis, plotchart_followup_label.parameters, xlabel, session);
-            if (!chart || chart === '') {
-                chart = 'barchart';
+        if (Common.variablesMap.get(Common.variable).attributes.includes(testAttr)
+            && Common.variablesMap.get(Common.variable).attributes.includes(attr)) {
+
+            if (axis === 'x') {
+                xlabel = updateAxContext(axis, plotchart_followup_label.parameters, xlabel, session);
+                if (!chart || chart === '') {
+                    chart = 'barchart';
+                }
+                if (DEV_CONFIG) console.log(`${fLog}Chosen test: ${test} on ${testAttr}\nChosen attribute for x-axis: ${attr}\nChosen chart: ${chart}`);
+
+                plotChartPy(fileLink, chart, test, testAttr, testOrig, attr, xlabel, ylabel, response);
+            } else if (axis === 'y') {
+                ylabel = updateAxContext(axis, plotchart_followup_label.parameters, ylabel, session);
+
+                if (!chart || chart === '') {
+                    chart = 'barchart';
+                }
+                if (DEV_CONFIG) console.log(`${fLog}Chosen test: ${test} on ${testAttr}\nChosen attribute for x-axis: ${attr}\nChosen chart: ${chart}`);
+
+                plotChartPy(fileLink, chart, test, testAttr, testOrig, attr, xlabel, ylabel, response);
             }
-            if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test} on ${testAttr}\nChosen attribute for x-axis: ${attr}\nChosen chart: ${chart}`);
-
-            plotChartPy(fileLink, chart, test, testAttr, testOrig, attr, xlabel, ylabel, response);
-        } else if (axis === 'y'){
-            ylabel = updateAxContext(axis, plotchart_followup_label.parameters, ylabel, session);
-
-            if (!chart || chart === '') {
-                chart = 'barchart';
-            }
-            if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test} on ${testAttr}\nChosen attribute for x-axis: ${attr}\nChosen chart: ${chart}`);
-
-            plotChartPy(fileLink, chart, test, testAttr, testOrig, attr, xlabel, ylabel, response);
         }
 
     }
