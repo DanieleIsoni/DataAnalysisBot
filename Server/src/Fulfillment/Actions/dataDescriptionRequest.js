@@ -10,7 +10,7 @@ module.exports.dataDescriptionRequest = (contexts, action, session, response) =>
 
     if (data_received) {
         let fileName = Common.variable;
-        let fileLink = Common.variablesLink.get(Common.variable);
+        let fileLink = Common.variablesMap.get(Common.variable).variableLink;
         console.log(`DESCRIPTION variable: ${fileName}\nPath variable: ${fileLink}`);
 
         dataDescription(fileName, fileLink, response);
