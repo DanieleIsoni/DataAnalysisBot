@@ -11,7 +11,6 @@ module.exports.dataDescriptionRequest = (contexts, action, session, response) =>
     if (data_received) {
         let fileName = Common.variable;
         let fileLink = Common.variablesMap.get(Common.variable).variableLink;
-        console.log(`DESCRIPTION variable: ${fileName}\nPath variable: ${fileLink}`);
 
         dataDescription(fileName, fileLink, response);
     } else {
@@ -51,8 +50,6 @@ let dataDescription = (fileName, fileLink, response) => {
                message = '';
            }
         });
-
-        if (DEV_CONFIG) console.log(`${fLog}\n${JSON.stringify(messages, null, '   ')}`);
 
         let codeToSend = `import pandas as pd
 import numpy as np

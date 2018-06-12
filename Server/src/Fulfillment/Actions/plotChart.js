@@ -20,7 +20,6 @@ module.exports.plotChart = (contexts, parameters, action, session, response) => 
 
     if (data_received && plot_chart) {
         let fileLink = Common.variablesMap.get(Common.variable).variableLink;
-        console.log(`CHART Path variable: ${fileLink}`);
         let test = parameters.CompositeTest.Test;
         let testAttr = parameters.CompositeTest.Attribute;
         let testOrig = plot_chart.parameters.CompositeTest['Test.original'];
@@ -37,6 +36,10 @@ module.exports.plotChart = (contexts, parameters, action, session, response) => 
         if (Common.variablesMap.get(Common.variable).attributes.includes(testAttr)
             && Common.variablesMap.get(Common.variable).attributes.includes(attr)) {
             plotChartPy(fileLink, chart, test, testAttr, testOrig, attr, xlabel, ylabel, response);
+        } else {
+            response.send({
+                fulfillmentText: `The attribute you selected is not in the chosen dataset, try selecting the correct dataset`
+            });
         }
 
     }
@@ -61,7 +64,6 @@ module.exports.plotChartFuLabel = (contexts, parameters, action, session, respon
 
     if (data_received && plot_chart && plotchart_followup_label) {
         let fileLink = Common.variablesMap.get(Common.variable).variableLink;
-        console.log(`CHART.LABEL Path variable: ${fileLink}`);
         let test = plot_chart.parameters.CompositeTest.Test;
         let testAttr = plot_chart.parameters.CompositeTest.Attribute;
         let testOrig = plot_chart.parameters.CompositeTest['Test.original'];
@@ -89,6 +91,10 @@ module.exports.plotChartFuLabel = (contexts, parameters, action, session, respon
 
                 plotChartPy(fileLink, chart, test, testAttr, testOrig, attr, xlabel, ylabel, response);
             }
+        } else {
+            response.send({
+                fulfillmentText: `The attribute you selected is not in the chosen dataset, try selecting the correct dataset`
+            });
         }
 
     }
@@ -203,8 +209,6 @@ except urllib.error.HTTPError as err:
                     yLabel.lifespanCount = 5;
                     resToSend.outputContexts.push(yLabel);
                 }
-
-                if (DEV_CONFIG) console.log(`${fLog}SENT RES: ${JSON.stringify(resToSend, null, '   ')}`);
 
                 response.send(resToSend);
 

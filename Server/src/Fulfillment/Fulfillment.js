@@ -13,8 +13,6 @@ module.exports.dialogflowFulfillment = (request, response) => {
     let action = request.body.queryResult.action;
     let parameters = request.body.queryResult.parameters;
 
-    if (DEV_CONFIG) console.log(`${fLog}Request: ${JSON.stringify(request.body, null, '   ')}`);
-
     switch (action) {
         case 'data.received':
             dataReceived.dataReceived(contexts, action, session, response);
@@ -38,7 +36,7 @@ module.exports.dialogflowFulfillment = (request, response) => {
             plotChart.plotChartFuLabel(contexts, parameters, action, session, response);
             break;
         default:
-            console.log(`${fLog}No action matched`);
+            console.warn(`${fLog}No action matched`);
             response.send({
                 fulfillmentText: `No action matched`
             });

@@ -215,7 +215,6 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, chatId, req, 
     promise
         .then(responses => {
             let response = responses[0];
-            if (aiConfig.devConfig) console.log(`${cLog}Response:\n${JSON.stringify(response, null, '   ')}`);
             if(response.queryResult) {
                 let responseText = response.queryResult.fulfillmentText;
                 let action = response.queryResult.action;
@@ -255,7 +254,6 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, chatId, req, 
                             }
 
                         });
-                        console.log(`${cLog}Outputs:\n${JSON.stringify(messages, null, '   ')}`);
                         console.log(`${cLog}FulfillmentMessages processed`);
                     } else if (messages.length = 0 || webhookStatus === null){
                         messages = null;

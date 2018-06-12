@@ -13,13 +13,16 @@ module.exports.testRequest = (contexts, parameters, action, session, response) =
 
     if (data_received && test_request) {
         let fileLink = Common.variablesMap.get(Common.variable).variableLink;
-        console.log(`TEST Path variable: ${fileLink}`);
         let test = parameters.Test;
         let test_original = test_request.parameters['Test.original'];
         let attr = parameters.Attribute;
         if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test}\nChosen attribute: ${attr}`);
         if (Common.variablesMap.get(Common.variable).attributes.includes(attr)) {
             executeTest(fileLink, test, test_original, attr, response);
+        } else {
+            response.send({
+                fulfillmentText: `The attribute you selected is not in the chosen dataset, try selecting the correct dataset`
+            });
         }
     } else {
         console.error(`${fLog}Context not found for action ${action}`);
@@ -42,7 +45,6 @@ module.exports.testRequestFuAttribute = (contexts, parameters, action, session, 
 
     if (test_request && data_received && testrequest_followup_attribute) {
         let fileLink = Common.variablesMap.get(Common.variable).variableLink;
-        console.log(`TEST.ATTR Path variable: ${fileLink}`);
         let test = test_request.parameters.Test;
         let test_original = test_request.parameters['Test.original'];
         let attr = parameters.Attribute;
@@ -50,6 +52,10 @@ module.exports.testRequestFuAttribute = (contexts, parameters, action, session, 
 
         if (Common.variablesMap.get(Common.variable).attributes.includes(attr)) {
             executeTest(fileLink, test, test_original, attr, response);
+        } else {
+            response.send({
+                fulfillmentText: `The attribute you selected is not in the chosen dataset, try selecting the correct dataset`
+            });
         }
     } else {
         console.error(`${fLog}Context not found for action ${action}`);
@@ -72,7 +78,6 @@ module.exports.testRequestFuTest = (contexts, parameters, action, session, respo
 
     if (test_request && data_received && testrequest_followup_test) {
         let fileLink = Common.variablesMap.get(Common.variable).variableLink;
-        console.log(`TEST.TEST Path variable: ${fileLink}`);
         let test = parameters.Test;
         let test_original = testrequest_followup_test.parameters['Test.original'];
         let attr = test_request.parameters.Attribute;
@@ -80,6 +85,10 @@ module.exports.testRequestFuTest = (contexts, parameters, action, session, respo
 
         if (Common.variablesMap.get(Common.variable).attributes.includes(attr)) {
             executeTest(fileLink, test, test_original, attr, response);
+        } else {
+            response.send({
+                fulfillmentText: `The attribute you selected is not in the chosen dataset, try selecting the correct dataset`
+            });
         }
     } else {
         console.error(`${fLog}Context not found for action ${action}`);

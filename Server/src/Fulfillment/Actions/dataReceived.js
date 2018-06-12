@@ -68,8 +68,6 @@ let storeAttributes = function (fileName, fileLink, response, session){
             }
         });
 
-        console.log(`ENTRIES: ${JSON.stringify(entries, null, '   ')}`);
-
         let sessionEntityType = {
             name: `${session}/entityTypes/Attribute`,
             entityOverrideMode: "ENTITY_OVERRIDE_MODE_SUPPLEMENT",

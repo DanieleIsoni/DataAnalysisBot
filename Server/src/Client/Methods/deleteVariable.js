@@ -8,6 +8,7 @@ const contextsClient = new dialogflow.ContextsClient({
     projectId: PROJECT_ID
 });
 const Common = require('../../Common');
+const cLog = '[CLIENT] ';
 
 module.exports.deleteVariable = (req, res, tmpPath, dialogSessionId) => {
 
@@ -36,7 +37,7 @@ module.exports.deleteVariable = (req, res, tmpPath, dialogSessionId) => {
         ret = `Variable ${name} deleted`;
     } catch (e) {
         ret = `Variable ${name} not deleted due to some server errors`;
-        console.error(`ERROR: ${e}`);
+        console.error(`${cLog}ERROR: ${e}`);
         res.status(400);
     }
 
@@ -70,7 +71,7 @@ function listContexts(projectId, sessionId) {
       return responses[0];
     })
     .catch(err => {
-      console.error('Failed to list contexts:', err);
+      console.error(`${cLog}Failed to list contexts:`, err);
     });
 }
 
@@ -86,9 +87,9 @@ function deleteContext(context) {
   return contextsClient
     .deleteContext(request)
     .then(() => {
-      console.log(`Context ${contextId} deleted`);
+      console.log(`${cLog}Context ${contextId} deleted`);
     })
     .catch(err => {
-      console.error(`Failed to delete context ${contextId}`, err);
+      console.error(`${cLog}Failed to delete context ${contextId}`, err);
     });
 }
