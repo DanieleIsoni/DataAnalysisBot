@@ -1,6 +1,4 @@
 import React from "react";
-import axios from 'axios';
-import uuidv1 from "uuid";
 import { connect } from "react-redux";
 import { addMessaggio, editMessaggio } from "../../../Actions/index";
 import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
@@ -42,12 +40,12 @@ class ConChoices extends React.Component{
 
     setFontLabel(e, font){
         let messaggio = "Change the " + this.state.axis + " label font to " + font;
-        sendMessage(mex, "NL", this.props.activeVar, true);
+        sendMessage(messaggio, "NL", this.props.activeVar, true);
     }
 
     setColorLabel(e, color){
         let messaggio = "Change the " + this.state.axis + " label color to " + color;
-        sendMessage(mex, "NL", this.props.activeVar, true);
+        sendMessage(messaggio, "NL", this.props.activeVar, true);
     }
 
     handleKeyPress(e){

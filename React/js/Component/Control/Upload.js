@@ -46,12 +46,14 @@ class ConnectedUpload extends React.Component {
     handleSubmit(e){
         e.preventDefault();
         var file = this.fileInput.files[0];
-        this.setState({ showLoader: true });
 
         if(file){
+            this.setState({ showLoader: true });
             var send_active = (this.props.activeVar == null || typeof this.props.activeVar == 'undefined') ? "empty" : this.props.activeVar;
             uploadFile(file, send_active).then(() => {
                 this.setState({ modal: false, filename: "Upload file...", showLoader: false });
+            }).catch(error => {
+                console.log(error);
             });
         }else{
             this.setState({ modal: false, filename: "Upload file..." });
@@ -70,10 +72,11 @@ class ConnectedUpload extends React.Component {
         return (
             <div style={(this.props.theme == "form_add") ? {} : {display: 'inline-block'}}>
                 <Button className={(this.props.theme == "form_add") ? "button-board round" : "attach_side"} onClick={this.toggle}>{this.props.text}</Button>
-                    <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
+                    <Modal isOpen={this.state.modal} toggle={this.toggle} className="upload_modal">
                         <form action="/" method="POST" encType="multipart/form-data" className="form-upload" onSubmit={this.handleSubmit}>
                             <ModalHeader>Upload a file </ModalHeader>   
                             <ModalBody>
+                                    <span className="body_text">Select a dataset file in .data/.csv format to start calculation</span>
                                     <input type="file" name="file" id="file" accept=".xls,.xlsx,.csv,.data" className="hidden_input" onChange={this.handlefileupload} ref={input => { this.fileInput = input; }} />
                                     <label className="upload-file" htmlFor="file">
                                         <span className="file-name">{this.state.filename}</span><span className="file-size">{(this.state.filesize) ? this.state.filesize / 1000 + "KB" : ""}</span>
@@ -83,7 +86,7 @@ class ConnectedUpload extends React.Component {
                                     }
                             </ModalBody>
                             <ModalFooter>
-                                <Button color="secondary" onClick={this.toggle}>Cancel</Button>
+                                <Button className="cancel" onClick={this.toggle}>Cancel</Button>
                                 <Button innerRef={(button) => (this.sendFile = button)} color="primary">Upload <i className="material-icons">cloud_upload</i></Button>{' '}
                             </ModalFooter>
                         </form>

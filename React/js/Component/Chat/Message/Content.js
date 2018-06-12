@@ -16,7 +16,7 @@ const Message = ({ content, n, isCodeOpen, openCode}) => (
                         {
                             (content.code != null) ? 
                                 <a className="code_command" onClick={(e) => openCode(e, content.id)}><i className="material-icons">code</i> {(content.id === isCodeOpen) ? " Close" : " View the Code"}</a>
-                            :''
+                            : ''
                         }
                     </div>
                 }
@@ -28,8 +28,7 @@ const Message = ({ content, n, isCodeOpen, openCode}) => (
                     <span className="incode">In [ {n} ]: </span>
                     <Code code={content.code} line="true"/>   
                 </div>
-            : 
-            ''
+            : ''
         }
     </div>
 );

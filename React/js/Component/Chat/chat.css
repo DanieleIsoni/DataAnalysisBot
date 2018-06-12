@@ -100,13 +100,14 @@
     color: white;
     border-radius: 25px 5px 25px 25px;
     float: right !important;
+    box-shadow: 2px 3px 20px -8px rgba(0,0,0,0.3);
 }
 
 .bot, .comp{
     color: #444;
-    background: #eee;
     border-radius: 5px 25px 25px 25px;
-    box-shadow: inset 0 0 0 1px #e9eaeb;
+    background: #fafafa;
+    box-shadow: inset 0 0 0 1px #e9eaeb, 2px 3px 20px -10px rgba(0,0,0,0.3);
 }
 
 .python{
@@ -177,7 +178,7 @@
 .resultdiv pre{
     margin: 5px 15px;
     padding: 6px 10px;
-    box-shadow: 0 1px 1px 0 #C7C7C7 inset;
+    box-shadow: inset 0 0 0 1px #e9eaeb;
     background: #f1f1f1;
     border-radius: 5px;
 }

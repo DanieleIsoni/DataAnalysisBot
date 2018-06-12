@@ -4,8 +4,6 @@ import axios from 'axios';
 import uuidv1 from "uuid";
 import { deleteVariabile, addHints, addMessaggio } from "../../Actions/index";
 import Action from '../../Constants/Actions';
-import { Translate } from 'react-localize-redux';
-import { withLocalize } from 'react-localize-redux';
 import Upload from '../Control/Upload';
 import { setActiveVariable} from "../../Actions/index";
 
