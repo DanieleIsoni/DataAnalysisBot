@@ -1,7 +1,6 @@
 import './sidemenu.css';
 import React from "react";
 import { connect } from "react-redux";
-import axios from 'axios';
 import List from './Variablelist';
 import Hints from './Hints';
 import Language from './LanguageToggle';
@@ -12,6 +11,7 @@ import sideTranslation from './translation';
 import { withLocalize } from 'react-localize-redux';
 import { setActiveVariable} from "../../Actions/index";
 import { getVariable } from  '../../Actions/Axios'
+
 const mapSetActive = dispatch => {
     return {
       setActiveVariable: vari => dispatch(setActiveVariable(vari))

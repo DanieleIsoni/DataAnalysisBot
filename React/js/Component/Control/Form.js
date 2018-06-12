@@ -46,7 +46,7 @@ class ConnectedForm extends React.Component {
     componentDidMount(){ 
         getAll().then(() => {
             this.forceUpdate();
-        });
+        }).catch(error => { console.log(error) });
    }
 
     componentDidUpdate(){

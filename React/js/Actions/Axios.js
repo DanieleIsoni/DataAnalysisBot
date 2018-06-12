@@ -1,9 +1,7 @@
-import React from "react";
 import axios from 'axios';
 import uuidv1 from "uuid";
 import store from "../Store/index";
-import { connect } from "react-redux";
-import { addMessaggio, editMessaggio, clearMessaggi, addHints, addVariabile, setActiveVariable } from "./index";
+import { addMessaggio, clearMessaggi, addHints, addVariabile, setActiveVariable } from "./index";
 import Action from '../Constants/Actions';
 import { URL_HEROKU } from "./../Config/Url";
 import { ActionCreators } from 'redux-undo'
@@ -92,11 +90,12 @@ export const getAll = () => {
                 if(n == response.data.variables.length-1) store.dispatch(setActiveVariable(variabile.name));
             })    
 
+            actionController("initial"); //TODO Send me the action on start
             resolve();
-        }); 
+        }).catch(error => {
+            reject(error);
+        })
     });
-
-    actionController("initial"); //TODO Send me the action on start
 }
 
 export const uploadFile = (file, send_active) => {
@@ -124,6 +123,8 @@ export const uploadFile = (file, send_active) => {
             actionController(response.data.action);
             
             resolve();
+        }).catch(error => {
+            reject(error);
         });
     });
 }
