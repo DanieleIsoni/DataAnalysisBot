@@ -35,26 +35,19 @@ class ConChoices extends React.Component{
         this.setFontLabel = this.setFontLabel.bind(this);
         this.setColorLabel = this.setColorLabel.bind(this);
         this.changeAxis = this.changeAxis.bind(this);
-        this.sendMex = this.sendMex.bind(this);
     }
 
     toggleFont() { this.setState({ dropdownFont: !this.state.dropdownFont }); }
     toggleColor() { this.setState({ dropdownColor: !this.state.dropdownColor }); }
 
-    sendMex(mex){
-        sendMessage(mex, "NL", this.props.activeVar, false);
-    }
-
     setFontLabel(e, font){
         let messaggio = "Change the " + this.state.axis + " label font to " + font;
-        this.props.addMessaggio({id: uuidv1(), who: "me", what: "markdown", messaggio: messaggio, output: []});
-        this.sendMex(messaggio);
+        sendMessage(mex, "NL", this.props.activeVar, true);
     }
 
     setColorLabel(e, color){
         let messaggio = "Change the " + this.state.axis + " label color to " + color;
-        this.props.addMessaggio({id: uuidv1(), who: "me", what: "markdown", messaggio: messaggio, output: []});
-        this.sendMex(messaggio);
+        sendMessage(mex, "NL", this.props.activeVar, true);
     }
 
     handleKeyPress(e){
