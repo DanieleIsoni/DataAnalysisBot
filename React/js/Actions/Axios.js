@@ -81,6 +81,10 @@ export const getAll = () => {
     return new Promise((resolve, reject) => {
         axios.get(URL_HEROKU + '/messages')
         .then(response => {
+            if(response.data.messages.length == 0){
+                store.dispatch(addMessaggio({start: "start", id: uuidv1(), who: "bot", what: "markdown", messaggio: "Welcome to Iridium, the bot for Datascience!", output: []}));
+            }
+
             response.data.messages.map(messaggio => {
                 store.dispatch(addMessaggio({id: uuidv1(), who: messaggio.who, what: "markdown", messaggio: messaggio.message, output: messaggio.outputs, code: messaggio.code}));
             })

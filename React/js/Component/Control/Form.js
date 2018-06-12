@@ -43,12 +43,6 @@ class ConnectedForm extends React.Component {
         this.setInput = this.setInput.bind(this);
     }
 
-    componentDidMount(){ 
-        getAll().then(() => {
-            this.forceUpdate();
-        }).catch(error => { console.log(error) });
-   }
-
     componentDidUpdate(){
         if(this.state.type == "Py") this.updateTextArea();
         
@@ -121,12 +115,13 @@ class ConnectedForm extends React.Component {
     }
 
     checkPython(text){
-        var pattern =/([\/\+\-\*\[\]\(\)\:]|import|\bif\b|\bcase\b|\bdef\b|.*\..*)+/;
+        var pattern =/([\/\+\*\[\]\(\)\:]|import|\bif\b|\bcase\b|\bdef\b|.*\..*)+/;
         return pattern.test(text);
     }
 
     setInput(e, sug){
         this.setState({ inputValue: sug });
+        this.textarea.focus();
     }
 
     render(){
