@@ -297,6 +297,7 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, chatId, req, 
                     if (react == 'true') {
                         req.session.messages.push({who: 'bot', what: 'markdown', message: responseText, outputs: messages});
                     }
+                    req.session.lastAction = action;
                     DialogFlow.createResponse(res, 200, responseText, action, messages, codeToSend);
                 } else {
                     switch (webhookStatus.code) {

@@ -13,35 +13,40 @@ const cLog = '[CLIENT] ';
 module.exports.deleteVariable = (req, res, tmpPath, dialogSessionId) => {
 
     let id = req.params.id;
-    let name = req.session.datasets[id].name;
-    let path_ = path.join(tmpPath,`/${req.sessionID}/${name}`);
-    let ret;
 
-    try {
+    if (req.session.datasets.length > 0 && id < req.session.datasets.length) {
+        let name = req.session.datasets[id].name;
+        let path_ = path.join(tmpPath, `/${req.sessionID}/${name}`);
+        let ret;
 
-        if (fs.existsSync(path_)) {
-            fs.unlinkSync(path_);
-        }
-        if(Common.variablesMap.has(name))
-            Common.variablesMap.delete(name);
+        try {
 
-        req.session.datasets.forEach((el ,index) => {
-            if(el.name === name){
-                req.session.datasets.splice(index,1);
+            if (fs.existsSync(path_)) {
+                fs.unlinkSync(path_);
             }
-        });
+            if (Common.variablesMap.has(name))
+                Common.variablesMap.delete(name);
 
-        if(Common.variablesMap.size === 0)
-            clearContexts(PROJECT_ID, dialogSessionId);
+            req.session.datasets.forEach((el, index) => {
+                if (el.name === name) {
+                    req.session.datasets.splice(index, 1);
+                }
+            });
 
-        ret = `Variable ${name} deleted`;
-    } catch (e) {
-        ret = `Variable ${name} not deleted due to some server errors`;
-        console.error(`${cLog}ERROR: ${e}`);
-        res.status(400);
+            if (Common.variablesMap.size === 0)
+                clearContexts(PROJECT_ID, dialogSessionId);
+
+            ret = `Variable ${name} deleted`;
+        } catch (e) {
+            ret = `Variable ${name} not deleted due to some server errors`;
+            console.error(`${cLog}ERROR: ${e}`);
+            res.status(500);
+        }
+
+        res.write(ret);
+    } else {
+        res.status(400)
     }
-
-    res.write(ret);
     res.end();
 };
 

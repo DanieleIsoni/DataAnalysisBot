@@ -115,7 +115,7 @@ let executeTest = function(fileLink, test, test_original, attr, response){
         }
 
         let message;
-        switch (test){
+        switch (`${test}`){
             case 'maximum':
             case 'minimum':
             case 'mean':
