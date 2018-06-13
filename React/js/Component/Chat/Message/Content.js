@@ -18,6 +18,11 @@ const Message = ({ content, n, isCodeOpen, openCode}) => (
                                 <a className="code_command" onClick={(e) => openCode(e, content.id)}><i className="material-icons">code</i> {(content.id === isCodeOpen) ? " Close" : " View the Code"}</a>
                             : ''
                         }
+                        {
+                            (content.date != null) ? 
+                                <span className="date">{content.date}</span>
+                            : ""
+                        }
                     </div>
                 }
             </div>

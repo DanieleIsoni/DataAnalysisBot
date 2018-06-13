@@ -27,7 +27,7 @@ class ConnectedForm extends React.Component {
         this.state = {
             inputValue: '',
             comandi: new Set([]),
-            selectedCommand: 0,
+            selectedCommand: -1,
             type: 'NL',
             temp_mex: '',
             waiting_var: false,
@@ -103,6 +103,27 @@ class ConnectedForm extends React.Component {
 
             this.setState({ inputValue: val });
         }
+
+        if (e.keyCode === 38) {
+            if(this.state.type == "NL"){
+                e.preventDefault();
+                var select = this.state.selectedCommand + 1;
+                if(this.state.comandi.size > 0 && select < this.state.comandi.size){
+                    this.setState({ inputValue: [...this.state.comandi][this.state.comandi.size - 1 - select], selectedCommand: select })
+                }
+                console.log(select);
+            }            
+        }else if(e.keyCode === 40){
+            if(this.state.type == "NL"){
+                e.preventDefault();
+                var select = this.state.selectedCommand - 1;
+                if(select >= 0){
+                    this.setState({ inputValue: [...this.state.comandi][this.state.comandi.size - 1 - select], selectedCommand: select })
+                }else if(select == -1){
+                    this.setState({inputValue: "", selectedCommand: select});
+                }
+            }       
+        }
     }
 
     updateTextArea(){
@@ -135,7 +156,7 @@ class ConnectedForm extends React.Component {
                 {editor_code}
                 <Suggest input={this.state.inputValue} handleSuggest={(e, sug) => this.setInput(e, sug)} type={this.state.type} focused={this.state.focused} suggest={this.state.comandi}/>
                 <UndoRedo />
-                <div style={{display: (this.state.loading) ? "block" : "none"}} className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+                <div style={{display: (this.state.loading) ? "block" : "none"}} className="lds-ellipsis loader-light"><div></div><div></div><div></div><div></div></div>
                 <div className={(this.state.focused) ? "input_container input_cont_focused" : "input_container"}>
                     <textarea onKeyDown={this.handleKeyDown} rows="1" id="dialog" autoComplete="on" onBlur={(e) => this.handleFocus(e, false)} onFocus={(e) => this.handleFocus(e, true)} ref={input => this.textarea = input} placeholder={(this.state.inputValue.length == 0) ? renderToString(<Translate id="sugg"></Translate>) : ""} value={this.state.inputValue} onKeyPress={this.handleKeyPress} onChange={this.handleChange}></textarea>                  
                         <span className={(this.state.type == "NL" ? "type_of" : "type_of type_py")}>{this.state.type}</span>

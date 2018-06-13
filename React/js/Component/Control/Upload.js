@@ -81,13 +81,11 @@ class ConnectedUpload extends React.Component {
                                     <label className="upload-file" htmlFor="file">
                                         <span className="file-name">{this.state.filename}</span><span className="file-size">{(this.state.filesize) ? this.state.filesize / 1000 + "KB" : ""}</span>
                                     </label>   
-                                    {
-                                        (this.state.showLoader) ? <img className="loader" src="dist/img/load.gif"/> : ""
-                                    }
                             </ModalBody>
                             <ModalFooter>
                                 <Button className="cancel" onClick={this.toggle}>Cancel</Button>
                                 <Button innerRef={(button) => (this.sendFile = button)} color="primary">Upload <i className="material-icons">cloud_upload</i></Button>{' '}
+                                { (this.state.showLoader) ? <div className="lds-ellipsis loader-black"><div></div><div></div><div></div><div></div></div> : ""}
                             </ModalFooter>
                         </form>
                     </Modal>

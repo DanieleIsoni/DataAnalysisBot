@@ -98,16 +98,26 @@
 .me{
     background: #4285f4;
     color: white;
-    border-radius: 25px 5px 25px 25px;
+    border-radius: 25px 25px 0px 25px;
     float: right !important;
     box-shadow: 2px 3px 20px -8px rgba(0,0,0,0.3);
 }
 
 .bot, .comp{
-    color: #666;
-    border-radius: 5px 25px 25px 25px;
+    color: #555;
+    border-radius: 0px 25px 25px 25px;
     background: #f6f6f6;
-    box-shadow: 2px 3px 20px -10px rgba(0,0,0,0.4);
+    box-shadow: 2px 3px 20px -8px rgba(0,0,0,0.4);
+}
+
+.date{
+    position: absolute;
+    top: 100%;
+    padding: 1px 0;
+    color: #aaa;
+    font-size: 12px;
+    display: block;
+    right: 0;
 }
 
 .python{
@@ -165,6 +175,7 @@
     cursor: pointer;
     position: relative;
     display: block;
+    font-size: 14px;
 }
 
 .react-syntax-highlighter-line-number{

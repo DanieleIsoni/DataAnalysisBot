@@ -37,7 +37,6 @@ class ConnectedSidemenu extends React.Component {
 
     handleClick (el) {
         getVariable(el.name).then((data) => {
-            if(typeof data.schema != "undefined"){
                 this.setState({
                     idVar: el.id,
                     selectedVar: el.name,
@@ -45,7 +44,7 @@ class ConnectedSidemenu extends React.Component {
                 });
     
                 this.props.setActiveVariable(this.state.selectedVar);
-            }
+            
         }).catch(err => console.log('There was an error:' + err));
     }
 

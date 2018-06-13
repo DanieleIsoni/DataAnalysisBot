@@ -1,15 +1,13 @@
 import React from "react";
 import { connect } from "react-redux";
-import axios from 'axios';
-import uuidv1 from "uuid";
 import { deleteVariabile, addHints, addMessaggio } from "../../Actions/index";
 import Action from '../../Constants/Actions';
 import Upload from '../Control/Upload';
 import { setActiveVariable} from "../../Actions/index";
+import { deleteVariable } from '../../Actions/Axios';
 
 const mapDeleteVar = dispatch => {
     return {
-      deleteVariabile: id => dispatch(deleteVariabile(id)),
       addHints: hints => dispatch(addHints(hints)),
       addMessaggio: messaggio => dispatch(addMessaggio(messaggio)),
       setActiveVariable: vari => dispatch(setActiveVariable(vari))
@@ -19,7 +17,7 @@ const mapDeleteVar = dispatch => {
 class ConnectedList extends React.Component {
     constructor(props){
         super(props);
-        this.deleteVariable = this.deleteVariable.bind(this);
+        this.delete = this.delete.bind(this);
     }
 
     componentDidUpdate(){
@@ -27,13 +25,9 @@ class ConnectedList extends React.Component {
         else this.props.addHints(Action["initial"]);   
     }
 
-    deleteVariable(e, id, n, name) {
+    delete(e, id, n, name) {
         if(name == this.props.activeVar) this.props.setActiveVariable(null);
-        axios.get(this.props.url + '/delete/' + n)
-        .then(response => {
-            this.props.deleteVariabile(n);
-            this.props.addMessaggio({id: uuidv1(), who: "bot", what: "markdown", messaggio: response.data, output: []});
-        }) 
+        deleteVariable(n);
     }
 
     render() {
@@ -44,7 +38,7 @@ class ConnectedList extends React.Component {
                         this.props.variabili.map((el, n) => (
                             <div key={el.id} className={(this.props.activeVar == el.name) ? 'variable-container selected-var' : 'variable-container'} id={el.name}>
                                 <span onClick={() => this.props.onClick(el)}>{el.name}</span>
-                                <span className="delete_var" onClick={(e) => this.deleteVariable(e, el.id, n, el.name)}><i className="material-icons close_var">close</i></span>
+                                <span className="delete_var" onClick={(e) => this.delete(e, el.id, n, el.name)}><i className="material-icons close_var">close</i></span>
                             </div>
                         ))
                     :""
