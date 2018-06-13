@@ -46,25 +46,28 @@ let storeAttributes = function (fileName, fileLink, response, session){
             attributes = '';
         }
 
-        let entries = [];
-        attributes.forEach((element) => {
-            entries.push({
-               "value": `${element}`,
-                "synonyms":[
-                    `${element}`
-                ]
-            });
-        });
+        let entries = Common.createEntitiesArray(attributes);
+
+
+        // attributes.forEach((element) => {
+        //     entries.push({
+        //        "value": `${element}`,
+        //         "synonyms":[
+        //             `${element}`
+        //         ]
+        //     });
+        // });
         Common.variablesMap.forEach((value,key) => {
             if (key !== fileName){
-                value.attributes.forEach(el => {
-                   entries.push({
-                        "value": `${el}`,
-                        "synonyms":[
-                            `${el}`
-                        ]
-                    });
-                });
+                entries = Common.createEntitiesArray(value.attributes, entries);
+                // value.attributes.forEach(el => {
+                //    entries.push({
+                //         "value": `${el}`,
+                //         "synonyms":[
+                //             `${el}`
+                //         ]
+                //     });
+                // });
             }
         });
 

@@ -65,9 +65,9 @@ module.exports = class DialogFlow {
         let updateObject = req.body;
         let react = req.body.react;
         console.log('VARIABILE: '+req.body.variabile);
-        if (req.body.variabile != null)
+        if (react == 'true' && req.body.variabile != null)
             Common.variable = req.body.variabile;
-        else
+        else if (react == 'true')
             return DialogFlow.createResponse(res, 400, 'Something went wrong. Retry in a few minutes.');
 
         if (updateObject && updateObject.message) {

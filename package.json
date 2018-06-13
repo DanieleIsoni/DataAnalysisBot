@@ -85,6 +85,6 @@
     "ts-react-json-table": "^0.1.1"
   },
   "engines": {
-    "npm": "6.0.x"
+    "npm": "6.1.0"
   }
 }
