@@ -86,15 +86,23 @@ app.route('/clear')
 app.route('/variable/:filename')
     .get((req, res) => {
         sessionHandler.sessionHandler(sessions, req);
-        let data = req.params.filename;
-        let el = req.session.datasets.find((element) => { return element.name === data });
-        let ret = '';
-        if(el){
-            ret = el.describe;
-        }else{
-            ret = "Variable not found";
+        if (req.session.datasets.length >0) {
+            let data = req.params.filename;
+            let el = req.session.datasets.find((element) => {
+                return element.name === data
+            });
+            let ret = '';
+            if (el) {
+                ret = el.describe;
+                res.write(JSON.stringify(ret));
+            } else {
+                ret = "Variable not found";
+                res.status(404).write(JSON.stringify(ret));
+            }
+        } else {
+            res.status(400)
         }
-        res.write(JSON.stringify(ret));
+
         res.end();
     });
 

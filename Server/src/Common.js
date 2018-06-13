@@ -13,3 +13,16 @@ module.exports = {
     variable,
     variablesMap
 };
+
+module.exports.createEntitiesArray = (arrIn, arrOut=[]) => {
+    arrIn.forEach((element) => {
+            arrOut.push({
+               "value": `${element}`,
+                "synonyms":[
+                    `${element}`
+                ]
+            });
+        });
+
+    return arrOut;
+};

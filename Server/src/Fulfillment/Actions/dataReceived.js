@@ -46,19 +46,34 @@ let storeAttributes = function (fileName, fileLink, response, session){
             attributes = '';
         }
 
-        let entries = [];
-        attributes.forEach((element) => {
-            entries.push({
-               "value": `${element}`,
-                "synonyms":[
-                    `${element}`
-                ]
-            });
+        let entries = Common.createEntitiesArray(attributes);
+
+
+        // attributes.forEach((element) => {
+        //     entries.push({
+        //        "value": `${element}`,
+        //         "synonyms":[
+        //             `${element}`
+        //         ]
+        //     });
+        // });
+        Common.variablesMap.forEach((value,key) => {
+            if (key !== fileName){
+                entries = Common.createEntitiesArray(value.attributes, entries);
+                // value.attributes.forEach(el => {
+                //    entries.push({
+                //         "value": `${el}`,
+                //         "synonyms":[
+                //             `${el}`
+                //         ]
+                //     });
+                // });
+            }
         });
 
         let sessionEntityType = {
             name: `${session}/entityTypes/Attribute`,
-            entityOverrideMode: "ENTITY_OVERRIDE_MODE_OVERRIDE",
+            entityOverrideMode: "ENTITY_OVERRIDE_MODE_SUPPLEMENT",
             entities: entries
         };
         let request = {

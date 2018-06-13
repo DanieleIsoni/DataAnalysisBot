@@ -65,9 +65,9 @@ module.exports = class DialogFlow {
         let updateObject = req.body;
         let react = req.body.react;
         console.log('VARIABILE: '+req.body.variabile);
-        if (req.body.variabile != null)
+        if (react == 'true' && req.body.variabile != null)
             Common.variable = req.body.variabile;
-        else
+        else if (react == 'true')
             return DialogFlow.createResponse(res, 400, 'Something went wrong. Retry in a few minutes.');
 
         if (updateObject && updateObject.message) {
@@ -215,7 +215,6 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, chatId, req, 
     promise
         .then(responses => {
             let response = responses[0];
-            if (aiConfig.devConfig) console.log(`${cLog}Response:\n${JSON.stringify(response, null, '   ')}`);
             if(response.queryResult) {
                 let responseText = response.queryResult.fulfillmentText;
                 let action = response.queryResult.action;
@@ -255,7 +254,6 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, chatId, req, 
                             }
 
                         });
-                        console.log(`${cLog}Outputs:\n${JSON.stringify(messages, null, '   ')}`);
                         console.log(`${cLog}FulfillmentMessages processed`);
                     } else if (messages.length = 0 || webhookStatus === null){
                         messages = null;
@@ -299,6 +297,7 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, chatId, req, 
                     if (react == 'true') {
                         req.session.messages.push({who: 'bot', what: 'markdown', message: responseText, outputs: messages});
                     }
+                    req.session.lastAction = action;
                     DialogFlow.createResponse(res, 200, responseText, action, messages, codeToSend);
                 } else {
                     switch (webhookStatus.code) {
