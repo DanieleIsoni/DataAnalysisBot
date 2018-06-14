@@ -12,3 +12,5 @@ package-lock.json
 React/coverage
 React/es
 tmp/
+.floo
+.flooignore

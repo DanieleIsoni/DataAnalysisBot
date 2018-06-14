@@ -2,13 +2,15 @@ const fs = require('fs');
 const path = require('path');
 const rimraf = require('rimraf');
 const tmpPath = path.join(__dirname,'../../tmp');
+const Common = require('./Common');
 
-module.exports.sessionHandler = (sessions, req) => {
+module.exports.sessionTimeoutHandler = (sessions, req) => {
     if (!sessions.has(req.sessionID)){
-        sessions.set(req.sessionID, setTimeout(destroySession, 10*60*1000, req.sessionID, req.session));
+        sessions.set(req.sessionID, setTimeout(destroySession, 10000, req.sessionID, req.session));
     } else {
+        console.log('clearing Timeout');
         clearTimeout(sessions.get(req.sessionID));
-        sessions.set(req.sessionID, setTimeout(destroySession, 10*60*1000, req.sessionID, req.session));
+        sessions.set(req.sessionID, setTimeout(destroySession, 10000, req.sessionID, req.session));
     }
 };
 
@@ -27,6 +29,10 @@ let destroySession = (sessionID, session) => {
             console.error(`ERROR: error while destroying the session.\n${err}`);
         } else {
             console.log(`Session destroyed`);
+            Common.chartCount = 0;
+            Common.charts = [];
+            Common.variablesMap.clear();
+            Common.variable = null;
         }
     });
 };

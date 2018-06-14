@@ -68,7 +68,7 @@ module.exports = class DialogFlow {
         if (react == 'true' && req.body.variabile != null)
             Common.variable = req.body.variabile;
         else if (react == 'true')
-            return DialogFlow.createResponse(res, 400, 'Something went wrong. Retry in a few minutes.');
+            return DialogFlow.createResponse(res, 400, 'Something went wrong. Either select a variable or upload one before asking again.');
 
         if (updateObject && updateObject.message) {
             let msg = updateObject.message;
@@ -186,7 +186,7 @@ module.exports = class DialogFlow {
         }
     }
 
-    static createResponse(resp, statusCode, message, action = null, outputs = null, code = null) {
+    static createResponse(resp, statusCode, message, action = null, outputs = null, code = null, chartName = null) {
         /**
          * Json structure
          * {
@@ -206,6 +206,7 @@ module.exports = class DialogFlow {
             action: action,
             message: message,
             outputs: outputs,
+            chartName: chartName,
             code: code
         });
     }

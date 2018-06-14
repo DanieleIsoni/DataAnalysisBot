@@ -36,6 +36,14 @@ module.exports.deleteVariable = (req, res, tmpPath, dialogSessionId) => {
             if (Common.variablesMap.size === 0)
                 clearContexts(PROJECT_ID, dialogSessionId);
 
+            Common.charts.forEach((el, i) => {
+                if (el.variable === name) {
+                    Common.charts.splice(i,1);
+                }
+            });
+
+            console.log(`Charts2: ${JSON.stringify(Common.charts, null, '   ')}`);
+
             ret = `Variable ${name} deleted`;
         } catch (e) {
             ret = `Variable ${name} not deleted due to some server errors`;

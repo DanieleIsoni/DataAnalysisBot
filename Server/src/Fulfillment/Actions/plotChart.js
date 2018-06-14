@@ -11,12 +11,12 @@ module.exports.plotChart = (contexts, parameters, action, session, response) => 
     const plot_chart = contexts.find(obj => {
         return obj.name === `${session}/contexts/plot_chart`;
     });
-    let xlabel = contexts.find(obj => {
-        return obj.name === `${session}/contexts/xlabel`;
-    });
-    let ylabel = contexts.find(obj => {
-        return obj.name === `${session}/contexts/ylabel`;
-    });
+    // let xlabel = contexts.find(obj => {
+    //     return obj.name === `${session}/contexts/xlabel`;
+    // });
+    // let ylabel = contexts.find(obj => {
+    //     return obj.name === `${session}/contexts/ylabel`;
+    // });
 
     if (data_received && plot_chart) {
         let fileLink = Common.variablesMap.get(Common.variable).variableLink;
@@ -24,18 +24,32 @@ module.exports.plotChart = (contexts, parameters, action, session, response) => 
         let testAttr = parameters.CompositeTest.Attribute;
         let testOrig = plot_chart.parameters.CompositeTest['Test.original'];
         let attr = parameters.Attribute;
-        let chart = parameters.Chart;
-        if (!chart || chart === '') {
-            chart = 'barchart';
+        let chartType = parameters.Chart;
+        if (!chartType || chartType === '') {
+            chartType = 'barchart';
         }
 
-        if (xlabel) xlabel.lifespanCount = 5;
-        if (ylabel) ylabel.lifespanCount = 5;
-        if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test} on ${testAttr}\nChosen attribute for x-axis: ${attr}\nChosen chart: ${chart}`);
+        /** start new things */
+        let chartName = `chart${Common.chartCount+1}`;
+
+        let chart = {
+            name: chartName,
+            test: `${test}`,
+            testAttr: `${testAttr}`,
+            attr: `${attr}`,
+            testOrig: `${testOrig}`,
+            chartType: `${chartType}`
+        };
+        /** end new things */
+
+        // if (xlabel) xlabel.lifespanCount = 5;
+        // if (ylabel) ylabel.lifespanCount = 5;
+        if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test} on ${testAttr}\nChosen attribute for x-axis: ${attr}\nChosen chart: ${chartType}`);
 
         if (Common.variablesMap.get(Common.variable).attributes.includes(testAttr)
             && Common.variablesMap.get(Common.variable).attributes.includes(attr)) {
-            plotChartPy(fileLink, chart, test, testAttr, testOrig, attr, xlabel, ylabel, response);
+            chart.variable = Common.variable;
+            plotChartPy(fileLink, /*chartType, test, testAttr, testOrig, attr, xlabel, ylabel,*/chart, response);
         } else {
             response.send({
                 fulfillmentText: `The attribute you selected is not in the chosen dataset, try selecting the correct dataset`
@@ -55,41 +69,57 @@ module.exports.plotChartFuLabel = (contexts, parameters, action, session, respon
     const plotchart_followup_label = contexts.find(obj => {
         return obj.name === `${session}/contexts/plotchart-followup`;
     });
-    let xlabel = contexts.find(obj => {
-        return obj.name === `${session}/contexts/xlabel`;
-    });
-    let ylabel = contexts.find(obj => {
-        return obj.name === `${session}/contexts/ylabel`;
-    });
+    // let xlabel = contexts.find(obj => {
+    //     return obj.name === `${session}/contexts/xlabel`;
+    // });
+    // let ylabel = contexts.find(obj => {
+    //     return obj.name === `${session}/contexts/ylabel`;
+    // });
 
     if (data_received && plot_chart && plotchart_followup_label) {
-        let fileLink = Common.variablesMap.get(Common.variable).variableLink;
-        let test = plot_chart.parameters.CompositeTest.Test;
-        let testAttr = plot_chart.parameters.CompositeTest.Attribute;
-        let testOrig = plot_chart.parameters.CompositeTest['Test.original'];
-        let attr = plot_chart.parameters.Attribute;
-        let chart = plot_chart.parameters.Chart;
+        // let fileLink = Common.variablesMap.get(Common.variable).variableLink;
+        //let test = plot_chart.parameters.CompositeTest.Test;
+        //let testAttr = plot_chart.parameters.CompositeTest.Attribute;
+        //let testOrig = plot_chart.parameters.CompositeTest['Test.original'];
+        // let attr = plot_chart.parameters.Attribute;
+        //let chartType = plot_chart.parameters.Chart;
         let axis = plotchart_followup_label.parameters.Axis;
-        if (Common.variablesMap.get(Common.variable).attributes.includes(testAttr)
-            && Common.variablesMap.get(Common.variable).attributes.includes(attr)) {
+        let family = plotchart_followup_label.parameters.FontFamily;
+        let color = plotchart_followup_label.parameters.Color;
 
+        /** start new */
+        let chartName = plotchart_followup_label.parameters.CharName;
+
+        let chart = Common.charts.find(obj => {
+            return obj.name ===`${chartName}`;
+        });
+        /** end new*/
+
+        if (chart) {
+            let fileLink = chart.variablesMap.get(chart.variable).variableLink;
             if (axis === 'x') {
-                xlabel = updateAxContext(axis, plotchart_followup_label.parameters, xlabel, session);
-                if (!chart || chart === '') {
-                    chart = 'barchart';
-                }
-                if (DEV_CONFIG) console.log(`${fLog}Chosen test: ${test} on ${testAttr}\nChosen attribute for x-axis: ${attr}\nChosen chart: ${chart}`);
 
-                plotChartPy(fileLink, chart, test, testAttr, testOrig, attr, xlabel, ylabel, response);
+                if (family) chart.xLabel.family = family;
+                if (color) chart.xLabel.color = color;
+                // xlabel = updateAxContext(axis, plotchart_followup_label.parameters, xlabel, session);
+                //
+                // if (!chartType || chartType === '') {
+                //     chartType = 'barchart';
+                // }
+                if (DEV_CONFIG) console.log(`${fLog}Chosen test: ${chart.test} on ${chart.testAttr}\nChosen attribute for x-axis: ${chart.attr}\nChosen chart: ${chart.chartType}`);
+
+                plotChartPy(fileLink, /*chartType, test, testAttr, testOrig, attr, xlabel, ylabel,*/chart, response);
             } else if (axis === 'y') {
-                ylabel = updateAxContext(axis, plotchart_followup_label.parameters, ylabel, session);
+                if (family) chart.yLabel.family = family;
+                if (color) chart.yLabel.color = color;
+                // ylabel = updateAxContext(axis, plotchart_followup_label.parameters, ylabel, session);
+                //
+                // if (!chartType || chartType === '') {
+                //     chartType = 'barchart';
+                // }
+                if (DEV_CONFIG) console.log(`${fLog}Chosen test: ${chart.test} on ${chart.testAttr}\nChosen attribute for x-axis: ${chart.attr}\nChosen chart: ${chart.chartType}`);
 
-                if (!chart || chart === '') {
-                    chart = 'barchart';
-                }
-                if (DEV_CONFIG) console.log(`${fLog}Chosen test: ${test} on ${testAttr}\nChosen attribute for x-axis: ${attr}\nChosen chart: ${chart}`);
-
-                plotChartPy(fileLink, chart, test, testAttr, testOrig, attr, xlabel, ylabel, response);
+                plotChartPy(fileLink, /*chartType, test, testAttr, testOrig, attr, xlabel, ylabel,*/chart, response);
             }
         } else {
             response.send({
@@ -101,8 +131,9 @@ module.exports.plotChartFuLabel = (contexts, parameters, action, session, respon
 };
 
 
-let plotChartPy = (fileLink, chart, test, testAttr, testOrig, attr, xLabel, yLabel, response) => {
+let plotChartPy = (fileLink, /*chartType, test, testAttr, testOrig, attr, xLabel, yLabel,*/chart, response) => {
 
+    /*
     let xLabelPy = null;
     let yLabelPy = null;
     if (xLabel != null) {
@@ -119,14 +150,35 @@ let plotChartPy = (fileLink, chart, test, testAttr, testOrig, attr, xLabel, yLab
         yLabelPy = `${JSON.stringify(yLabelPy)}`.replace(':', ': ').replace('{', '[').replace('}', ']');
         if (yLabelPy === '[]') yLabelPy = null;
     }
+    */
+
+    /** start new */
+    let xLabelPy = null;
+    let yLabelPy = null;
+    if (chart.xLabel) {
+        xLabelPy = chart.xLabel;
+        // if (chart.xLabel.color) xLabelPy.color = xLabel.color;
+        // if (chart.xLabel.family) xLabelPy.family = xLabel.family;
+        xLabelPy = `${JSON.stringify(xLabelPy)}`.replace(':', ': ').replace('{', '[').replace('}', ']');
+        if (xLabelPy === '[]') xLabelPy = null;
+    }
+    if (chart.yLabel) {
+        yLabelPy = chart.yLabel;
+        // if (chart.yLabel.color) yLabelPy.color = yLabel.color;
+        // if (chart.yLabel.family) yLabelPy.family = yLabel.family;
+        yLabelPy = `${JSON.stringify(yLabelPy)}`.replace(':', ': ').replace('{', '[').replace('}', ']');
+        if (yLabelPy === '[]') yLabelPy = null;
+    }
+    /** end new */
 
     const options = {
         mode: 'text',
         scriptPath: 'Server/src/Fulfillment/Python/',
-        args: [`${fileLink}`, `${test}`, `${testAttr}`, `${testOrig}`, `${attr}`, xLabelPy, yLabelPy]
+        //args: [`${fileLink}`, `${test}`, `${testAttr}`, `${testOrig}`, `${attr}`, xLabelPy, yLabelPy]
+        args: [`${fileLink}`, `${chart.test}`, `${chart.testAttr}`, `${chart.testOrig}`, `${chart.attr}`, xLabelPy, yLabelPy]
     };
 
-    switch(chart) {
+    switch(/*chartType*/ `${chart.chartType}`) {
         case 'barchart': {
             PythonShell.run('barchart.py', options, (err, result) => {
                 if (err) {
@@ -146,12 +198,12 @@ try:
 
 
     x = {
-        'maximum': data_set[[${attr}, ${testAttr}]].groupby(${attr}).agg([np.max]),
-        'minimum': data_set[[${attr}, ${testAttr}]].groupby(${attr}).agg([np.min]),
-        'mean': data_set[[${attr}, ${testAttr}]].groupby(${attr}).agg([np.mean]),
-        'std': data_set[[${attr}, ${testAttr}]].groupby(${attr}).agg([np.std]),
-        'var': data_set[[${attr}, ${testAttr}]].groupby(${attr}).agg([np.var])
-    }.get(${test})
+        'maximum': data_set[[${chart.attr}, ${chart.testAttr}]].groupby(${chart.attr}).agg([np.max]),
+        'minimum': data_set[[${chart.attr}, ${chart.testAttr}]].groupby(${chart.attr}).agg([np.min]),
+        'mean': data_set[[${chart.attr}, ${chart.testAttr}]].groupby(${chart.attr}).agg([np.mean]),
+        'std': data_set[[${chart.attr}, ${chart.testAttr}]].groupby(${chart.attr}).agg([np.std]),
+        'var': data_set[[${chart.attr}, ${chart.testAttr}]].groupby(${chart.attr}).agg([np.var])
+    }.get(${chart.test})
 
     testMod = {
         'maximum': 'max',
@@ -159,7 +211,7 @@ try:
         'mean': 'mean',
         'std': 'std',
         'var': 'var'
-    }.get(${test})
+    }.get(${chart.test})
 
     x.columns = x.columns.droplevel()
 
@@ -175,9 +227,9 @@ try:
             
     barplot(x_data=x.index.values,
             y_data=x[testMod],
-            x_label=${attr},
-            y_label=${testOrig}+' '+${testAttr},
-            title=${testOrig}+' '+${testAttr}+' per '+${attr})
+            x_label=${chart.attr},
+            y_label=${chart.testOrig}+' '+${chart.testAttr},
+            title=${chart.testOrig}+' '+${chart.testAttr}+' per '+${chart.attr})
                 
     figfile = BytesIO()
     plt.savefig(figfile, format='png')
@@ -198,9 +250,10 @@ except urllib.error.HTTPError as err:
                         code: codeToSend,
                         image: `${result}`
                     },
-                    outputContexts: []
+                    //outputContexts: []
                 };
 
+                /*
                 if (xLabel != null) {
                     xLabel.lifespanCount = 5;
                     resToSend.outputContexts.push(xLabel);
@@ -208,6 +261,20 @@ except urllib.error.HTTPError as err:
                 if (yLabel != null) {
                     yLabel.lifespanCount = 5;
                     resToSend.outputContexts.push(yLabel);
+                }
+                */
+                if (result != 'define'){
+                    Common.chartCount++;
+                    let cId = Common.charts.findIndex(el => {
+                        return el.name === chart.name;
+                    });
+
+                    if (cId=== -1) {
+                        Common.charts.push(chart);
+                    } else {
+                        Common.charts[cId] = chart;
+                    }
+                    console.log(`Charts: ${JSON.stringify(Common.charts, null, '   ')}`);
                 }
 
                 response.send(resToSend);

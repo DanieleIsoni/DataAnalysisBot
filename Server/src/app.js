@@ -1,7 +1,7 @@
 const DialogFlow = require('./Client/DialogFlow');
 const DialogFlowConfig = require('./Client/DialogFlowConfig');
 const fulfillment = require('./Fulfillment/Fulfillment');
-const sessionHandler = require('./sessionHandler');
+const sessionTimeoutHandler = require('./sessionTimeoutHandler');
 const deleteVariable = require('./Client/Methods/deleteVariable');
 
 const express = require('express');
@@ -41,6 +41,7 @@ require('console-stamp')(console, 'yyyy.mm.dd HH:MM:ss.l');
 let tmpPath;
 let aiConfig;
 let ai;
+let sessionsTimeout = new Map();
 let sessions = new Map();
 
 const app = express();
@@ -60,13 +61,13 @@ app.use(function (req, res, next) {
 
 app.route('/')
     .get((req, res) => {
-        sessionHandler.sessionHandler(sessions, req);
+        sessionTimeoutHandler.sessionTimeoutHandler(sessionsTimeout, req);
         res.sendFile("React/index.html", {root: "./" });
     });
 
 app.route('/messages')
     .get((req, res) => {
-        sessionHandler.sessionHandler(sessions, req);
+        sessionTimeoutHandler.sessionTimeoutHandler(sessionsTimeout, req);
         res.writeHead(200, {'Content-Type': 'application/json'});
         res.write(JSON.stringify({
             messages: req.session.messages,
@@ -77,7 +78,7 @@ app.route('/messages')
 
 app.route('/clear')
     .get((req, res) => {
-        sessionHandler.sessionHandler(sessions, req);
+        sessionTimeoutHandler.sessionTimeoutHandler(sessionsTimeout, req);
         req.session.messages = [];
         res.write(JSON.stringify({clear: true}));
         res.end();
@@ -85,7 +86,7 @@ app.route('/clear')
 
 app.route('/variable/:filename')
     .get((req, res) => {
-        sessionHandler.sessionHandler(sessions, req);
+        sessionTimeoutHandler.sessionTimeoutHandler(sessionsTimeout, req);
         if (req.session.datasets.length >0) {
             let data = req.params.filename;
             let el = req.session.datasets.find((element) => {
@@ -108,7 +109,7 @@ app.route('/variable/:filename')
 
 app.route('/delete/:id')
     .get((req, res) => {
-        sessionHandler.sessionHandler(sessions, req);
+        sessionTimeoutHandler.sessionTimeoutHandler(sessionsTimeout, req);
 
         let dialogSessionId = ai.sessionIds.get(req.sessionID);
 
@@ -118,7 +119,7 @@ app.route('/delete/:id')
 
 app.route(`/${CLIENT_WEBHOOK}`)
     .post((req, res) => {
-        sessionHandler.sessionHandler(sessions, req);
+        sessionTimeoutHandler.sessionTimeoutHandler(sessionsTimeout, req);
         console.log(`POST ${CLIENT_WEBHOOK}`);
         try {
             ai.processMessage(req, res);
@@ -133,7 +134,7 @@ const allowed_file = (mime) => {
 
 app.route('/upload')
     .post((req, res) => {
-        sessionHandler.sessionHandler(sessions, req);
+        sessionTimeoutHandler.sessionTimeoutHandler(sessionsTimeout, req);
         let path_ = path.join(tmpPath,`/${req.sessionID}`);
         console.log(`Path to save: ${path_}`);
         if (!fs.existsSync(path_)){
@@ -170,28 +171,31 @@ app.route('/upload')
                 });
                 pyshell.end(function (err) {
                     if (err) throw err;
-                    else console.log('Variables loaded');
+                    else {
+                        console.log('Variables loaded');
+                        req.body = {
+                            react: 'true',
+                            variabile: variable,
+                            message: {
+                                document: {
+                                    file_name: name,
+                                    file_link: fileLink
+                                }
+                            },
+                        };
+
+                        try {
+                            ai.processMessage(req, res);
+                        } catch (err) {
+                            return res.status(400).send(`Error while processing ${err.message}`);
+                        }
+                    }
                 });
             } catch (err) {
                 console.error(`ERROR: ${err}`);
             }
 
-            req.body = {
-                react: 'true',
-                variabile: variable,
-                message: {
-                    document: {
-                        file_name: name,
-                        file_link: fileLink
-                    }
-                },
-            };
 
-            try {
-                ai.processMessage(req, res);
-            } catch (err) {
-                return res.status(400).send(`Error while processing ${err.message}`);
-            }
 
         }else{
             res.write(JSON.stringify(name));
