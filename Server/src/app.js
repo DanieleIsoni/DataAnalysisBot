@@ -1,8 +1,8 @@
 const DialogFlow = require('./Client/DialogFlow');
 const DialogFlowConfig = require('./Client/DialogFlowConfig');
 const fulfillment = require('./Fulfillment/Fulfillment');
-const sessionTimeoutHandler = require('./sessionTimeoutHandler');
 const deleteVariable = require('./Client/Methods/deleteVariable');
+const Common = require('./Common');
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -42,7 +42,6 @@ let tmpPath;
 let aiConfig;
 let ai;
 let sessionsTimeout = new Map();
-let sessions = new Map();
 
 const app = express();
 
@@ -61,13 +60,15 @@ app.use(function (req, res, next) {
 
 app.route('/')
     .get((req, res) => {
-        sessionTimeoutHandler.sessionTimeoutHandler(sessionsTimeout, req);
+        Common.sessionHandler(req);
+        Common.sessionTimeoutHandler(sessionsTimeout, req);
         res.sendFile("React/index.html", {root: "./" });
     });
 
 app.route('/messages')
     .get((req, res) => {
-        sessionTimeoutHandler.sessionTimeoutHandler(sessionsTimeout, req);
+        Common.sessionHandler(req);
+        Common.sessionTimeoutHandler(sessionsTimeout, req);
         res.writeHead(200, {'Content-Type': 'application/json'});
         res.write(JSON.stringify({
             messages: req.session.messages,
@@ -78,7 +79,8 @@ app.route('/messages')
 
 app.route('/clear')
     .get((req, res) => {
-        sessionTimeoutHandler.sessionTimeoutHandler(sessionsTimeout, req);
+        Common.sessionHandler(req);
+        Common.sessionTimeoutHandler(sessionsTimeout, req);
         req.session.messages = [];
         res.write(JSON.stringify({clear: true}));
         res.end();
@@ -86,7 +88,8 @@ app.route('/clear')
 
 app.route('/variable/:filename')
     .get((req, res) => {
-        sessionTimeoutHandler.sessionTimeoutHandler(sessionsTimeout, req);
+        Common.sessionHandler(req);
+        Common.sessionTimeoutHandler(sessionsTimeout, req);
         if (req.session.datasets.length >0) {
             let data = req.params.filename;
             let el = req.session.datasets.find((element) => {
@@ -109,17 +112,19 @@ app.route('/variable/:filename')
 
 app.route('/delete/:id')
     .get((req, res) => {
-        sessionTimeoutHandler.sessionTimeoutHandler(sessionsTimeout, req);
+        Common.sessionHandler(req);
+        Common.sessionTimeoutHandler(sessionsTimeout, req);
 
-        let dialogSessionId = ai.sessionIds.get(req.sessionID);
+        let sessionId = req.sessionID;
 
-        deleteVariable.deleteVariable(req, res, tmpPath, dialogSessionId);
+        deleteVariable.deleteVariable(req, res, tmpPath, sessionId);
 
     });
 
 app.route(`/${CLIENT_WEBHOOK}`)
     .post((req, res) => {
-        sessionTimeoutHandler.sessionTimeoutHandler(sessionsTimeout, req);
+        Common.sessionHandler(req);
+        Common.sessionTimeoutHandler(sessionsTimeout, req);
         console.log(`POST ${CLIENT_WEBHOOK}`);
         try {
             ai.processMessage(req, res);
@@ -134,7 +139,8 @@ const allowed_file = (mime) => {
 
 app.route('/upload')
     .post((req, res) => {
-        sessionTimeoutHandler.sessionTimeoutHandler(sessionsTimeout, req);
+        Common.sessionHandler(req);
+        Common.sessionTimeoutHandler(sessionsTimeout, req);
         let path_ = path.join(tmpPath,`/${req.sessionID}`);
         console.log(`Path to save: ${path_}`);
         if (!fs.existsSync(path_)){

@@ -11,16 +11,16 @@ const Common = require('../../Common');
 
 const fLog = '[FULFILLMENT] ';
 
-module.exports.dataReceived = (contexts, action, session, response) => {
+module.exports.dataReceived = (contexts, action, sessionPath, sessionId, response) => {
     const data_received = contexts.find(obj => {
-        return obj.name === `${session}/contexts/data_received`;
+        return obj.name === `${sessionPath}/contexts/data_received`;
     });
 
     if (data_received) {
         let fileName = data_received.parameters.file_name;
         let fileLink = data_received.parameters.file_link;
 
-        storeAttributes(fileName, fileLink, response, session);
+        storeAttributes(fileName, fileLink, response, sessionPath, sessionId);
     } else {
         console.error(`${fLog}Context not found for action ${action}`);
         response.send({
@@ -30,12 +30,15 @@ module.exports.dataReceived = (contexts, action, session, response) => {
 };
 
 
-let storeAttributes = function (fileName, fileLink, response, session){
+let storeAttributes = function (fileName, fileLink, response, sessionPath, sessionId){
     const options = {
         mode: 'text',
         scriptPath: 'Server/src/Fulfillment/Python/',
         args: [`${fileLink}`]
     };
+
+    let session = Common.sessions.get(sessionId);
+
     PythonShell.run('getAttributes.py', options, function (err, results) {
         if(err){
             console.error(`${fLog}ERROR: ${err}`);
@@ -57,7 +60,7 @@ let storeAttributes = function (fileName, fileLink, response, session){
         //         ]
         //     });
         // });
-        Common.variablesMap.forEach((value,key) => {
+        session.variablesMap.forEach((value,key) => {
             if (key !== fileName){
                 entries = Common.createEntitiesArray(value.attributes, entries);
                 // value.attributes.forEach(el => {
@@ -72,12 +75,12 @@ let storeAttributes = function (fileName, fileLink, response, session){
         });
 
         let sessionEntityType = {
-            name: `${session}/entityTypes/Attribute`,
+            name: `${sessionPath}/entityTypes/Attribute`,
             entityOverrideMode: "ENTITY_OVERRIDE_MODE_SUPPLEMENT",
             entities: entries
         };
         let request = {
-            parent: session,
+            parent: sessionPath,
             sessionEntityType: sessionEntityType
         };
 
@@ -86,7 +89,7 @@ let storeAttributes = function (fileName, fileLink, response, session){
                 let res = responses[0];
 
                 if (res) {
-                    Common.variablesMap.set(fileName, {variableLink: fileLink, attributes: attributes});
+                    session.variablesMap.set(fileName, {variableLink: fileLink, attributes: attributes});
                     let message = `Stored ${fileName} which contains: ${attributes.join(', ')}\nWhat do you want to do with this data?`;
                     response.send({
                         fulfillmentText: message

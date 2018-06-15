@@ -3,21 +3,22 @@ const PythonShell = require('python-shell');
 const DEV_CONFIG = (process.env.DEVELOPMENT_CONFIG === 'true');
 const fLog = '[FULFILLMENT] ';
 
-module.exports.testRequest = (contexts, parameters, action, session, response) => {
+module.exports.testRequest = (contexts, parameters, action, sessionPath, sessionId, response) => {
     const data_received = contexts.find(obj => {
-        return obj.name === `${session}/contexts/data_received`;
+        return obj.name === `${sessionPath}/contexts/data_received`;
     });
     const test_request = contexts.find(obj => {
-        return obj.name === `${session}/contexts/test_request`;
+        return obj.name === `${sessionPath}/contexts/test_request`;
     });
 
     if (data_received && test_request) {
-        let fileLink = Common.variablesMap.get(Common.variable).variableLink;
+        let session = Common.sessions.get(sessionId);
+        let fileLink = session.variablesMap.get(session.variable).variableLink;
         let test = parameters.Test;
         let test_original = test_request.parameters['Test.original'];
         let attr = parameters.Attribute;
         if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test}\nChosen attribute: ${attr}`);
-        if (Common.variablesMap.get(Common.variable).attributes.includes(attr)) {
+        if (session.variablesMap.get(session.variable).attributes.includes(attr)) {
             executeTest(fileLink, test, test_original, attr, response);
         } else {
             response.send({
@@ -32,25 +33,26 @@ module.exports.testRequest = (contexts, parameters, action, session, response) =
     }
 };
 
-module.exports.testRequestFuAttribute = (contexts, parameters, action, session, response) => {
+module.exports.testRequestFuAttribute = (contexts, parameters, action, sessionPath, sessionId, response) => {
     const data_received = contexts.find(obj => {
-        return obj.name === `${session}/contexts/data_received`;
+        return obj.name === `${sessionPath}/contexts/data_received`;
     });
     const test_request = contexts.find((obj) => {
-        return obj.name === `${session}/contexts/test_request`;
+        return obj.name === `${sessionPath}/contexts/test_request`;
     });
     const testrequest_followup_attribute = contexts.find(obj => {
-        return obj.name === `${session}/contexts/testrequest-followup`;
+        return obj.name === `${sessionPath}/contexts/testrequest-followup`;
     });
 
     if (test_request && data_received && testrequest_followup_attribute) {
-        let fileLink = Common.variablesMap.get(Common.variable).variableLink;
+        let session = Common.sessions.get(sessionId);
+        let fileLink = session.variablesMap.get(session.variable).variableLink;
         let test = test_request.parameters.Test;
         let test_original = test_request.parameters['Test.original'];
         let attr = parameters.Attribute;
         if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test}\nChosen attribute: ${attr}`);
 
-        if (Common.variablesMap.get(Common.variable).attributes.includes(attr)) {
+        if (session.variablesMap.get(session.variable).attributes.includes(attr)) {
             executeTest(fileLink, test, test_original, attr, response);
         } else {
             response.send({
@@ -65,25 +67,26 @@ module.exports.testRequestFuAttribute = (contexts, parameters, action, session, 
     }
 };
 
-module.exports.testRequestFuTest = (contexts, parameters, action, session, response) => {
+module.exports.testRequestFuTest = (contexts, parameters, action, sessionPath, sessionId, response) => {
     const data_received = contexts.find(obj => {
-        return obj.name === `${session}/contexts/data_received`;
+        return obj.name === `${sessionPath}/contexts/data_received`;
     });
     const test_request = contexts.find((obj) => {
-        return obj.name === `${session}/contexts/test_request`;
+        return obj.name === `${sessionPath}/contexts/test_request`;
     });
     const testrequest_followup_test = contexts.find(obj => {
-        return obj.name === `${session}/contexts/testrequest-followup-2`;
+        return obj.name === `${sessionPath}/contexts/testrequest-followup-2`;
     });
 
     if (test_request && data_received && testrequest_followup_test) {
-        let fileLink = Common.variablesMap.get(Common.variable).variableLink;
+        let session = Common.sessions.get(sessionId);
+        let fileLink = session.variablesMap.get(session.variable).variableLink;
         let test = parameters.Test;
         let test_original = testrequest_followup_test.parameters['Test.original'];
         let attr = test_request.parameters.Attribute;
         if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test}\nChosen attribute: ${attr}`);
 
-        if (Common.variablesMap.get(Common.variable).attributes.includes(attr)) {
+        if (session.variablesMap.get(session.variable).attributes.includes(attr)) {
             executeTest(fileLink, test, test_original, attr, response);
         } else {
             response.send({

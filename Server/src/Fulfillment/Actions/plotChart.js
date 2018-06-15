@@ -4,22 +4,24 @@ const DEV_CONFIG = (process.env.DEVELOPMENT_CONFIG == 'true');
 const PROJECT_ID = process.env.PROJECT_ID;
 const fLog = '[FULFILLMENT] ';
 
-module.exports.plotChart = (contexts, parameters, action, session, response) => {
+module.exports.plotChart = (contexts, parameters, action, sessionPath, sessionId, response) => {
     const data_received = contexts.find(obj => {
-        return obj.name === `${session}/contexts/data_received`;
+        return obj.name === `${sessionPath}/contexts/data_received`;
     });
     const plot_chart = contexts.find(obj => {
-        return obj.name === `${session}/contexts/plot_chart`;
+        return obj.name === `${sessionPath}/contexts/plot_chart`;
     });
     // let xlabel = contexts.find(obj => {
-    //     return obj.name === `${session}/contexts/xlabel`;
+    //     return obj.name === `${sessionPath}/contexts/xlabel`;
     // });
     // let ylabel = contexts.find(obj => {
-    //     return obj.name === `${session}/contexts/ylabel`;
+    //     return obj.name === `${sessionPath}/contexts/ylabel`;
     // });
 
     if (data_received && plot_chart) {
-        let fileLink = Common.variablesMap.get(Common.variable).variableLink;
+        let session = Common.sessions.get(sessionId);
+
+        let fileLink = session.variablesMap.get(session.variable).variableLink;
         let test = parameters.CompositeTest.Test;
         let testAttr = parameters.CompositeTest.Attribute;
         let testOrig = plot_chart.parameters.CompositeTest['Test.original'];
@@ -30,7 +32,7 @@ module.exports.plotChart = (contexts, parameters, action, session, response) => 
         }
 
         /** start new things */
-        let chartName = `chart${Common.chartCount+1}`;
+        let chartName = `chart${session.chartCount+1}`;
 
         let chart = {
             name: chartName,
@@ -46,10 +48,10 @@ module.exports.plotChart = (contexts, parameters, action, session, response) => 
         // if (ylabel) ylabel.lifespanCount = 5;
         if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test} on ${testAttr}\nChosen attribute for x-axis: ${attr}\nChosen chart: ${chartType}`);
 
-        if (Common.variablesMap.get(Common.variable).attributes.includes(testAttr)
-            && Common.variablesMap.get(Common.variable).attributes.includes(attr)) {
-            chart.variable = Common.variable;
-            plotChartPy(fileLink, /*chartType, test, testAttr, testOrig, attr, xlabel, ylabel,*/chart, response);
+        if (session.variablesMap.get(session.variable).attributes.includes(testAttr)
+            && session.variablesMap.get(session.variable).attributes.includes(attr)) {
+            chart.variable = session.variable;
+            plotChartPy(fileLink, /*chartType, test, testAttr, testOrig, attr, xlabel, ylabel,*/chart, response, sessionId);
         } else {
             response.send({
                 fulfillmentText: `The attribute you selected is not in the chosen dataset, try selecting the correct dataset`
@@ -59,25 +61,26 @@ module.exports.plotChart = (contexts, parameters, action, session, response) => 
     }
 };
 
-module.exports.plotChartFuLabel = (contexts, parameters, action, session, response) => {
+module.exports.plotChartFuLabel = (contexts, parameters, action, sessionPath, sessionId, response) => {
     const data_received = contexts.find(obj => {
-        return obj.name === `${session}/contexts/data_received`;
+        return obj.name === `${sessionPath}/contexts/data_received`;
     });
     const plot_chart = contexts.find(obj => {
-        return obj.name === `${session}/contexts/plot_chart`;
+        return obj.name === `${sessionPath}/contexts/plot_chart`;
     });
     const plotchart_followup_label = contexts.find(obj => {
-        return obj.name === `${session}/contexts/plotchart-followup`;
+        return obj.name === `${sessionPath}/contexts/plotchart-followup`;
     });
     // let xlabel = contexts.find(obj => {
-    //     return obj.name === `${session}/contexts/xlabel`;
+    //     return obj.name === `${sessionPath}/contexts/xlabel`;
     // });
     // let ylabel = contexts.find(obj => {
-    //     return obj.name === `${session}/contexts/ylabel`;
+    //     return obj.name === `${sessionPath}/contexts/ylabel`;
     // });
 
     if (data_received && plot_chart && plotchart_followup_label) {
-        // let fileLink = Common.variablesMap.get(Common.variable).variableLink;
+        let session = Common.sessions.get(sessionId);
+        // let fileLink = session.variablesMap.get(session.variable).variableLink;
         //let test = plot_chart.parameters.CompositeTest.Test;
         //let testAttr = plot_chart.parameters.CompositeTest.Attribute;
         //let testOrig = plot_chart.parameters.CompositeTest['Test.original'];
@@ -88,38 +91,43 @@ module.exports.plotChartFuLabel = (contexts, parameters, action, session, respon
         let color = plotchart_followup_label.parameters.Color;
 
         /** start new */
-        let chartName = plotchart_followup_label.parameters.CharName;
+        let chartName = plotchart_followup_label.parameters.ChartName;
 
-        let chart = Common.charts.find(obj => {
-            return obj.name ===`${chartName}`;
+        let chart = session.charts.find(obj => {
+            return obj.name === `${chartName}`;
         });
         /** end new*/
 
         if (chart) {
-            let fileLink = chart.variablesMap.get(chart.variable).variableLink;
+            let fileLink = session.variablesMap.get(session.variable).variableLink;
             if (axis === 'x') {
-
+                if (!chart.xLabel){
+                    chart.xLabel = {};
+                }
                 if (family) chart.xLabel.family = family;
                 if (color) chart.xLabel.color = color;
-                // xlabel = updateAxContext(axis, plotchart_followup_label.parameters, xlabel, session);
+                // xlabel = updateAxContext(axis, plotchart_followup_label.parameters, xlabel, sessionPath);
                 //
                 // if (!chartType || chartType === '') {
                 //     chartType = 'barchart';
                 // }
                 if (DEV_CONFIG) console.log(`${fLog}Chosen test: ${chart.test} on ${chart.testAttr}\nChosen attribute for x-axis: ${chart.attr}\nChosen chart: ${chart.chartType}`);
 
-                plotChartPy(fileLink, /*chartType, test, testAttr, testOrig, attr, xlabel, ylabel,*/chart, response);
+                plotChartPy(fileLink, /*chartType, test, testAttr, testOrig, attr, xlabel, ylabel,*/chart, response, sessionId);
             } else if (axis === 'y') {
+                if (!chart.yLabel){
+                    chart.yLabel = {};
+                }
                 if (family) chart.yLabel.family = family;
                 if (color) chart.yLabel.color = color;
-                // ylabel = updateAxContext(axis, plotchart_followup_label.parameters, ylabel, session);
+                // ylabel = updateAxContext(axis, plotchart_followup_label.parameters, ylabel, sessionPath);
                 //
                 // if (!chartType || chartType === '') {
                 //     chartType = 'barchart';
                 // }
                 if (DEV_CONFIG) console.log(`${fLog}Chosen test: ${chart.test} on ${chart.testAttr}\nChosen attribute for x-axis: ${chart.attr}\nChosen chart: ${chart.chartType}`);
 
-                plotChartPy(fileLink, /*chartType, test, testAttr, testOrig, attr, xlabel, ylabel,*/chart, response);
+                plotChartPy(fileLink, /*chartType, test, testAttr, testOrig, attr, xlabel, ylabel,*/chart, response, sessionId);
             }
         } else {
             response.send({
@@ -131,7 +139,9 @@ module.exports.plotChartFuLabel = (contexts, parameters, action, session, respon
 };
 
 
-let plotChartPy = (fileLink, /*chartType, test, testAttr, testOrig, attr, xLabel, yLabel,*/chart, response) => {
+let plotChartPy = (fileLink, /*chartType, test, testAttr, testOrig, attr, xLabel, yLabel,*/chart, response, sessionId) => {
+
+    let session = Common.sessions.get(sessionId);
 
     /*
     let xLabelPy = null;
@@ -264,17 +274,17 @@ except urllib.error.HTTPError as err:
                 }
                 */
                 if (result != 'define'){
-                    Common.chartCount++;
-                    let cId = Common.charts.findIndex(el => {
+                    session.chartCount++;
+                    let cId = session.charts.findIndex(el => {
                         return el.name === chart.name;
                     });
 
                     if (cId=== -1) {
-                        Common.charts.push(chart);
+                        session.charts.push(chart);
                     } else {
-                        Common.charts[cId] = chart;
+                        session.charts[cId] = chart;
                     }
-                    console.log(`Charts: ${JSON.stringify(Common.charts, null, '   ')}`);
+                    console.log(`Charts: ${JSON.stringify(session.charts, null, '   ')}`);
                 }
 
                 response.send(resToSend);
@@ -292,7 +302,7 @@ except urllib.error.HTTPError as err:
 
 };
 
-let updateAxContext = (axis, params, label, session) => {
+let updateAxContext = (axis, params, label, sessionPath) => {
     /**
      * Label format:
      * {
@@ -303,7 +313,7 @@ let updateAxContext = (axis, params, label, session) => {
      * }
      */
 
-    let sessionId = session.split('/')[session.split('/').length-1];
+    let sessionId = sessionPath.split('/')[sessionPath.split('/').length-1];
 
     let family = params.FontFamily;
     let color = params.Color;

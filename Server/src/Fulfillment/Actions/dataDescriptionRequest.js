@@ -3,14 +3,15 @@ const PythonShell = require('python-shell');
 const DEV_CONFIG = (process.env.DEVELOPMENT_CONFIG == 'true');
 const fLog = '[FULFILLMENT] ';
 
-module.exports.dataDescriptionRequest = (contexts, action, session, response) => {
+module.exports.dataDescriptionRequest = (contexts, action, sessionPath, sessionId, response) => {
     const data_received = contexts.find(obj => {
-        return obj.name === `${session}/contexts/data_received`;
+        return obj.name === `${sessionPath}/contexts/data_received`;
     });
 
     if (data_received) {
-        let fileName = Common.variable;
-        let fileLink = Common.variablesMap.get(Common.variable).variableLink;
+        let session = Common.sessions.get(sessionId);
+        let fileName = session.variable;
+        let fileLink = session.variablesMap.get(session.variable).variableLink;
 
         dataDescription(fileName, fileLink, response);
     } else {
