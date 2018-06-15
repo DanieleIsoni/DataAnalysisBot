@@ -185,8 +185,9 @@ class ConnectedForm extends React.Component {
     }
 
     setInput(e, sug){
-        this.setState({ inputValue: sug });
+        e.preventDefault();
         this.textarea.focus();
+        this.setState({ inputValue: sug });
     }
 
     render(){

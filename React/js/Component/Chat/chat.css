@@ -308,9 +308,73 @@
     color: white;
 }
 
-.title_input{
-    
+.form_title{
+    height: 60px;
+    max-width: 70%;
+    position: relative;
+    margin-left: 24px;
 }
+
+.title_input{
+    bottom: 0;
+    color: #888;
+    width: 100%;
+    border: none;
+    outline: none;
+    padding: 10px;
+    position: absolute;
+    background: transparent;
+    transition: all 0.1s ease-in-out;
+    border-bottom: 1px solid #E0E0E0;
+}
+
+.form_title label{
+    bottom: 0px;
+    color: #E0E0E0;
+    position: absolute;
+    pointer-events: none;
+    transition: 0.1s ease-in-out;
+}
+
+.bar{
+    bottom: 2px;
+    width: 100%;
+    position: absolute;
+}
+
+.title_input.filled {
+    border-bottom: 1px solid #2196F3;
+}
+
+  .title_input:valid ~ label, .title_input:valid ~ label {
+    bottom: 30px;
+    color: #2196F3;
+    font-size: 16px;
+  }
+
+  .title_input:valid {
+    border-bottom: 1px solid #2196F3;
+  }
+  
+
+  .bar:before, .bar:after {
+    content: "";
+    width: 0;
+    height: 2px;
+    position: absolute;
+    background: #2196F3;
+    transition: all 0.2s ease-in-out;
+  }
+  .bar:before {
+    left: 50%;
+  }
+  .bar:after {
+    right: 50%;
+  }
+  
+  .title_input:focus ~ .bar:before, .title_input:focus ~ .bar:after {
+    width: 50%;
+  }
 
 @media (max-width: 768px) {
     .chat-thread li img{

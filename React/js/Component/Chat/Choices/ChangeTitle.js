@@ -6,24 +6,14 @@ class ChangeTitle extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            input: '',
             modal: false,
             showLoader: false
         }
 
-        this.handleTitleChange = this.handleTitleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.toggle = this.toggle.bind(this);
     }
 
-    handleTitleChange(e){
-        if(e.target.value){
-            this.setState({
-                input: e.target.value,
-                modal: true
-            });
-        }
-    }
 
     handleSubmit(e){
         e.preventDefault();
@@ -44,7 +34,11 @@ class ChangeTitle extends React.Component {
                         <ModalHeader>Change plot title</ModalHeader>   
                         <ModalBody>
                                 <span className="body_text">Change the title of the plot $NOME on $DATASET</span>
-                                <input type="text" name="titolo" className="title_input" value={this.state.input} onChange={this.handleTitleChange} ref={input => { this.fileInput = input; }} />
+                                <form className="form_title">
+                                    <input id="title" type="text" name="titolo" className="title_input" value={this.state.input} ref={input => { this.fileInput = input; }} required/>
+                                    <label htmlFor="title">Plot title</label>
+                                    <div className="bar"></div>
+                                </form>
                         </ModalBody>
                         <ModalFooter>
                             <Button className="cancel" onClick={this.toggle}>Cancel</Button>
