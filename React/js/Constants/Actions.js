@@ -3,7 +3,7 @@ import { Translate } from 'react-localize-redux';
 
 let actions = {
     "initial": [
-        {name: "Welcome", esempi: [<div>Hi</div>, <div>Hello</div>]},
+        {name: "Welcome", esempi: [<div>Hi</div>]},
         {name: "Upload", esempi: [<div>Upload file with the button</div>]}
     ],
     "after_file": [

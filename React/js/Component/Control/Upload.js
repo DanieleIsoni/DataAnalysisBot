@@ -84,7 +84,7 @@ class ConnectedUpload extends React.Component {
                             </ModalBody>
                             <ModalFooter>
                                 <Button className="cancel" onClick={this.toggle}>Cancel</Button>
-                                <Button innerRef={(button) => (this.sendFile = button)} color="primary">Upload <i className="material-icons">cloud_upload</i></Button>{' '}
+                                <Button innerRef={(button) => (this.sendFile = button)} color="primary">Upload</Button>{' '}
                                 { (this.state.showLoader) ? <div className="lds-ellipsis loader-black"><div></div><div></div><div></div><div></div></div> : ""}
                             </ModalFooter>
                         </form>
