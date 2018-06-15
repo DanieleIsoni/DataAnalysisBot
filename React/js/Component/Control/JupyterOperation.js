@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 var fileDownload = require('js-file-download');
-import { addMessaggio } from "../../Actions/index";
+import { addMessage } from "../../Actions/index";
 import uuidv1 from "uuid";
 import Jup from "../../Jupyter/Jupyter";
 import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
@@ -12,7 +12,7 @@ const mapMessaggi = state => {
 
 const mapAddMessaggioEvent = dispatch => {
     return {
-      addMessaggio: messaggio => dispatch(addMessaggio(messaggio))
+      addMessage: messaggio => dispatch(addMessage(messaggio))
     };
 };
 
@@ -57,7 +57,7 @@ class ConnectedJupyter extends React.Component{
                 var messaggi_jup = Jup.readJupyter(json.cells);
 
                 messaggi_jup.map(mes => {
-                    f.addMessaggio({id: uuidv1(), who: mes.who, what: mes.what, messaggio: mes.messaggio, output: mes.output, code: mes.code});
+                    f.addMessage({id: uuidv1(), who: mes.who, what: mes.what, messaggio: mes.messaggio, output: mes.output, code: mes.code});
                 });
             };
         })(this.props);

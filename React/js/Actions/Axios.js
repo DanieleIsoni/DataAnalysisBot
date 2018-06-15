@@ -1,7 +1,7 @@
 import axios from 'axios';
 import uuidv1 from "uuid";
 import store from "../Store/index";
-import { addMessaggio, clearMessaggi, addHints, addVariabile, setActiveVariable, deleteAllVariabile, deleteVariabile } from "./index";
+import { addMessage, clearMessage, addHints, addVariable, setActiveVariable, deleteAllVariables, deleteVariable } from "./index";
 import Action from '../Constants/Actions';
 import { URL_HEROKU } from "./../Config/Url";
 import { ActionCreators } from 'redux-undo'
@@ -34,40 +34,35 @@ const actionController = (azione) => {
     }
 }
 
-export const sendMessage = (value, type, activeVar, isVariableSelected) => {
+export const sendMessage = (value, type) => {
     return new Promise((resolve, reject) => {
         if(value != "" && value != "/start"){
             var date = new Date();
             var time = date.getHours() + ":" + date.getMinutes();
-            store.dispatch(addMessaggio({id: uuidv1(), who: "me", what: (type != "Py") ? "markdown" : "code", messaggio: value, output: [], date: time}));
+            store.dispatch(addMessage({id: uuidv1(), who: "me", what: (type != "Py") ? "markdown" : "code", messaggio: value, output: [], date: time}));
         }
 
-        if(!isVariableSelected){
-            store.dispatch(addMessaggio({id: uuidv1(), who: "bot", what: "markdown", messaggio: "Specify a variable! Select it...", output: []}));
-        }else{
-            axios({
-                url: URL_HEROKU + "/clientWebHook/",
-                method: 'post', 
-                validateStatus: function (status) {
-                    return status < 500;
-                },
-                data: { "message": { "text": value }, "react": "true", 
-                        "variabile": (activeVar == null) ? "empty" : activeVar
-                        //"python": (this.state.type == "Py") ? "true" : "false"
-                }, headers: {
-                    'accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => {
-                console.log(response);
-                store.dispatch(addMessaggio({id: uuidv1(), who: "bot", what: (response.status == 200) ?  "markdown" : "markdown error", messaggio: response.data.message, output: response.data.outputs, code: response.data.code}));
-                actionController(response.data.action);
-                resolve();
-            }).catch((error) => {
-                reject(error);
-            });
-        }
+        axios({
+            url: URL_HEROKU + "/clientWebHook/",
+            method: 'post', 
+            validateStatus: function (status) {
+                return status < 500;
+            },
+            data: { "message": { "text": value }, "react": "true", 
+                    "variabile": (store.getState().active == null) ? "empty" : store.getState().active
+                    //"python": (this.state.type == "Py") ? "true" : "false"
+            }, headers: {
+                'accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            store.dispatch(addMessage({id: uuidv1(), who: "bot", what: (response.status == 200) ?  "markdown" : "markdown error", messaggio: response.data.message, output: response.data.outputs, code: response.data.code}));
+            actionController(response.data.action);
+            resolve();
+        }).catch((error) => {
+            reject(error);
+        });
     });
 }
 
@@ -75,7 +70,7 @@ export const sendMessage = (value, type, activeVar, isVariableSelected) => {
 export const clearMessages = (e) => {
     axios.get(URL_HEROKU + '/clear')
     .then(response => {
-        store.dispatch(clearMessaggi());
+        store.dispatch(clearMessage());
         store.dispatch(ActionCreators.clearHistory())
     })
 }
@@ -85,14 +80,14 @@ export const getAll = () => {
         axios.get(URL_HEROKU + '/messages')
         .then(response => {
             if(response.data.messages.length == 0){
-                sendMessage("/start", "NL", null, true);
+                sendMessage("/start", "NL");
             }
 
             response.data.messages.map(messaggio => {
-                store.dispatch(addMessaggio({id: uuidv1(), who: messaggio.who, what: "markdown", messaggio: messaggio.message, output: messaggio.outputs, code: messaggio.code}));
+                store.dispatch(addMessage({id: uuidv1(), who: messaggio.who, what: "markdown", messaggio: messaggio.message, output: messaggio.outputs, code: messaggio.code}));
             })
             response.data.variables.map((variabile, n) => {
-                store.dispatch(addVariabile({"name": variabile.name, "id": uuidv1()}));
+                store.dispatch(addVariable({"name": variabile.name, "id": uuidv1()}));
 
                 if(n == response.data.variables.length-1) store.dispatch(setActiveVariable(variabile.name));
             })    
@@ -110,7 +105,7 @@ export const uploadFile = (file, send_active) => {
         var formdata = new FormData();
         formdata.append('file', file);
         formdata.append('variabile',send_active);
-        store.dispatch(addMessaggio({"id": uuidv1(), "who": "me", "what": "markdown", "messaggio": "Uploading file...", "output": []}));
+        store.dispatch(addMessage({"id": uuidv1(), "who": "me", "what": "markdown", "messaggio": "Uploading file...", "output": []}));
         axios({ //TODO togliere il fatto che il server salva sulla sessione il messaggio di caricamento della variabile
             url: URL_HEROKU + '/upload',
             data: formdata,
@@ -120,11 +115,11 @@ export const uploadFile = (file, send_active) => {
             }
         }).then(response => {
             if(response.status == 200){
-                store.dispatch(addVariabile({ "name": file.name, "id": uuidv1() }));
-                store.dispatch(addMessaggio({"id": uuidv1(), "who": "bot", "what": "markdown", "messaggio": response.data.message, "output": []}));
+                store.dispatch(addVariable({ "name": file.name, "id": uuidv1() }));
+                store.dispatch(addMessage({"id": uuidv1(), "who": "bot", "what": "markdown", "messaggio": response.data.message, "output": []}));
                 store.dispatch(setActiveVariable(file.name));
             }else{
-                store.dispatch(addMessaggio({"id": uuidv1(), "who": "bot", "what": "markdown error", "messaggio": response.data.message, "output": []}));
+                store.dispatch(addMessage({"id": uuidv1(), "who": "bot", "what": "markdown error", "messaggio": response.data.message, "output": []}));
             }    
 
             actionController(response.data.action);
@@ -147,10 +142,10 @@ export const getVariable = (name) => {
             }
         }).then(response => {
             if(response.status == 404){
-                store.dispatch(addMessaggio({id: uuidv1(), who: "bot", what: "markdown", messaggio: response.data, output: []}));
+                store.dispatch(addMessage({id: uuidv1(), who: "bot", what: "markdown", messaggio: response.data, output: []}));
             }else if(response.status == 400){
-                store.dispatch(deleteAllVariabile());
-                store.dispatch(addMessaggio({id: uuidv1(), who: "bot", what: "markdown", messaggio: "Session expired, all variabile was deleted!", output: []}));
+                store.dispatch(deleteAllVariables());
+                store.dispatch(addMessage({id: uuidv1(), who: "bot", what: "markdown", messaggio: "Session expired, all variabile was deleted!", output: []}));
             }else{
                 resolve(response.data);
             }
@@ -159,7 +154,7 @@ export const getVariable = (name) => {
 }
 
 
-export const deleteVariable = (n) => {
+export const call_deleteVariable = (n) => {
     axios({
         url: URL_HEROKU + '/delete/' + n,
         method: 'get', 
@@ -167,17 +162,17 @@ export const deleteVariable = (n) => {
             return status <= 500;
         }
     }).then(response => {
-        var messaggio = "";
-        if(response.status == 500){
-            messaggio = response.data;
-        }else if(response.status == 400){
-            messaggio = "Session expired, all variabile was deleted!";
-            store.dispatch(deleteAllVariabile());
+        let message = "";
+        if(response.status === 500){
+            message = response.data;
+        }else if(response.status === 400){
+            message = "Session expired, all variabile was deleted!";
+            store.dispatch(deleteAllVariables());
         }else{
-            store.dispatch(deleteVariabile(n));
-            messaggio = response.data;
+            store.dispatch(deleteVariable(n));
+            message = response.data;
         }
 
-        store.dispatch(addMessaggio({id: uuidv1(), who: "bot", what: "markdown", messaggio: messaggio, output: []}));
+        store.dispatch(addMessage({id: uuidv1(), who: "bot", what: "markdown", messaggio: message, output: []}));
     }) 
 } 

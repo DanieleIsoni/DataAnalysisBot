@@ -1,13 +1,13 @@
-import { ADD_MESSAGGIO, EDIT_MESSAGGIO, CLEAR_MESSAGGI } from "../Constants/action-types";
+import { ADD_MESSAGE, EDIT_MESSAGE, CLEAR_MESSAGE } from "../Constants/action-types";
 import undoable from 'redux-undo'
 
 const messaggi = (state = [], action) => {
     switch (action.type) {
-        case ADD_MESSAGGIO:
+        case ADD_MESSAGE:
             return [...state, action.payload];
-        case CLEAR_MESSAGGI:
+        case CLEAR_MESSAGE:
             return [];
-        case EDIT_MESSAGGIO:
+        case EDIT_MESSAGE:
             return state.map( (item, index) => {
                 if(index !== state.length-1) return item;
                                 

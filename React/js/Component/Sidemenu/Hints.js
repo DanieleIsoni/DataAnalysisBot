@@ -23,13 +23,13 @@ class ConnectedList extends React.Component {
     render() {
         let dialog = (this.state.dropdownOpen != 'none') ?        
             <div className={this.state.dropdownOpen + "_container hint_container"}>
-                <div className="head_hint"><h6><Translate id={this.state.dropdownOpen + ".title"}></Translate></h6></div>
+                <div className="head_hint"><Translate id={this.state.dropdownOpen + ".title"}></Translate></div>
                 <div className="body_hint"><Translate id={this.state.dropdownOpen + ".body"}></Translate></div>
             </div> : "";
 
         const list = this.props.hints.map((el, n) => (
             <div key={uuidv1()} id={el.name} className="hint_container">
-                <div className="head_hint"><h6>{el.name}</h6></div>
+                <div className="head_hint">{el.name}</div>
                 <ul className="list_hint">
                     {
                         el.esempi.map(esempio => {
@@ -46,7 +46,7 @@ class ConnectedList extends React.Component {
 
         return (
             <div className="request_type">
-                <div className="side_subtitle"><h5><i className="material-icons">question_answer</i><Translate id="queries">Language</Translate></h5></div>
+                <div className="side_subtitle"><h6><i className="material-icons">question_answer</i><Translate id="queries">Language</Translate></h6></div>
                 {list} 
                 {dialog}
             </div>

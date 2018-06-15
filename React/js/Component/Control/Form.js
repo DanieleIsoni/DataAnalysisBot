@@ -1,7 +1,5 @@
 import React from "react";
 import { connect } from "react-redux";
-import uuidv1 from "uuid";
-import Upload from "./Upload";
 import Jupyter from './JupyterOperation';
 import UndoRedo from './UndoRedo';
 import { Translate } from 'react-localize-redux';
@@ -12,6 +10,7 @@ import Code from '../Chat/Code';
 import {sendMessage, clearMessages, getAll} from '../../Actions/Axios'
 import Suggest from './Suggest';
 import './control.css';
+import { storageAvailable } from '../../Config/WebStorage';
 
 const mapEvents = dispatch => {
     return { addHints: hints => dispatch(addHints(hints)) };
@@ -26,7 +25,8 @@ class ConnectedForm extends React.Component {
         super(props);
         this.state = {
             inputValue: '',
-            comandi: new Set([]),
+            suggest: new Set([]),
+            restricted: new Set([]),
             selectedCommand: -1,
             type: 'NL',
             temp_mex: '',
@@ -43,6 +43,23 @@ class ConnectedForm extends React.Component {
         this.setInput = this.setInput.bind(this);
     }
 
+    componentWillMount(){
+        if (typeof(Storage) !== "undefined") {
+            if(localStorage.getItem('suggestion') != null){
+                let array = JSON.parse(localStorage.getItem('suggestion'));
+                let fromStorage = new Set([...array]);
+
+                if(fromStorage != null){
+                    this.setState({
+                        suggest: fromStorage
+                    });
+                }
+            }
+        }else{
+            console.log("Unavaibable");
+        }
+    }
+
     componentDidUpdate(){
         if(this.state.type == "Py") this.updateTextArea();
         
@@ -53,9 +70,15 @@ class ConnectedForm extends React.Component {
     }
 
     sendMessage(value){     
-        var comands = this.state.comandi;
-        comands.add(value);
-        this.setState({ inputValue: '', comandi: comands, loading: true });
+        let suggest = this.state.suggest;
+        suggest.add(value);
+
+        this.setRestrictedArray("");
+        this.setState({ inputValue: '', suggest: suggest, loading: true });
+
+        if (typeof(Storage) !== "undefined") {
+            localStorage.setItem('suggestion', JSON.stringify([...this.state.suggest]));
+        }
 
         if(this.props.activeVar == null && this.props.variabili.length > 0){
             this.setState({temp_mex: value, waiting_var: true});
@@ -63,7 +86,7 @@ class ConnectedForm extends React.Component {
 
         sendMessage(value, this.state.type, this.props.activeVar, !this.state.waiting_var).then(() => {
             this.setState({ loading: false });
-        });
+        });        
     }
 
     handleKeyPress(event) {
@@ -78,7 +101,8 @@ class ConnectedForm extends React.Component {
 
     handleChange(evt){
         var text = evt.target.value;
-        this.setState({ inputValue: evt.target.value });
+        this.setRestrictedArray(text);
+        this.setState({ inputValue: evt.target.value, selectedCommand: -1 });
 
         this.textarea.style.height = '30px';
         this.textarea.style.height = this.textarea.scrollHeight + 'px';
@@ -89,7 +113,27 @@ class ConnectedForm extends React.Component {
             this.updateTextArea();
         }else{
             this.setState({type: "NL"});
+        }   
+    }
+
+    setRestrictedArray(search) {
+        let set = this.state.suggest;
+        let restricted = new Set([]);
+
+        if(search == ""){
+            restricted = set;
+        }else{
+            set.forEach(function(value) {
+                var regex = new RegExp('^' + search + '')
+                if(regex.test(value)){
+                    restricted.add(value);
+                }
+            });
         }
+
+        this.setState({
+            restricted: restricted
+        });
     }
 
     handleKeyDown(e){
@@ -108,17 +152,16 @@ class ConnectedForm extends React.Component {
             if(this.state.type == "NL"){
                 e.preventDefault();
                 var select = this.state.selectedCommand + 1;
-                if(this.state.comandi.size > 0 && select < this.state.comandi.size){
-                    this.setState({ inputValue: [...this.state.comandi][this.state.comandi.size - 1 - select], selectedCommand: select })
+                if(this.state.restricted.size > 0 && select < this.state.restricted.size){
+                    this.setState({ inputValue: [...this.state.restricted][this.state.restricted.size - 1 - select], selectedCommand: select })
                 }
-                console.log(select);
             }            
         }else if(e.keyCode === 40){
             if(this.state.type == "NL"){
                 e.preventDefault();
                 var select = this.state.selectedCommand - 1;
                 if(select >= 0){
-                    this.setState({ inputValue: [...this.state.comandi][this.state.comandi.size - 1 - select], selectedCommand: select })
+                    this.setState({ inputValue: [...this.state.restricted][this.state.restricted.size - 1 - select], selectedCommand: select })
                 }else if(select == -1){
                     this.setState({inputValue: "", selectedCommand: select});
                 }
@@ -133,6 +176,7 @@ class ConnectedForm extends React.Component {
 
     handleFocus(e, focus){
         this.setState({ focused: focus });
+        this.setRestrictedArray(this.state.inputValue);
     }
 
     checkPython(text){
@@ -154,7 +198,7 @@ class ConnectedForm extends React.Component {
         return (
             <div className="control" ref={div => this.control = div}>      
                 {editor_code}
-                <Suggest input={this.state.inputValue} handleSuggest={(e, sug) => this.setInput(e, sug)} type={this.state.type} focused={this.state.focused} suggest={this.state.comandi}/>
+                <Suggest input={this.state.inputValue} handleSuggest={(e, sug) => this.setInput(e, sug)} type={this.state.type} focused={this.state.focused} suggest={this.state.restricted} select={this.state.selectedCommand}/>
                 <UndoRedo />
                 <div style={{display: (this.state.loading) ? "block" : "none"}} className="lds-ellipsis loader-light"><div></div><div></div><div></div><div></div></div>
                 <div className={(this.state.focused) ? "input_container input_cont_focused" : "input_container"}>

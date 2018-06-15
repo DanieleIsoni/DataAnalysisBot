@@ -7,42 +7,47 @@ html, body{
     height: 100% !important;
     overflow: hidden;
     font-family: 'Roboto', sans-serif !important;
+    letter-spacing: 0.03125rem;
+}
+
+body{
+    font-size: 0.875rem;
 }
 
 h1{
-    font-weight: 300;
-    font-size: 6rem;
-    letter-spacing: -0.09375rem;
+    font-weight: 300 !important;
+    font-size: 6rem !important;
+    letter-spacing: -0.09375rem !important;
 }
 
 h2{
-    font-weight: 300;
-    font-size: 3.75rem;
-    letter-spacing: -0.03125;
+    font-weight: 300 !important;
+    font-size: 3.75rem !important;
+    letter-spacing: -0.03125 !important;
 }
 
 h3{
-    font-weight: 400;
-    font-size: 3rem;
-    letter-spacing: 0rem;
+    font-weight: 400 !important;
+    font-size: 3rem !important;
+    letter-spacing: 0rem !important;
 }
 
 h4{
-    font-weight: 400;
-    font-size: 2.125rem;
-    letter-spacing: 0.015625;
+    font-weight: 400 !important;
+    font-size: 2.125rem !important;
+    letter-spacing: 0.015625 !important;
 }
 
 h5{
-    font-weight: 400;
-    font-size: 1.5rem;
-    letter-spacing: 0;
+    font-weight: 400 !important;
+    font-size: 1.5rem !important;
+    letter-spacing: 0 !important;
 }
 
 h6{
-    font-weight: 500;
-    font-size: 1.25rem;
-    letter-spacing: 0.009375;
+    font-weight: 500 !important;
+    font-size: 1rem !important;
+    letter-spacing: 0.009375 !important;
 }
 
 button{

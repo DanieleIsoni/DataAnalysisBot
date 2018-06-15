@@ -1,7 +1,7 @@
-export const ADD_VARIABILE = "ADD_VARIABILE";
-export const ADD_MESSAGGIO = "ADD_MESSAGGIO";
-export const EDIT_MESSAGGIO = "EDIT_MESSAGGIO";
-export const CLEAR_MESSAGGI = "CLEAR_MESSAGGI";
+export const ADD_VARIABLE = "ADD_VARIABLE";
+export const ADD_MESSAGE = "ADD_MESSAGE";
+export const EDIT_MESSAGE = "EDIT_MESSAGE";
+export const CLEAR_MESSAGE = "CLEAR_MESSAGE";
 export const DELETE_VARIABLE= "DELETE_VARIABLE";
 export const ADD_HINTS = "ADD_HINTS";
 export const SET_VAR = "SET_VAR";

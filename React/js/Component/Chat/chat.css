@@ -33,7 +33,6 @@
 .chat-thread li{
     position: relative;
     display: flex;
-    font-size: 18px;
     width: 100%;
     flex-direction: column;
 }
@@ -69,6 +68,7 @@
     display: flex;
     padding-left: 100px;
     flex-wrap: wrap;
+    align-items: center;
 }
 
 .output-area pre{
@@ -182,7 +182,6 @@
 }
 
 .resultdiv{
-    flex-grow: 1;
 }
 
 .resultdiv pre{
@@ -309,6 +308,9 @@
     color: white;
 }
 
+.title_input{
+    
+}
 
 @media (max-width: 768px) {
     .chat-thread li img{

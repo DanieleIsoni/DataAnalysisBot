@@ -1,21 +1,21 @@
 import React from "react";
 import { connect } from "react-redux";
-import { deleteVariabile, addHints, addMessaggio } from "../../Actions/index";
+import { addHints, addMessage } from "../../Actions/index";
 import Action from '../../Constants/Actions';
 import Upload from '../Control/Upload';
 import { setActiveVariable} from "../../Actions/index";
-import { deleteVariable } from '../../Actions/Axios';
+import { call_deleteVariable } from '../../Actions/Axios';
 
 const mapDeleteVar = dispatch => {
     return {
       addHints: hints => dispatch(addHints(hints)),
-      addMessaggio: messaggio => dispatch(addMessaggio(messaggio)),
-      setActiveVariable: vari => dispatch(setActiveVariable(vari))
+      addMessage: message => dispatch(addMessage(message)),
+      setActiveVariable: variable => dispatch(setActiveVariable(variable))
     };
 };
 
 class ConnectedList extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.delete = this.delete.bind(this);
     }
@@ -25,9 +25,10 @@ class ConnectedList extends React.Component {
         else this.props.addHints(Action["initial"]);   
     }
 
+
     delete(e, id, n, name) {
-        if(name == this.props.activeVar) this.props.setActiveVariable(null);
-        deleteVariable(n);
+        if(name === this.props.activeVar) this.props.setActiveVariable(null);
+        call_deleteVariable(n);
     }
 
     render() {
@@ -36,14 +37,14 @@ class ConnectedList extends React.Component {
                 {
                     (this.props.variabili.length) ? 
                         this.props.variabili.map((el, n) => (
-                            <div key={el.id} className={(this.props.activeVar == el.name) ? 'variable-container selected-var' : 'variable-container'} id={el.name}>
+                            <div key={el.id} className={(this.props.activeVar === el.name) ? 'variable-container selected-var' : 'variable-container'} id={el.name}>
                                 <span onClick={() => this.props.onClick(el)}>{el.name}</span>
                                 <span className="delete_var" onClick={(e) => this.delete(e, el.id, n, el.name)}><i className="material-icons close_var">close</i></span>
                             </div>
                         ))
                     :""
                 }
-                <Upload addMessaggio={this.props.addMessaggio} url={this.props.url} theme={"side_add"} text={"Add Variable"} activeVar={this.props.activeVar}/>
+                <Upload addMessaggio={this.props.addMessage} url={this.props.url} theme={"side_add"} text={"Add Variable"} activeVar={this.props.activeVar}/>
             </div>
         );
     }

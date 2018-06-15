@@ -1,9 +1,9 @@
-import { ADD_VARIABILE, DELETE_VARIABLE, DELETE_ALL_VAR } from "../Constants/action-types";
+import { ADD_VARIABLE, DELETE_VARIABLE, DELETE_ALL_VAR } from "../Constants/action-types";
 import undoable from 'redux-undo'
 
 const variabili = (state = [], action) => {
     switch (action.type) {
-        case ADD_VARIABILE:
+        case ADD_VARIABLE:
             return [...state, action.payload];
         case DELETE_VARIABLE:
             return [...state.slice(0, action.payload), ...state.slice(action.payload + 1)]

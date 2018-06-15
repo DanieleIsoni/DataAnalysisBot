@@ -1,14 +1,15 @@
 import React from "react";
 import { connect } from "react-redux";
-import { addMessaggio, editMessaggio } from "../../../Actions/index";
+import { addMessage, editMessage } from "../../../Actions/index";
 import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import Download from './Download';
 import {sendMessage} from './../../../Actions/Axios'
+import ChangeTitle from "./ChangeTitle";
 
 const mapMessageEvent = dispatch => {
     return {
-      addMessaggio: messaggio => dispatch(addMessaggio(messaggio)),
-      editMessaggio: (id, messaggio) => dispatch(editMessaggio(id, messaggio)),
+      addMessage: messaggio => dispatch(addMessage(messaggio)),
+      editMessaggio: (id, messaggio) => dispatch(editMessage(id, messaggio)),
     };
 };
 
@@ -115,6 +116,7 @@ class ConChoices extends React.Component{
                         <DropdownItem onClick={(e) => this.setFontLabel(e, "sans")}>sans</DropdownItem>
                     </DropdownMenu>
                 </ButtonDropdown>
+                <ChangeTitle />
             </div>
         );
     }

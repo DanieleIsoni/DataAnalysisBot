@@ -11,18 +11,20 @@
 .gestione .side_subtitle{
     margin-left: -15px;
     /*background: rgba(66,133,244,0.149);*/
-    background: #f6f7f9;
+   /* background: #f6f7f9;*/
+    background: rgba(0,0,0,0.06);
     height: 35px;
     border-radius: 30px 30px 30px 30px;
     display: block;
     width: auto;
     margin-bottom: 20px;
+    margin-top: 10px;
     position: relative;
     padding-left: 15px;
     margin-left: 5px;
 }
 
-.side_subtitle h5{
+.side_subtitle h6{
     color: #3c4043 !important;
     /*color: #4285f4 !important;*/
     line-height: 35px; 
@@ -30,7 +32,7 @@
     margin-right: 20px;
 }
 
-.side_subtitle h5 i{
+.side_subtitle h6 i{
     color: #3c4043 !important;
     line-height: 35px; 
     vertical-align: bottom;
@@ -88,6 +90,9 @@
     margin: 20px 0;
 }
 
+.variable-context{
+    margin-bottom: 15px;
+}
 
 .variable-detail > div > div{
     overflow-x: auto !important;
@@ -136,20 +141,27 @@
 .hint_container{
     margin: 8px 10px 10px 8px;
     border-radius: 10px;
-    padding: 5px 10px;
-    box-shadow: 0 0px 20px -4px rgba(0,0,0,0.1)
-     
+    /*box-shadow: 0 0px 20px -2px rgba(0,0,0,0.1);*/
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.10), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 10px 0 rgba(0,0,0,0.07);
+    overflow: hidden;
+    padding: 5px;
 }
 
 .head_hint{
     top: 0;
     width: 100%;
+    padding: 10px 20px;
+    -webkit-font-smoothing: antialiased;
+    font-size: 20px;    
+    color: #212121;
+}
+
+.head_hint h6{
+    margin-bottom: 0;
 }
 
 .hint_container h6{
-    font-weight: 500;
-    color: #555;
-    padding: 5px 10px;
+    padding: 6px 15px;
 }
 
 .delete_var{
@@ -196,7 +208,8 @@
 }
 
 .list_hint{
-    padding: 0;
+    padding: 5px;
+    margin-bottom: 0;
 }
 
 .list_hint li{
@@ -205,14 +218,17 @@
 }
 
 .list_hint li div > div{
-    color: #666;
     padding: 5px 30px;
-    background: #fff;
-    border-radius: 20px;
     width: auto;
     display: inline-block;
     box-shadow: inset 0 0 0 1px #e9eaeb;  
+    border-radius: 20px;
     cursor: default;
+    -webkit-font-smoothing: antialiased;
+    font-size: 16px;
+    letter-spacing: .2px;
+    background: none;
+    color: #5f6368;
 }
 
 .list_hint li div > div:hover{
@@ -224,7 +240,7 @@
     box-shadow: inset 0 0 0 1px rgba(255, 54, 54, 0.25);  
 }
 
-.operation_container .head_hint h5{
+.operation_container .head_hint h6{
     color: #EF5350;
 }
 
@@ -233,7 +249,7 @@
     box-shadow: inset 0 0 0 1px rgba(0, 123, 255, 0.25);  
 }
 
-.attribute_container .head_hint h5{
+.attribute_container .head_hint h6{
     color: #4285f4;
 }
 
@@ -242,7 +258,7 @@
     box-shadow: inset 0 0 0 1px rgba(253, 216, 53, 0.25);  
 }
 
-.asse_container .head_hint h5{
+.asse_container .head_hint h6{
     color: #FBC02D;
 }
 
@@ -251,7 +267,7 @@
     box-shadow: inset 0 0 0 1px rgba(67, 160, 71, 0.25);  
 }
 
-.color_container .head_hint h5{
+.color_container .head_hint h6{
     color: #43A047;
 }
 
@@ -260,7 +276,7 @@
     box-shadow: inset 0 0 0 1px rgba(240, 98, 146, 0.25);  
 }
 
-.font_container .head_hint h5{
+.font_container .head_hint h6{
     color: #F06292;
 }
 
