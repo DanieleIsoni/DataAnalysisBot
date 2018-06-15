@@ -16,7 +16,7 @@ const Output = ({ output, n, messaggi }) => {
                                         <div>
                                             <img className="plot_img" src={"data:image/gif;base64," + al.content}/> 
                                             <UrlContext.Consumer>
-                                                {url => <Choices image={al.content} url={url} />}
+                                                {url => <Choices image={al.content} url={url} title={al.title}/>}
                                             </UrlContext.Consumer>
                                         </div>
                                     :

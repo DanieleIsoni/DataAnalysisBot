@@ -116,7 +116,7 @@ class ConChoices extends React.Component{
                         <DropdownItem onClick={(e) => this.setFontLabel(e, "sans")}>sans</DropdownItem>
                     </DropdownMenu>
                 </ButtonDropdown>
-                <ChangeTitle />
+                <ChangeTitle title={this.props.title}/>
             </div>
         );
     }

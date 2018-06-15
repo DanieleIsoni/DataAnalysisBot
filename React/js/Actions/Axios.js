@@ -92,7 +92,12 @@ export const getAll = () => {
                 if(n == response.data.variables.length-1) store.dispatch(setActiveVariable(variabile.name));
             })    
 
-            actionController("initial"); //TODO Send me the action on start
+            if(response.data.variables.length > 0){
+                actionController("data.received");
+            }else{
+                actionController("initial");
+            }
+
             resolve();
         }).catch(error => {
             reject(error);

@@ -17,7 +17,8 @@ class ChangeTitle extends React.Component {
 
     handleSubmit(e){
         e.preventDefault();
-        sendMessage(this.state.input, "NL");
+        let message = "" + this.props.title;
+        sendMessage(message, "NL");
     }
 
     toggle() {
@@ -35,7 +36,7 @@ class ChangeTitle extends React.Component {
                         <ModalBody>
                                 <span className="body_text">Change the title of the plot $NOME on $DATASET</span>
                                 <form className="form_title">
-                                    <input id="title" type="text" name="titolo" className="title_input" value={this.state.input} ref={input => { this.fileInput = input; }} required/>
+                                    <input id="title" type="text" name="titolo" className="title_input" value={this.props.title} ref={input => { this.fileInput = input; }} required/>
                                     <label htmlFor="title">Plot title</label>
                                     <div className="bar"></div>
                                 </form>
