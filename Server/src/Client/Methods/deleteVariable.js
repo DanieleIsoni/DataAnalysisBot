@@ -10,7 +10,9 @@ const contextsClient = new dialogflow.ContextsClient({
 const Common = require('../../Common');
 const cLog = '[CLIENT] ';
 
-module.exports.deleteVariable = (req, res, tmpPath, dialogSessionId) => {
+module.exports.deleteVariable = (req, res, tmpPath, sessionId) => {
+
+    let session = Common.sessions.get(sessionId);
 
     let id = req.params.id;
 
@@ -24,8 +26,8 @@ module.exports.deleteVariable = (req, res, tmpPath, dialogSessionId) => {
             if (fs.existsSync(path_)) {
                 fs.unlinkSync(path_);
             }
-            if (Common.variablesMap.has(name))
-                Common.variablesMap.delete(name);
+            if (session.variablesMap.has(name))
+                session.variablesMap.delete(name);
 
             req.session.datasets.forEach((el, index) => {
                 if (el.name === name) {
@@ -33,8 +35,16 @@ module.exports.deleteVariable = (req, res, tmpPath, dialogSessionId) => {
                 }
             });
 
-            if (Common.variablesMap.size === 0)
-                clearContexts(PROJECT_ID, dialogSessionId);
+            if (session.variablesMap.size === 0)
+                clearContexts(PROJECT_ID, sessionId);
+
+            session.charts.forEach((el, i) => {
+                if (el.variable === name) {
+                    session.charts.splice(i,1);
+                }
+            });
+
+            console.log(`Charts2: ${JSON.stringify(session.charts, null, '   ')}`);
 
             ret = `Variable ${name} deleted`;
         } catch (e) {
