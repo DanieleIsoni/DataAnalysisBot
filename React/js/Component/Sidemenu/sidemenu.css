@@ -100,7 +100,11 @@
 
 .selected-var{
     box-shadow: 0 1px 3px 0 rgba(60,64,67,0.302), 0 4px 8px 3px rgba(60,64,67,0.149);
-    background: #4285f4;
+    background: rgba(66,133,244,0.9);
+    color: white;
+}
+
+.selected-var i{
     color: white;
 }
 
@@ -152,6 +156,7 @@
     -webkit-font-smoothing: antialiased;
     font-size: 20px;    
     background: rgba(66,133,244,0.7);
+    background: linear-gradient(to right, rgba(66,133,244,0.9), rgba(153, 102, 255, 0.5));
     color: #fff;
 }
 
@@ -293,6 +298,29 @@
     letter-spacing: 0.046875 !important;
 }
 
+.iridium{
+    position: relative;
+    display: flex;
+    flex-wrap: nowrap;
+    width: 100%;
+    flex-direction: row;
+    height: auto;
+}
+
+.iridium img{
+    position: relative;
+    display: block;
+    height: 70px;
+    flex: none;
+    margin: 10px;
+}
+
+.iridium .presentation{
+    padding: 10px 20px;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
 /* TABLE */
 
 .table{

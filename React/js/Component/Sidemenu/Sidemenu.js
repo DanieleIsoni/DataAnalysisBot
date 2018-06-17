@@ -22,6 +22,17 @@ const mapVariable = state => {
     return { variabili: state.variabili.present, activeVar: state.active };
 };
 
+const Header = () => {
+    return(
+        <div className="variable-context">
+            <div className="iridium">
+                <img src="./dist/img/logo.png"/>
+                <div className="presentation"><h4>Iridium</h4><span>Datascience Chatbot</span></div>
+            </div>
+        </div>
+    );
+}
+
 class ConnectedSidemenu extends React.Component {
     constructor(props){
         super(props);
@@ -74,6 +85,7 @@ class ConnectedSidemenu extends React.Component {
 
         return (
             <Col xs="12" md="4" lg="3" className="gestione" style={{"display": this.props.show}}>
+                <Header />
                 <div className="variable-context">
                     <div className="side_subtitle"><h6><i className="material-icons">list</i> <Translate id="var">Variables</Translate> <span className="var_num">{this.props.variabili.length}</span></h6></div>
                     <List variabili={this.props.variabili} activeVar={this.props.activeVar} onClick={this.handleClick} selected={this.state.selectedVar} lang={sideTranslation} url={this.props.url}/>
