@@ -1,12 +1,8 @@
 import React from "react";
-import axios from 'axios';
 import { connect } from "react-redux";
-import { addVariable, addMessage, addHints, setActiveVariable} from "../../Actions/index";
-import uuidv1 from "uuid";
+import { addVariable, addHints, setActiveVariable} from "../../Actions/index";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { uploadFile } from '../../Actions/Axios'
-
-var MODAL_REF = 'MODAL';
 
 const mapEvents = dispatch => {
     return {

@@ -75,7 +75,13 @@ button{
     animation: show_up 0.2s forwards;
 }
 
-#content{ height: 100%; }
+#content{ 
+    height: 100%; 
+    background: white url("img/logo.png");
+    background-size: 50px;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
 
 .row{
     height: 100% !important;

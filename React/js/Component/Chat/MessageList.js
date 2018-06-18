@@ -17,10 +17,8 @@ class ConnectedMessages extends React.Component {
         this.openCode = this.openCode.bind(this);
     }
 
-    componentDidMount() { 
-        getAll().then(() => {
-            
-        }).catch(error => { console.log(error) });
+    componentWillMount() { 
+        getAll().then(() => {}).catch(error => { console.log(error) });
     }
 
     componentDidUpdate() { this.scrollToBottom(1000); } 

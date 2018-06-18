@@ -7,10 +7,9 @@ import controlTranslation from './translation';
 import { withLocalize } from 'react-localize-redux';
 import { renderToString } from 'react-dom/server';
 import Code from '../Chat/Code';
-import {sendMessage, clearMessages, getAll} from '../../Actions/Axios'
+import {sendMessage, clearMessages} from '../../Actions/Axios'
 import Suggest from './Suggest';
 import './control.css';
-import { storageAvailable } from '../../Config/WebStorage';
 
 const mapEvents = dispatch => {
     return { addHints: hints => dispatch(addHints(hints)) };
