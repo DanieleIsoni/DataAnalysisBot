@@ -4,7 +4,7 @@ import { CSSTransitionGroup } from 'react-transition-group';
 import Message from './Message/Content';
 import Output from './Message/Output';
 import { getAll} from '../../Actions/Axios'
-import { Link, Element , Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll'
+import { Element, scroller } from 'react-scroll'
 
 const mapMessage = state => {
     return { messaggi: state.messaggi.present };

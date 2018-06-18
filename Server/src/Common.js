@@ -12,7 +12,6 @@ const sessionEntityTypesClient = new dialogflow.SessionEntityTypesClient({
 
 let sessions = new Map();
 
-
 module.exports = {
     sessions
 };
