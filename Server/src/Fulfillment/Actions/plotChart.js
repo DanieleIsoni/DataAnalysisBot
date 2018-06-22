@@ -201,7 +201,8 @@ except urllib.error.HTTPError as err:
                     fulfillmentText: 'Here is your chart:',
                     payload: {
                         code: codeToSend,
-                        image: `${result}`
+                        image: `${result}`,
+                        chartName: `${chart.name}`
                     },
                 };
 

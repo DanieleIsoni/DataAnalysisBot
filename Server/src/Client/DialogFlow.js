@@ -116,7 +116,7 @@ module.exports = class DialogFlow {
                     }
                         break;
                 }
-                processRequest(DialogFlow, promise, this.aiConfig, this.bot, sessionId, req, res, react, sessionPath);
+                processRequest(DialogFlow, promise, this.aiConfig, this.bot, sessionId, req, res, react);
             } else if(sessionId){
 
                 let sessionPath = this.sessionClient.sessionPath(this.aiConfig.projectId, sessionId);
@@ -140,7 +140,7 @@ module.exports = class DialogFlow {
                                 }
                             };
                             promise = this.sessionClient.detectIntent(request);
-                            processRequest(DialogFlow, promise, this.aiConfig, this._bot, sessionId, req, res, react, sessionPath);
+                            processRequest(DialogFlow, promise, this.aiConfig, this._bot, sessionId, req, res, react);
                         });
                 } else if (messageDoc && sessionId && messageDoc.file_name && messageDoc.file_link){
                     let event = {
@@ -158,7 +158,7 @@ module.exports = class DialogFlow {
                         }
                     };
                     promise = this.sessionClient.detectIntent(request);
-                    processRequest(DialogFlow, promise, this.aiConfig, this._bot, sessionId, req, res, react, sessionPath);
+                    processRequest(DialogFlow, promise, this.aiConfig, this._bot, sessionId, req, res, react);
                 } else {
                     let message = `You haven't sent anything, what should I do?`;
                     console.log(`${cLog}Empty message`);
@@ -197,7 +197,7 @@ module.exports = class DialogFlow {
     }
 };
 
-let processRequest = function (DialogFlow, promise, aiConfig, bot, sessionId, req, res, react, sessionPath){
+let processRequest = function (DialogFlow, promise, aiConfig, bot, sessionId, req, res, react){
     promise
         .then(responses => {
             let response = responses[0];
@@ -209,6 +209,7 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, sessionId, re
                 let webhookPayload = response.queryResult.webhookPayload;
                 let codeToSend = webhookPayload && webhookPayload.fields && webhookPayload.fields.code ? webhookPayload.fields.code.stringValue : null;
                 let image = webhookPayload && webhookPayload.fields && webhookPayload.fields.image ? webhookPayload.fields.image.stringValue : null;
+                let chartName =  webhookPayload && webhookPayload.fields && webhookPayload.fields.chartName ? webhookPayload.fields.chartName.stringValue : null;
 
                 if (responseText || webhookStatus.code === 0) {
                     console.log(`${cLog}Response as text message with message: ${responseText}`);
@@ -245,7 +246,7 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, sessionId, re
                         messages = null;
                     }
 
-                    if (image && webhookStatus !== null) {
+                    if (image && chartName && webhookStatus !== null) {
                         if (react != 'true'){
 
                             let tmpSessionPath = path.join(aiConfig.tmpPath, `/${sessionId}`);
@@ -276,7 +277,8 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, sessionId, re
                         }
                         messages.push({
                             type:'image/png',
-                            content: image
+                            content: image,
+                            title: chartName
                         });
                     }
 
