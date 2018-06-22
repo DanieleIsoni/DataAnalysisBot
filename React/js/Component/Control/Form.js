@@ -31,7 +31,8 @@ class ConnectedForm extends React.Component {
             temp_mex: '',
             waiting_var: false,
             focused: false,
-            loading: false
+            loading: false,
+            temp_search: ''
         }
         this.props.addTranslation(controlTranslation);
 
@@ -84,7 +85,7 @@ class ConnectedForm extends React.Component {
         }
 
         sendMessage(value, this.state.type, this.props.activeVar, !this.state.waiting_var).then(() => {
-            this.setState({ loading: false });
+            this.setState({ loading: false, selectedCommand: -1 });
         });        
     }
 
@@ -152,7 +153,10 @@ class ConnectedForm extends React.Component {
                 e.preventDefault();
                 var select = this.state.selectedCommand + 1;
                 if(this.state.restricted.size > 0 && select < this.state.restricted.size){
-                    this.setState({ inputValue: [...this.state.restricted][this.state.restricted.size - 1 - select], selectedCommand: select })
+                    if(select == 0){
+                        this.setState({temp_search: this.state.inputValue});
+                    }
+                    this.setState({inputValue: [...this.state.restricted][this.state.restricted.size - 1 - select], selectedCommand: select, })
                 }
             }            
         }else if(e.keyCode === 40){
@@ -162,7 +166,8 @@ class ConnectedForm extends React.Component {
                 if(select >= 0){
                     this.setState({ inputValue: [...this.state.restricted][this.state.restricted.size - 1 - select], selectedCommand: select })
                 }else if(select == -1){
-                    this.setState({inputValue: "", selectedCommand: select});
+                    this.setState({inputValue: this.state.temp_search, selectedCommand: select});
+                    this.setRestrictedArray(this.state.temp_search);
                 }
             }       
         }

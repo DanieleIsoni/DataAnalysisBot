@@ -26,8 +26,8 @@ const Header = () => {
     return(
         <div className="variable-context">
             <div className="iridium">
-                <img src="./dist/img/logo.png"/>
-                <div className="presentation"><h4>Iridium</h4><span>Datascience Chatbot</span></div>
+                <img src="./dist/img/logov2.png"/>
+                <div className="presentation"><h4>DAB</h4><span>Datascience Chatbot</span></div>
             </div>
         </div>
     );
@@ -86,13 +86,17 @@ class ConnectedSidemenu extends React.Component {
         return (
             <Col xs="12" md="4" lg="3" className="gestione" style={{"display": this.props.show}}>
                 <Header />
+                <div className="divider"></div>
                 <div className="variable-context">
                     <div className="side_subtitle"><h6><i className="material-icons">list</i> <Translate id="var">Variables</Translate> <span className="var_num">{this.props.variabili.length}</span></h6></div>
                     <List variabili={this.props.variabili} activeVar={this.props.activeVar} onClick={this.handleClick} selected={this.state.selectedVar} lang={sideTranslation} url={this.props.url}/>
                 </div>
+                <div className="divider"></div>
                 {dettaglioVariabile}
                 <Hints lang={sideTranslation}/>
-                <div className="side_subtitle"><h6><i className="material-icons">language</i><Translate id="lang">Language</Translate></h6><Language /></div>
+                <div className="divider"></div>
+                <div className="side_subtitle" style={{marginBottom: '10px'}}><h6><i className="material-icons">language</i><Translate id="lang">Language</Translate></h6><Language /></div>
+                <div className="divider"></div>
             </Col>
         );
     }
