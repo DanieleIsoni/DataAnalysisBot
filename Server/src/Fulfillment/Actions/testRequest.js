@@ -40,11 +40,8 @@ module.exports.testRequestFuAttribute = (contexts, parameters, action, sessionPa
     const test_request = contexts.find((obj) => {
         return obj.name === `${sessionPath}/contexts/test_request`;
     });
-    const testrequest_followup_attribute = contexts.find(obj => {
-        return obj.name === `${sessionPath}/contexts/testrequest-followup`;
-    });
 
-    if (test_request && data_received && testrequest_followup_attribute) {
+    if (test_request && data_received) {
         let session = Common.sessions.get(sessionId);
         let fileLink = session.variablesMap.get(session.variable).variableLink;
         let test = test_request.parameters.Test;
@@ -74,15 +71,12 @@ module.exports.testRequestFuTest = (contexts, parameters, action, sessionPath, s
     const test_request = contexts.find((obj) => {
         return obj.name === `${sessionPath}/contexts/test_request`;
     });
-    const testrequest_followup_test = contexts.find(obj => {
-        return obj.name === `${sessionPath}/contexts/testrequest-followup-2`;
-    });
 
-    if (test_request && data_received && testrequest_followup_test) {
+    if (test_request && data_received) {
         let session = Common.sessions.get(sessionId);
         let fileLink = session.variablesMap.get(session.variable).variableLink;
         let test = parameters.Test;
-        let test_original = testrequest_followup_test.parameters['Test.original'];
+        let test_original = test_request.parameters['Test.original'];
         let attr = test_request.parameters.Attribute;
         if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test}\nChosen attribute: ${attr}`);
 
