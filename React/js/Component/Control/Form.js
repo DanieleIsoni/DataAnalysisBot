@@ -45,7 +45,7 @@ class ConnectedForm extends React.Component {
     componentWillMount(){
         if (typeof(Storage) !== "undefined") {
             if(localStorage.getItem('suggestion') != null){
-                let array = JSON.parse(localStorage.getItem('suggestion'));
+                let array = JSON.parse(sessionStorage.getItem('suggestion')) || []; 
                 let fromStorage = new Set([...array]);
 
                 if(fromStorage != null){
@@ -76,7 +76,7 @@ class ConnectedForm extends React.Component {
         this.setState({ inputValue: '', suggest: suggest, loading: true });
 
         if (typeof(Storage) !== "undefined") {
-            localStorage.setItem('suggestion', JSON.stringify([...this.state.suggest]));
+            sessionStorage.setItem('suggestion', JSON.stringify([...this.state.suggest]));
         }
 
         if(this.props.activeVar == null && this.props.variabili.length > 0){
