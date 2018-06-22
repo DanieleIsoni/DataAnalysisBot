@@ -25,7 +25,6 @@ module.exports.plotChart = (contexts, parameters, action, sessionPath, sessionId
             chartType = 'barchart';
         }
 
-        /** start new things */
         let chartName = `chart${session.chartCount+1}`;
 
         let chart = {
@@ -36,7 +35,6 @@ module.exports.plotChart = (contexts, parameters, action, sessionPath, sessionId
             testOrig: `${testOrig}`,
             chartType: `${chartType}`
         };
-        /** end new things */
 
         if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test} on ${testAttr}\nChosen attribute for x-axis: ${attr}\nChosen chart: ${chartType}`);
 
@@ -67,13 +65,11 @@ module.exports.plotChartFuLabel = (contexts, parameters, action, sessionPath, se
         let family = plot_chart.parameters.FontFamily;
         let color = plot_chart.parameters.Color;
 
-        /** start new */
         let chartName = plot_chart.parameters.ChartName;
 
         let chart = session.charts.find(obj => {
             return obj.name === `${chartName}`;
         });
-        /** end new*/
 
         if (chart) {
             let fileLink = session.variablesMap.get(session.variable).variableLink;
@@ -110,7 +106,6 @@ let plotChartPy = (fileLink, chart, response, sessionId) => {
 
     let session = Common.sessions.get(sessionId);
 
-    /** start new */
     let xLabelPy = null;
     let yLabelPy = null;
     if (chart.xLabel) {
@@ -123,7 +118,6 @@ let plotChartPy = (fileLink, chart, response, sessionId) => {
         yLabelPy = `${JSON.stringify(yLabelPy)}`.replace(':', ': ').replace('{', '[').replace('}', ']');
         if (yLabelPy === '[]') yLabelPy = null;
     }
-    /** end new */
 
     const options = {
         mode: 'text',
@@ -207,13 +201,14 @@ except urllib.error.HTTPError as err:
                 };
 
                 if (result != 'define'){
-                    session.chartCount++;
+
                     let cId = session.charts.findIndex(el => {
                         return el.name === chart.name;
                     });
 
                     if (cId=== -1) {
                         session.charts.push(chart);
+                        session.chartCount++;
                     } else {
                         session.charts[cId] = chart;
                     }
