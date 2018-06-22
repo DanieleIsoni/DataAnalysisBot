@@ -92,11 +92,10 @@ export const getAll = () => {
                 if(n == response.data.variables.length-1) store.dispatch(setActiveVariable(variabile.name));
             })    
 
-            if(response.data.variables.length > 0){
+            if(response.data.variables.length > 0)
                 actionController("data.received");
-            }else{
+            else
                 actionController("initial");
-            }
 
             resolve();
         }).catch(error => {

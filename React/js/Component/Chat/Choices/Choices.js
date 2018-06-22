@@ -40,12 +40,12 @@ class ConChoices extends React.Component{
     toggleColor() { this.setState({ dropdownColor: !this.state.dropdownColor }); }
 
     setFontLabel(e, font){
-        let messaggio = "Change the " + this.state.axis + " label font to " + font;
+        let messaggio = "Change the " + this.state.axis + " label font to " + font + " on " + this.props.title;
         sendMessage(messaggio, "NL", this.props.activeVar, true);
     }
 
     setColorLabel(e, color){
-        let messaggio = "Change the " + this.state.axis + " label color to " + color;
+        let messaggio = "Change the " + this.state.axis + " label color to " + color + " on " + this.props.title;
         sendMessage(messaggio, "NL", this.props.activeVar, true);
     }
 
