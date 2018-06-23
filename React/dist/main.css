@@ -76,11 +76,26 @@ button{
 }
 
 #content{ 
+    position: relative;
     height: 100%; 
-    background: white url("img/logo.png");
-    background-size: 50px;
+    background: white url("img/logov2.png");
+    background-size: 70px;
     background-position: center center;
     background-repeat: no-repeat;
+    z-index: 0;
+}
+
+#content .loading{
+    display: inline-block;
+    text-align: center;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 55%;
+    font-weight: 500;
+    color: #777;
+    z-index: 0;
+    text-transform: uppercase;
 }
 
 .row{
