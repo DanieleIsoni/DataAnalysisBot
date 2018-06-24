@@ -53,26 +53,27 @@ module.exports = class DialogFlow {
     processMessage(req, res) {
         let devConfig = this._aiConfig.devConfig;
 
-        let session = Common.sessions.get(req.sessionID);
-
         let updateObject = req.body;
-        let react = req.body.react;
-        console.log('VARIABILE: '+req.body.variabile);
-        if (react == 'true' && req.body.variabile != null)
-            session.variable = req.body.variabile;
-        else if (react == 'true')
-            return DialogFlow.createResponse(res, 400, 'Something went wrong. Either select a variable or upload one before asking again.');
 
         if (updateObject && updateObject.message) {
             let msg = updateObject.message;
 
-            let sessionId;
+            let react = updateObject.react;
 
+            let sessionId;
             if (req.sessionID && react == 'true') {
                 sessionId = req.sessionID;
             } else if (react != 'true'){
-                sessionId = msg.chat.id;
+                sessionId = `${msg.chat.id}`;
             }
+
+            let session = Common.sessions.get(sessionId);
+
+            console.log('VARIABLE: '+updateObject.variabile);
+            if (react == 'true' && updateObject.variabile != null)
+                session.variable = updateObject.variabile;
+            else if (react == 'true')
+                return DialogFlow.createResponse(res, 400, 'Something went wrong. Either select a variable or upload one before asking again.');
 
             let messageText = msg.text;
             if (devConfig) console.log(`${cLog}chatId: ${sessionId}, messageText: ${messageText}`);
@@ -82,7 +83,6 @@ module.exports = class DialogFlow {
             if (sessionId && messageText) {
 
                 let sessionPath = this.sessionClient.sessionPath(this.aiConfig.projectId, sessionId);
-
                 switch(messageText) {
                     case "/start": {
                         let event = {

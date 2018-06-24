@@ -50,68 +50,68 @@ let destroySession = (sessionID, session) => {
 };
 
 module.exports.sessionHandler = (req) => {
-    if (!sessions.has(req.sessionID)){
-        sessions.set(req.sessionID, {
-            variable: null,
-            /**
-             *
-             * Key: variable name
-             *
-             * Value: {
-             *           variableLink: urlVariable,
-             *           attributes: []
-             *        }
-             *
-             */
-            variablesMap: new Map(),
-            /**
-             *
-             * 722680c
-             *
-             * Elements with form of:
-             * {
-             *    name: 'chart1',
-             *    variable: 'iris.csv'
-             *    test: 'maximum',
-             *    testAttr: 'seplen',
-             *    attr: 'class',
-             *    testOrig: 'max',
-             *    chartType: 'barchart'
-             *    xLabel: {
-             *       family: 'serif',
-             *       color: 'red',
-             *       weight: 'bold',
-             *       size: '12'
-             *    },
-             *    yLabel: {
-             *       family: 'serif',
-             *       color: 'red',
-             *       weight: 'bold',
-             *       size: '12'
-             *    }
-             * }
-             *
-             */
-            charts: [],
-            chartCount: 0
-        });
+    console.log(`message: ${JSON.stringify(req.body.message, null, '   ')}`);
+    if (req.body.message === undefined || (req.body.message !== undefined && req.body.message.chat === undefined)) {
+        if (!sessions.has(req.sessionID)) {
+            sessions.set(req.sessionID, {
+                variable: null,
+                /**
+                 *
+                 * Key: variable name
+                 *
+                 * Value: {
+                 *           variableLink: urlVariable,
+                 *           attributes: []
+                 *        }
+                 *
+                 */
+                variablesMap: new Map(),
+                /**
+                 *
+                 *
+                 * Elements with form of:
+                 * {
+                 *    name: 'chart1',
+                 *    variable: 'iris.csv'
+                 *    test: 'maximum',
+                 *    testAttr: 'seplen',
+                 *    attr: 'class',
+                 *    testOrig: 'max',
+                 *    chartType: 'barchart'
+                 *    xLabel: {
+                 *       family: 'serif',
+                 *       color: 'red',
+                 *       weight: 'bold',
+                 *       size: '12'
+                 *    },
+                 *    yLabel: {
+                 *       family: 'serif',
+                 *       color: 'red',
+                 *       weight: 'bold',
+                 *       size: '12'
+                 *    }
+                 * }
+                 *
+                 */
+                charts: [],
+                chartCount: 0,
+                react: req.body.react
+            });
+            console.log(`session ${req.sessionID} created`)
+        }
+    } else {
+        console.log(`ENTERED`);
+        let chatId = `${req.body.message.chat.id}`;
+        if (!sessions.has(chatId)) {
+            console.log(`ENTERED 2`);
+            sessions.set(chatId, {
+                react: 'false'
+            });
+            console.log(`session ${chatId} created`);
+        }
+        console.log(`session: ${JSON.stringify(sessions.get(chatId), null, '   ')}`);
     }
 };
-
-// let variable = null;
-//
-// let variablesMap = new Map();
-//
-//
-// let charts = [];
-// let chartCount = 0;
-//
-// module.exports = {
-//     variable,
-//     variablesMap,
-//     charts,
-//     chartCount
-// };
 
 module.exports.createEntitiesArray = (arrIn, arrOut=[]) => {
     arrIn.forEach((element) => {

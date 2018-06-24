@@ -30,7 +30,7 @@ if (APP_NAME){
     // Heroku case
     baseUrl = `https://${APP_NAME}.herokuapp.com`;
 } else {
-    baseUrl = null;
+    baseUrl = `https://dab.serveo.net`;
     // console.error('Set up the url of your service here and remove exit code!');
     // process.exit(1);
 }
