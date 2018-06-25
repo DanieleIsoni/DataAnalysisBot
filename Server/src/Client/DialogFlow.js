@@ -77,7 +77,7 @@ module.exports = class DialogFlow {
 
             let messageText = msg.text;
             if (react !== 'true' && (messageText.startsWith('make') || messageText.startsWith('change'))){
-                    messageText.append(' of chart1');
+                    messageText += ' of chart1';
             }
             if (devConfig) console.log(`${cLog}chatId: ${sessionId}, messageText: ${messageText}`);
 
@@ -209,12 +209,13 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, sessionId, re
                 let action = response.queryResult.action;
                 let messages = response.queryResult.fulfillmentMessages;
                 let webhookStatus = response.webhookStatus;
+                let webhookCode = webhookStatus.code;
                 let webhookPayload = response.queryResult.webhookPayload;
                 let codeToSend = webhookPayload && webhookPayload.fields && webhookPayload.fields.code ? webhookPayload.fields.code.stringValue : null;
                 let image = webhookPayload && webhookPayload.fields && webhookPayload.fields.image ? webhookPayload.fields.image.stringValue : null;
                 let chartName =  webhookPayload && webhookPayload.fields && webhookPayload.fields.chartName ? webhookPayload.fields.chartName.stringValue : null;
 
-                if (responseText || webhookStatus.code === 0) {
+                if (responseText || webhookCode === 0) {
                     console.log(`${cLog}Response as text message with message: ${responseText}`);
                     if (react != 'true' && image == null) {
                         bot.sendMessage(sessionId, responseText, {parse_mode: 'html'})
@@ -292,7 +293,7 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, sessionId, re
                     req.session.lastAction = action;
                     DialogFlow.createResponse(res, 200, responseText, action, messages, codeToSend);
                 } else {
-                    switch (webhookStatus.code) {
+                    switch (webhookCode) {
                         case 4: {
                             let message = 'Request has timed out. Please retry in a few minutes';
                             if (react != 'true') {
