@@ -1,6 +1,7 @@
 const PythonShell = require('python-shell');
 const DEV_CONFIG = (process.env.DEVELOPMENT_CONFIG == 'true');
 const PROJECT_ID = process.env.PROJECT_ID;
+const PYPATH = process.env.PYPATH;
 const fLog = '[FULFILLMENT] ';
 
 module.exports.plotChart = (contexts, parameters, action, session, response) => {
@@ -84,6 +85,7 @@ module.exports.plotChartFuLabel = (contexts, parameters, action, session, respon
 
 let plotChartPy = (fileLink, chart, test, testAttr, testOrig, attr, xLabel, yLabel, response) => {
 
+    let chartName = `${testOrig} of ${testAttr} by ${attr}`;
     let xLabelPy = null;
     let yLabelPy = null;
     if (xLabel != null) {
@@ -104,8 +106,11 @@ let plotChartPy = (fileLink, chart, test, testAttr, testOrig, attr, xLabel, yLab
     const options = {
         mode: 'text',
         scriptPath: 'Server/src/Fulfillment/Python/',
-        args: [`${fileLink}`, `${test}`, `${testAttr}`, `${testOrig}`, `${attr}`, xLabelPy, yLabelPy, `${testOrig} of ${testAttr} by ${attr}`]
+        args: [`${fileLink}`, `${test}`, `${testAttr}`, `${testOrig}`, `${attr}`, xLabelPy, yLabelPy, chartName]
     };
+
+    if (PYPATH)
+        options.pythonPath = PYPATH;
 
     switch(chart) {
         case 'barchart': {
@@ -177,7 +182,8 @@ except urllib.error.HTTPError as err:
                     fulfillmentText: 'Here is your chart:',
                     payload: {
                         code: codeToSend,
-                        image: `${result}`
+                        image: `${result}`,
+                        chartName: chartName
                     },
                     outputContexts: []
                 };
@@ -190,8 +196,6 @@ except urllib.error.HTTPError as err:
                     yLabel.lifespanCount = 5;
                     resToSend.outputContexts.push(yLabel);
                 }
-
-                if (DEV_CONFIG) console.log(`${fLog}SENT RES: ${JSON.stringify(resToSend, null, '   ')}`);
 
                 response.send(resToSend);
 

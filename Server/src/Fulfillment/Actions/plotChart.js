@@ -2,6 +2,7 @@ const Common = require('../../Common');
 const PythonShell = require('python-shell');
 const DEV_CONFIG = (process.env.DEVELOPMENT_CONFIG == 'true');
 const PROJECT_ID = process.env.PROJECT_ID;
+const PYPATH = process.env.PYPATH;
 const fLog = '[FULFILLMENT] ';
 
 module.exports.plotChart = (contexts, parameters, action, sessionPath, sessionId, response) => {
@@ -119,11 +120,14 @@ let plotChartPy = (fileLink, chart, response, sessionId) => {
         if (yLabelPy === '[]') yLabelPy = null;
     }
 
+
     const options = {
         mode: 'text',
         scriptPath: 'Server/src/Fulfillment/Python/',
         args: [`${fileLink}`, `${chart.test}`, `${chart.testAttr}`, `${chart.testOrig}`, `${chart.attr}`, xLabelPy, yLabelPy, `${chart.name}`]
     };
+    if (PYPATH)
+        options.pythonPath = PYPATH;
 
     switch(`${chart.chartType}`) {
         case 'barchart': {

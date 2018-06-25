@@ -1,6 +1,7 @@
 const Common = require('../../Common');
 const PythonShell = require('python-shell');
 const DEV_CONFIG = (process.env.DEVELOPMENT_CONFIG === 'true');
+const PYPATH = process.env.PYPATH;
 const fLog = '[FULFILLMENT] ';
 
 module.exports.testRequest = (contexts, parameters, action, sessionPath, sessionId, response) => {
@@ -102,6 +103,8 @@ let executeTest = function(fileLink, test, test_original, attr, response){
         scriptPath: 'Server/src/Fulfillment/Python/',
         args: [`${fileLink}`, `${test}`, `${attr}`]
     };
+    if (PYPATH)
+        options.pythonPath = PYPATH;
 
     PythonShell.run('executeTest.py', options, (err, result) => {
         if (err){

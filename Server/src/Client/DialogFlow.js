@@ -76,6 +76,9 @@ module.exports = class DialogFlow {
                 return DialogFlow.createResponse(res, 400, 'Something went wrong. Either select a variable or upload one before asking again.');
 
             let messageText = msg.text;
+            if (react !== 'true' && (messageText.startsWith('make') || messageText.startsWith('change'))){
+                    messageText.append(' of chart1');
+            }
             if (devConfig) console.log(`${cLog}chatId: ${sessionId}, messageText: ${messageText}`);
 
             let promise;
@@ -247,6 +250,7 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, sessionId, re
                     }
 
                     if (image && chartName && webhookStatus !== null) {
+
                         if (react != 'true'){
 
                             let tmpSessionPath = path.join(aiConfig.tmpPath, `/${sessionId}`);

@@ -24,6 +24,7 @@ const LANGUAGE_CODE = process.env.LANGUAGE_CODE;
 const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
 const CLIENT_WEBHOOK = process.env.CLIENT_WEBHOOK;
 const FULFILLMENT_WEBHOOK = process.env.FULFILLMENT_WEBHOOK;
+const PYPATH = process.env.PYPATH;
 
 let baseUrl = "";
 if (APP_NAME){
@@ -60,14 +61,12 @@ app.use(function (req, res, next) {
 
 app.route('/')
     .get((req, res) => {
-        Common.sessionHandler(req);
         Common.sessionTimeoutHandler(sessionsTimeout, req);
         res.sendFile("React/index.html", {root: "./" });
     });
 
 app.route('/messages')
     .get((req, res) => {
-        Common.sessionHandler(req);
         Common.sessionTimeoutHandler(sessionsTimeout, req);
         res.writeHead(200, {'Content-Type': 'application/json'});
         res.write(JSON.stringify({
@@ -79,7 +78,6 @@ app.route('/messages')
 
 app.route('/clear')
     .get((req, res) => {
-        Common.sessionHandler(req);
         Common.sessionTimeoutHandler(sessionsTimeout, req);
         req.session.messages = [];
         res.write(JSON.stringify({clear: true}));
@@ -88,7 +86,6 @@ app.route('/clear')
 
 app.route('/variable/:filename')
     .get((req, res) => {
-        Common.sessionHandler(req);
         Common.sessionTimeoutHandler(sessionsTimeout, req);
         if (req.session.datasets.length >0) {
             let data = req.params.filename;
@@ -112,7 +109,6 @@ app.route('/variable/:filename')
 
 app.route('/delete/:id')
     .get((req, res) => {
-        Common.sessionHandler(req);
         Common.sessionTimeoutHandler(sessionsTimeout, req);
 
         let sessionId = req.sessionID;
@@ -131,6 +127,78 @@ app.route(`/${CLIENT_WEBHOOK}`)
         } catch (err) {
             return res.status(400).send(`Error while processing ${err.message}`);
         }
+    });
+
+app.route(`/python`)
+    .post((req, res) => {
+        Common.sessionHandler(req);
+        Common.sessionTimeoutHandler(sessionsTimeout, req);
+        console.log(`POST python`);
+
+        if (req.body && req.body.message && req.body.message.text){
+            let code = req.body.message.text;
+            if (code){
+                let tmpSessionPath = `tmp/${req.sessionID}`;
+                if(!fs.existsSync(tmpSessionPath)){
+                    try {
+                        fs.mkdirSync(tmpSessionPath);
+                    } catch (e) {
+                        console.error(`ERROR: ${e}`);
+                        res.status(400).json({
+                            who: 'bot',
+                            message: `Something went wrong. Try in a few minutes`,
+                        });
+                    }
+                }
+
+                let script = 'tmpScript.py';
+                let scriptPath = `${tmpSessionPath}/${script}`;
+
+                try {
+                    fs.writeFileSync(scriptPath, `${code}`);
+                }catch (e) {
+                    console.error(`ERROR: ${e}`);
+                    res.status(400).json({
+                        who: 'bot',
+                        message: `Something went wrong. Try in a few minutes`,
+                    });
+                }
+
+                const options = {
+                    mode: 'text',
+                    scriptPath: tmpSessionPath
+                };
+
+                PythonShell.run(script, options, (err, result) => {
+                    if (err) {
+                        console.error(`ERROR: ${err}`);
+                        return res.status(400).json({
+                            who: 'bot',
+                            message: `${err}`,
+                        });
+                    }
+
+                    result = `${result}`.split(',');
+
+                    let messages = [];
+
+                    result.forEach(el => {
+                        messages.push({
+                            type: 'text/plain',
+                            content: el
+                        });
+                    });
+
+                    res.status(200).json({
+                        who: 'bot',
+                        message: `This are results from your script:`,
+                        outputs: messages,
+                    });
+
+                });
+            }
+        }
+
     });
 
 const allowed_file = (mime) => {
@@ -169,7 +237,12 @@ app.route('/upload')
             });
 
             try {
-                let pyshell = new PythonShell('readfile.py', {scriptPath: 'Server/src/Client/py/',});
+                let options = {
+                    scriptPath: 'Server/src/Client/py/',
+                };
+                if(PYPATH)
+                    options.pythonPath = PYPATH;
+                let pyshell = new PythonShell('readfile.py', options);
                 pyshell.send(stream.toString());
 
                 pyshell.on('message', function (message) {

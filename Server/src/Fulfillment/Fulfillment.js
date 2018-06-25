@@ -20,7 +20,6 @@ module.exports.dialogflowFulfillment = (request, response) => {
     let parameters = request.body.queryResult.parameters;
 
     console.log(`${fLog}ACTION: ${action}`);
-    console.log(`${fLog}session: ${JSON.stringify(Common.sessions.get(sessionId),null, '   ')}`);
 
     switch (action) {
         case 'data.received':
@@ -63,7 +62,7 @@ module.exports.dialogflowFulfillment = (request, response) => {
             if (Common.sessions.get(sessionId).react === 'true')
                 plotChart.plotChartFuLabel(contexts, parameters, action, sessionPath, sessionId, response);
             else
-                plotChart.plotChartFuLabel(contexts, parameters, action, sessionPath, response);
+                tPlotChart.plotChartFuLabel(contexts, parameters, action, sessionPath, response);
             break;
         default:
             console.warn(`${fLog}No action matched`);

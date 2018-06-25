@@ -1,5 +1,6 @@
 const PythonShell = require('python-shell');
 const DEV_CONFIG = (process.env.DEVELOPMENT_CONFIG == 'true');
+const PYPATH = process.env.PYPATH;
 const fLog = '[FULFILLMENT] ';
 
 module.exports.dataDescriptionRequest = (contexts, action, session, response) => {
@@ -27,6 +28,8 @@ let dataDescription = (fileName, fileLink, response) => {
         scriptPath: 'Server/src/Fulfillment/Python/',
         args: [`${fileLink}`]
     };
+    if (PYPATH)
+        options.pythonPath = PYPATH;
     PythonShell.run('dataDescription.py', options, function (err, results) {
         if(err){
             console.error(`${fLog}ERROR: ${err}`);

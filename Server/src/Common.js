@@ -95,9 +95,11 @@ module.exports.sessionHandler = (req) => {
                  */
                 charts: [],
                 chartCount: 0,
-                react: req.body.react
+                react: `${req.body.react}`
             });
-            console.log(`session ${req.sessionID} created`)
+            console.log(`Request: ${JSON.stringify(req.sessionID, null, '   ')}`);
+            console.log(`session ${req.sessionID} created`);
+            console.log(`session: ${JSON.stringify(sessions.get(req.sessionID), null, '   ')}`);
         }
     } else {
         console.log(`ENTERED`);

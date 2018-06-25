@@ -2,6 +2,7 @@ const PythonShell = require('python-shell');
 const DEV_CONFIG = (process.env.DEVELOPMENT_CONFIG == 'true');
 const PROJECT_ID = process.env.PROJECT_ID;
 const gappCred = process.env.GOOGLE_APPLICATION_CREDENTIALS;
+const PYPATH = process.env.PYPATH;
 const dialogflow = require('dialogflow');
 const sessionEntityTypesClient = new dialogflow.SessionEntityTypesClient({
     keyFileName: gappCred,
@@ -34,6 +35,9 @@ let storeAttributes = function (fileName, fileLink, response, session){
         scriptPath: 'Server/src/Fulfillment/Python/',
         args: [`${fileLink}`]
     };
+    if (PYPATH)
+        options.pythonPath = PYPATH;
+
     PythonShell.run('getAttributes.py', options, function (err, results) {
         if(err){
             console.error(`${fLog}ERROR: ${err}`);
