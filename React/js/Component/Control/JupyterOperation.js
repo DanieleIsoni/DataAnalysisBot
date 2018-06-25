@@ -33,10 +33,12 @@ class ConnectedJupyter extends React.Component{
         var json_jup = new Jup();
 
         this.props.messaggi.map(el =>{
-            if(el.code != null)
-                json_jup.addCode(el.output, el.code);
-            else
-                json_jup.addMarkdown(el.who, el.messaggio); 
+            if(el.what != "code"){
+                if(el.code != null)
+                    json_jup.addCode(el.output, el.code, el.who_code);
+                else
+                    json_jup.addMarkdown(el.who, el.messaggio);
+            }
         });
 
         return json_jup;

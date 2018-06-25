@@ -15,7 +15,11 @@ class Jupyter{
             this.cells.push({"cell_type": "markdown", "metadata": { "who": "bot" }, "source": ["&#x1F538; " + messaggio + "\n"]});
     }
 
-    addCode(outputs, code){
+    addUserCode(code){
+        this.cells.push({"cell_type": "code", "execution_count": 1, "metadata": { "who": "me" }, "outputs": [], "source": [code]});
+    }
+
+    addCode(outputs, code, who_code){
         var outs = [];
         outputs.map((output, i) => {
             var dati = (output.type == "image/png") ? {"image/png": output.content} : {"text/plain": [output.content]}
@@ -29,7 +33,9 @@ class Jupyter{
             }
             outs.push(data_out);
         });
-        this.cells.push({"cell_type": "code", "execution_count": 1, "metadata": { "who": "bot" }, "outputs": outs, "source": [code]});
+
+        var wcode = (who_code == "me") ? {"who": "bot", "who_code": "me"} :  {"who": "bot"};
+        this.cells.push({"cell_type": "code", "execution_count": 1, "metadata": wcode, "outputs": outs, "source": [code]});
     }
 
     static readJupyter(filejup){
@@ -38,6 +44,7 @@ class Jupyter{
 
         filejup.map(el =>{
             var outs = [];
+
             if(typeof el.outputs != "undefined"){
                 el.outputs.map(op => {
                     var field_types = Object.keys(op.data);
@@ -60,7 +67,13 @@ class Jupyter{
                 }
                 messages.push(mes);
             });
-            messaggi.push({who: el.metadata.who, what: el.cell_type, messaggio: messages.join(""), output: outs, code: code});
+
+            if(el.metadata.who_code == "me"){
+                messaggi.push({who: "me", what: "code", messaggio: el.source.join(""), output: [], code: null});
+                messaggi.push({who: "bot", what: "markdown", messaggio: "Python result:", output: outs, code: null});
+            }else{
+                messaggi.push({who: el.metadata.who, what: "markdown", messaggio: messages.join(""), output: outs, code: code});
+            }
         });
         return messaggi;
     }

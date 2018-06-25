@@ -8,10 +8,16 @@ const Message = ({ content, n, isCodeOpen, openCode}) => (
             <div className={content.what}>
                 {
                     (content.what == "code") ? 
-                        <Code className="mycode" code={content.messaggio} line={"false"}/>
+                        <div className="mycode">
+                            <Code code={content.messaggio} line={"false"}/>
+                            <span className="code-indicator">Python script <i className="material-icons">code</i></span>
+                        </div>
                     :
                     <div className={content.who}>
-                        {content.messaggio}
+                        <pre>
+                            {content.messaggio}
+                        </pre>
+                        <span className="date">{content.date}</span>
 
                         {
                             (content.code != null) ? 
@@ -24,7 +30,7 @@ const Message = ({ content, n, isCodeOpen, openCode}) => (
         </div>
         {
             (content.id === isCodeOpen) ?
-                <div className="line">
+                <div className="line line-code">
                     <span className="incode">In [ {n} ]: </span>
                     <Code code={content.code} line="true"/>   
                 </div>

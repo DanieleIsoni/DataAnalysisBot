@@ -34,6 +34,10 @@ const actionController = (azione) => {
     }
 }
 
+export const errorHandling = (error) => {
+    store.dispatch(addMessage({id: uuidv1(), who: "bot", what: "markdown error", messaggio: "Error not handled! " + error, output: []}));
+}
+
 export const sendMessage = (value, type) => {
     return new Promise((resolve, reject) => {
         if(value != "" && value != "/start"){
@@ -42,26 +46,63 @@ export const sendMessage = (value, type) => {
             store.dispatch(addMessage({id: uuidv1(), who: "me", what: (type != "Py") ? "markdown" : "code", messaggio: value, output: [], date: time}));
         }
 
+        if(type == "Py"){
+            sendPy(value).then(() => {
+                resolve();
+            }).catch((error) => {
+                errorHandling(error);
+                reject(error);
+            })
+        }else{   
+            console.log(value + " - react: true");
+            axios({
+                url: URL_HEROKU + "/clientWebHook/",
+                method: 'post', 
+                validateStatus: function (status) {
+                    return status < 500;
+                },
+                data: { "message": { "text": value }, "react": "true", 
+                        "variabile": (store.getState().active == null) ? "empty" : store.getState().active
+                }, headers: {
+                    'accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                store.dispatch(addMessage({id: uuidv1(), who: "bot", what: (response.status == 200) ?  "markdown" : "markdown error", messaggio: response.data.message, output: response.data.outputs, code: response.data.code}));
+
+                console.log(response.data);
+
+                actionController(response.data.action);
+                resolve();
+            }).catch((error) => {
+                errorHandling(error);
+                reject(error);
+            });
+        }
+    });
+}
+
+export const sendPy = (value) => {
+    return new Promise((resolve, reject) => {
         axios({
-            url: URL_HEROKU + "/clientWebHook/",
+            url: URL_HEROKU + "/python/",
             method: 'post', 
             validateStatus: function (status) {
                 return status < 500;
             },
             data: { "message": { "text": value }, "react": "true", 
                     "variabile": (store.getState().active == null) ? "empty" : store.getState().active
-                    //"python": (this.state.type == "Py") ? "true" : "false"
             }, headers: {
                 'accept': 'application/json',
                 'Content-Type': 'application/json'
             }
         })
         .then(response => {
-            store.dispatch(addMessage({id: uuidv1(), who: "bot", what: (response.status == 200) ?  "markdown" : "markdown error", messaggio: response.data.message, output: response.data.outputs, code: response.data.code}));
-            actionController(response.data.action);
+            store.dispatch(addMessage({id: uuidv1(), who: "bot", what: (response.status == 200) ?  "markdown" : "markdown error", messaggio: response.data.message, output: response.data.outputs, code: value, who_code: "me"}));
             resolve();
         }).catch((error) => {
-            reject(error);
+            reject();
         });
     });
 }
@@ -84,7 +125,7 @@ export const getAll = () => {
             }
 
             response.data.messages.map(messaggio => {
-                store.dispatch(addMessage({id: uuidv1(), who: messaggio.who, what: "markdown", messaggio: messaggio.message, output: messaggio.outputs, code: messaggio.code}));
+                store.dispatch(addMessage({id: uuidv1(), who: messaggio.who, what: "markdown", messaggio: messaggio.message, output: messaggio.outputs, code: messaggio.code, date: messaggio.date}));
             })
             response.data.variables.map((variabile, n) => {
                 store.dispatch(addVariable({"name": variabile.name, "id": uuidv1()}));
@@ -99,6 +140,7 @@ export const getAll = () => {
 
             resolve();
         }).catch(error => {
+            errorHandling(error);
             reject(error);
         })
     });
@@ -108,6 +150,7 @@ export const uploadFile = (file, send_active) => {
     return new Promise((resolve, reject) => {
         var formdata = new FormData();
         formdata.append('file', file);
+        formdata.append('react', "true");
         formdata.append('variabile',send_active);
         store.dispatch(addMessage({"id": uuidv1(), "who": "me", "what": "markdown", "messaggio": "Uploading file...", "output": []}));
         axios({ //TODO togliere il fatto che il server salva sulla sessione il messaggio di caricamento della variabile

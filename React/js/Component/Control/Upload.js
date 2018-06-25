@@ -36,13 +36,14 @@ class ConnectedUpload extends React.Component {
                 modal: true
             });
         }
+
         this.sendFile.focus();
     }
 
     handleSubmit(e){
         e.preventDefault();
         var file = this.fileInput.files[0];
-
+        
         if(file){
             this.setState({ showLoader: true });
             var send_active = (this.props.activeVar == null || typeof this.props.activeVar == 'undefined') ? "empty" : this.props.activeVar;
@@ -66,7 +67,7 @@ class ConnectedUpload extends React.Component {
 
     render(){
         return (
-            <div style={(this.props.theme == "form_add") ? {} : {display: 'inline-block'}}>
+            <div id={this.props.id} style={(this.props.theme == "form_add") ? {} : {display: 'inline-block'}}>
                 <Button className={(this.props.theme == "form_add") ? "button-board round" : "attach_side"} onClick={this.toggle}>{this.props.text}</Button>
                     <Modal isOpen={this.state.modal} toggle={this.toggle} className="upload_modal">
                         <form action="/" method="POST" encType="multipart/form-data" className="form-upload" onSubmit={this.handleSubmit}>
