@@ -86,7 +86,6 @@ class ConnectedSidemenu extends React.Component {
         return (
             <Col xs="12" md="4" lg="3" className="gestione" style={{"display": this.props.show}}>
                 <Header />
-                <div className="divider"></div>
                 <div className="variable-context">
                     <div className="side_subtitle"><h6><i className="material-icons">list</i> <Translate id="var">Variables</Translate> <span className="var_num">{this.props.variabili.length}</span></h6></div>
                     <List variabili={this.props.variabili} activeVar={this.props.activeVar} onClick={this.handleClick} selected={this.state.selectedVar} lang={sideTranslation} url={this.props.url}/>

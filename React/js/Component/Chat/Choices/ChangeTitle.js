@@ -17,7 +17,8 @@ class ChangeTitle extends React.Component {
 
     handleSubmit(e){
         e.preventDefault();
-        let message = "" + this.props.title;
+        let message = "Change " + this.props.title + " title to " + this.fileInput.value;
+        console.log(message);
         sendMessage(message, "NL");
     }
 
