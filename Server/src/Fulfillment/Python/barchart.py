@@ -50,6 +50,12 @@ if len(sys.argv) > 1:
     else:
         yLabelFontdict = None
 
+    if sys.argv[8] != 'null':
+        chartName = sys.argv[8]
+    else:
+        chartName = None
+
+
     try:
         data_set = pd.read_csv(url, sep=',', na_values=["?"])
 
@@ -92,7 +98,7 @@ if len(sys.argv) > 1:
                 y_data=x[testMod],
                 x_label=attr,
                 y_label=testOrig+' '+testAttr,
-                title=testOrig+' '+testAttr+' per '+attr,
+                title=chartName,
                 xlabel_fontdict=xLabelFontdict,
                 ylabel_fontdict=yLabelFontdict)
 

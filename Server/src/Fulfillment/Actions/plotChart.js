@@ -11,12 +11,6 @@ module.exports.plotChart = (contexts, parameters, action, sessionPath, sessionId
     const plot_chart = contexts.find(obj => {
         return obj.name === `${sessionPath}/contexts/plot_chart`;
     });
-    // let xlabel = contexts.find(obj => {
-    //     return obj.name === `${sessionPath}/contexts/xlabel`;
-    // });
-    // let ylabel = contexts.find(obj => {
-    //     return obj.name === `${sessionPath}/contexts/ylabel`;
-    // });
 
     if (data_received && plot_chart) {
         let session = Common.sessions.get(sessionId);
@@ -31,7 +25,6 @@ module.exports.plotChart = (contexts, parameters, action, sessionPath, sessionId
             chartType = 'barchart';
         }
 
-        /** start new things */
         let chartName = `chart${session.chartCount+1}`;
 
         let chart = {
@@ -42,16 +35,13 @@ module.exports.plotChart = (contexts, parameters, action, sessionPath, sessionId
             testOrig: `${testOrig}`,
             chartType: `${chartType}`
         };
-        /** end new things */
 
-        // if (xlabel) xlabel.lifespanCount = 5;
-        // if (ylabel) ylabel.lifespanCount = 5;
         if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test} on ${testAttr}\nChosen attribute for x-axis: ${attr}\nChosen chart: ${chartType}`);
 
         if (session.variablesMap.get(session.variable).attributes.includes(testAttr)
             && session.variablesMap.get(session.variable).attributes.includes(attr)) {
             chart.variable = session.variable;
-            plotChartPy(fileLink, /*chartType, test, testAttr, testOrig, attr, xlabel, ylabel,*/chart, response, sessionId);
+            plotChartPy(fileLink, chart, response, sessionId);
         } else {
             response.send({
                 fulfillmentText: `The attribute you selected is not in the chosen dataset, try selecting the correct dataset`
@@ -68,35 +58,18 @@ module.exports.plotChartFuLabel = (contexts, parameters, action, sessionPath, se
     const plot_chart = contexts.find(obj => {
         return obj.name === `${sessionPath}/contexts/plot_chart`;
     });
-    const plotchart_followup_label = contexts.find(obj => {
-        return obj.name === `${sessionPath}/contexts/plotchart-followup`;
-    });
-    // let xlabel = contexts.find(obj => {
-    //     return obj.name === `${sessionPath}/contexts/xlabel`;
-    // });
-    // let ylabel = contexts.find(obj => {
-    //     return obj.name === `${sessionPath}/contexts/ylabel`;
-    // });
 
-    if (data_received && plot_chart && plotchart_followup_label) {
+    if (data_received && plot_chart) {
         let session = Common.sessions.get(sessionId);
-        // let fileLink = session.variablesMap.get(session.variable).variableLink;
-        //let test = plot_chart.parameters.CompositeTest.Test;
-        //let testAttr = plot_chart.parameters.CompositeTest.Attribute;
-        //let testOrig = plot_chart.parameters.CompositeTest['Test.original'];
-        // let attr = plot_chart.parameters.Attribute;
-        //let chartType = plot_chart.parameters.Chart;
-        let axis = plotchart_followup_label.parameters.Axis;
-        let family = plotchart_followup_label.parameters.FontFamily;
-        let color = plotchart_followup_label.parameters.Color;
+        let axis = plot_chart.parameters.Axis;
+        let family = plot_chart.parameters.FontFamily;
+        let color = plot_chart.parameters.Color;
 
-        /** start new */
-        let chartName = plotchart_followup_label.parameters.ChartName;
+        let chartName = plot_chart.parameters.ChartName;
 
         let chart = session.charts.find(obj => {
             return obj.name === `${chartName}`;
         });
-        /** end new*/
 
         if (chart) {
             let fileLink = session.variablesMap.get(session.variable).variableLink;
@@ -106,28 +79,18 @@ module.exports.plotChartFuLabel = (contexts, parameters, action, sessionPath, se
                 }
                 if (family) chart.xLabel.family = family;
                 if (color) chart.xLabel.color = color;
-                // xlabel = updateAxContext(axis, plotchart_followup_label.parameters, xlabel, sessionPath);
-                //
-                // if (!chartType || chartType === '') {
-                //     chartType = 'barchart';
-                // }
                 if (DEV_CONFIG) console.log(`${fLog}Chosen test: ${chart.test} on ${chart.testAttr}\nChosen attribute for x-axis: ${chart.attr}\nChosen chart: ${chart.chartType}`);
 
-                plotChartPy(fileLink, /*chartType, test, testAttr, testOrig, attr, xlabel, ylabel,*/chart, response, sessionId);
+                plotChartPy(fileLink, chart, response, sessionId);
             } else if (axis === 'y') {
                 if (!chart.yLabel){
                     chart.yLabel = {};
                 }
                 if (family) chart.yLabel.family = family;
                 if (color) chart.yLabel.color = color;
-                // ylabel = updateAxContext(axis, plotchart_followup_label.parameters, ylabel, sessionPath);
-                //
-                // if (!chartType || chartType === '') {
-                //     chartType = 'barchart';
-                // }
                 if (DEV_CONFIG) console.log(`${fLog}Chosen test: ${chart.test} on ${chart.testAttr}\nChosen attribute for x-axis: ${chart.attr}\nChosen chart: ${chart.chartType}`);
 
-                plotChartPy(fileLink, /*chartType, test, testAttr, testOrig, attr, xlabel, ylabel,*/chart, response, sessionId);
+                plotChartPy(fileLink, chart, response, sessionId);
             }
         } else {
             response.send({
@@ -139,56 +102,30 @@ module.exports.plotChartFuLabel = (contexts, parameters, action, sessionPath, se
 };
 
 
-let plotChartPy = (fileLink, /*chartType, test, testAttr, testOrig, attr, xLabel, yLabel,*/chart, response, sessionId) => {
+let plotChartPy = (fileLink, chart, response, sessionId) => {
 
     let session = Common.sessions.get(sessionId);
 
-    /*
-    let xLabelPy = null;
-    let yLabelPy = null;
-    if (xLabel != null) {
-        xLabelPy = {};
-        if (xLabel.parameters.color) xLabelPy.color = xLabel.parameters.color;
-        if (xLabel.parameters.family) xLabelPy.family = xLabel.parameters.family;
-        xLabelPy = `${JSON.stringify(xLabelPy)}`.replace(':', ': ').replace('{', '[').replace('}', ']');
-        if (xLabelPy === '[]') xLabelPy = null;
-    }
-    if (yLabel != null) {
-        yLabelPy = {};
-        if (yLabel.parameters.color) yLabelPy.color = yLabel.parameters.color;
-        if (yLabel.parameters.family) yLabelPy.family = yLabel.parameters.family;
-        yLabelPy = `${JSON.stringify(yLabelPy)}`.replace(':', ': ').replace('{', '[').replace('}', ']');
-        if (yLabelPy === '[]') yLabelPy = null;
-    }
-    */
-
-    /** start new */
     let xLabelPy = null;
     let yLabelPy = null;
     if (chart.xLabel) {
         xLabelPy = chart.xLabel;
-        // if (chart.xLabel.color) xLabelPy.color = xLabel.color;
-        // if (chart.xLabel.family) xLabelPy.family = xLabel.family;
         xLabelPy = `${JSON.stringify(xLabelPy)}`.replace(':', ': ').replace('{', '[').replace('}', ']');
         if (xLabelPy === '[]') xLabelPy = null;
     }
     if (chart.yLabel) {
         yLabelPy = chart.yLabel;
-        // if (chart.yLabel.color) yLabelPy.color = yLabel.color;
-        // if (chart.yLabel.family) yLabelPy.family = yLabel.family;
         yLabelPy = `${JSON.stringify(yLabelPy)}`.replace(':', ': ').replace('{', '[').replace('}', ']');
         if (yLabelPy === '[]') yLabelPy = null;
     }
-    /** end new */
 
     const options = {
         mode: 'text',
         scriptPath: 'Server/src/Fulfillment/Python/',
-        //args: [`${fileLink}`, `${test}`, `${testAttr}`, `${testOrig}`, `${attr}`, xLabelPy, yLabelPy]
-        args: [`${fileLink}`, `${chart.test}`, `${chart.testAttr}`, `${chart.testOrig}`, `${chart.attr}`, xLabelPy, yLabelPy]
+        args: [`${fileLink}`, `${chart.test}`, `${chart.testAttr}`, `${chart.testOrig}`, `${chart.attr}`, xLabelPy, yLabelPy, `${chart.name}`]
     };
 
-    switch(/*chartType*/ `${chart.chartType}`) {
+    switch(`${chart.chartType}`) {
         case 'barchart': {
             PythonShell.run('barchart.py', options, (err, result) => {
                 if (err) {
@@ -239,7 +176,7 @@ try:
             y_data=x[testMod],
             x_label=${chart.attr},
             y_label=${chart.testOrig}+' '+${chart.testAttr},
-            title=${chart.testOrig}+' '+${chart.testAttr}+' per '+${chart.attr})
+            title=${chart.name})
                 
     figfile = BytesIO()
     plt.savefig(figfile, format='png')
@@ -258,29 +195,20 @@ except urllib.error.HTTPError as err:
                     fulfillmentText: 'Here is your chart:',
                     payload: {
                         code: codeToSend,
-                        image: `${result}`
+                        image: `${result}`,
+                        chartName: `${chart.name}`
                     },
-                    //outputContexts: []
                 };
 
-                /*
-                if (xLabel != null) {
-                    xLabel.lifespanCount = 5;
-                    resToSend.outputContexts.push(xLabel);
-                }
-                if (yLabel != null) {
-                    yLabel.lifespanCount = 5;
-                    resToSend.outputContexts.push(yLabel);
-                }
-                */
                 if (result != 'define'){
-                    session.chartCount++;
+
                     let cId = session.charts.findIndex(el => {
                         return el.name === chart.name;
                     });
 
                     if (cId=== -1) {
                         session.charts.push(chart);
+                        session.chartCount++;
                     } else {
                         session.charts[cId] = chart;
                     }
@@ -300,44 +228,4 @@ except urllib.error.HTTPError as err:
             });
     }
 
-};
-
-let updateAxContext = (axis, params, label, sessionPath) => {
-    /**
-     * Label format:
-     * {
-     *      'family': 'serif',
-     *      'color':  'darkred',
-     *      'weight': 'normal',
-     *      'size': 16,
-     * }
-     */
-
-    let sessionId = sessionPath.split('/')[sessionPath.split('/').length-1];
-
-    let family = params.FontFamily;
-    let color = params.Color;
-
-    if (label) {
-        label.lifespanCount = 5;
-
-        if (family) label.parameters.family = family;
-        if (color) label.parameters.color = color;
-
-        return label;
-
-    } else {
-        const labelContextPath = `projects/${PROJECT_ID}/agent/sessions/${sessionId}/contexts/${axis}label`;
-
-        label = {
-            name: labelContextPath,
-            lifespanCount: 5,
-            parameters: {}
-        };
-
-        if (family) label.parameters.family = family;
-        if (color) label.parameters.color = color;
-        return label;
-
-    }
 };

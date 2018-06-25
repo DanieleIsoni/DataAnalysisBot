@@ -34,14 +34,6 @@ module.exports = class DialogFlow {
         this._aiConfig = value;
     }
 
-    // get sessionIds() {
-    //     return this._sessionIds;
-    // }
-    //
-    // set sessionIds(value) {
-    //     this._sessionIds = value;
-    // }
-
     constructor(aiConfig, baseUrl) {
         this._aiConfig = aiConfig;
         if (baseUrl) {
@@ -56,7 +48,6 @@ module.exports = class DialogFlow {
         this._sessionClient = new dialogFlow.SessionsClient({
            keyFileName: aiConfig.googleAppCreds
         });
-        // this._sessionIds = new Map();
     }
 
     processMessage(req, res) {
@@ -75,28 +66,20 @@ module.exports = class DialogFlow {
         if (updateObject && updateObject.message) {
             let msg = updateObject.message;
 
-            // let chatId;
-
             let sessionId;
 
             if (req.sessionID && react == 'true') {
-                // chatId = req.sessionID;
                 sessionId = req.sessionID;
             } else if (react != 'true'){
-                // chatId = msg.chat.id;
                 sessionId = msg.chat.id;
             }
 
             let messageText = msg.text;
-            if (devConfig) console.log(`${cLog}chatId: ${/*chatId*/sessionId}, messageText: ${messageText}`);
+            if (devConfig) console.log(`${cLog}chatId: ${sessionId}, messageText: ${messageText}`);
 
             let promise;
 
-            if (/*chatId*/sessionId && messageText) {
-                // if (!this._sessionIds.has(chatId)) {
-                //     this._sessionIds.set(chatId, uuid.v1());
-                // }
-                // let sessionId = this.sessionIds.get(chatId);
+            if (sessionId && messageText) {
 
                 let sessionPath = this.sessionClient.sessionPath(this.aiConfig.projectId, sessionId);
 
@@ -133,17 +116,13 @@ module.exports = class DialogFlow {
                     }
                         break;
                 }
-                processRequest(DialogFlow, promise, this.aiConfig, this.bot, /*chatId*/sessionId, req, res, react, sessionPath);
-            } else if(/*chatId*/sessionId){
-                // if (!this._sessionIds.has(chatId)) {
-                //     this._sessionIds.set(chatId, uuid.v1());
-                // }
-                // let sessionId = this.sessionIds.get(chatId);
+                processRequest(DialogFlow, promise, this.aiConfig, this.bot, sessionId, req, res, react);
+            } else if(sessionId){
 
                 let sessionPath = this.sessionClient.sessionPath(this.aiConfig.projectId, sessionId);
 
                 let messageDoc = msg.document;
-                if(messageDoc && /*chatId*/sessionId && messageDoc.file_id){
+                if(messageDoc && sessionId && messageDoc.file_id){
                     this.bot.getFileLink(messageDoc.file_id)
                         .then(result => {
                             let event = {
@@ -161,9 +140,9 @@ module.exports = class DialogFlow {
                                 }
                             };
                             promise = this.sessionClient.detectIntent(request);
-                            processRequest(DialogFlow, promise, this.aiConfig, this._bot, /*chatId*/sessionId, req, res, react, sessionPath);
+                            processRequest(DialogFlow, promise, this.aiConfig, this._bot, sessionId, req, res, react);
                         });
-                } else if (messageDoc && /*chatId*/sessionId && messageDoc.file_name && messageDoc.file_link){
+                } else if (messageDoc && sessionId && messageDoc.file_name && messageDoc.file_link){
                     let event = {
                         name: "DATA_RECEIVED",
                         parameters: structjson.jsonToStructProto({
@@ -179,7 +158,7 @@ module.exports = class DialogFlow {
                         }
                     };
                     promise = this.sessionClient.detectIntent(request);
-                    processRequest(DialogFlow, promise, this.aiConfig, this._bot, /*chatId*/sessionId, req, res, react, sessionPath);
+                    processRequest(DialogFlow, promise, this.aiConfig, this._bot, sessionId, req, res, react);
                 } else {
                     let message = `You haven't sent anything, what should I do?`;
                     console.log(`${cLog}Empty message`);
@@ -218,7 +197,7 @@ module.exports = class DialogFlow {
     }
 };
 
-let processRequest = function (DialogFlow, promise, aiConfig, bot, /*chatId*/sessionId, req, res, react, sessionPath){
+let processRequest = function (DialogFlow, promise, aiConfig, bot, sessionId, req, res, react){
     promise
         .then(responses => {
             let response = responses[0];
@@ -230,11 +209,12 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, /*chatId*/ses
                 let webhookPayload = response.queryResult.webhookPayload;
                 let codeToSend = webhookPayload && webhookPayload.fields && webhookPayload.fields.code ? webhookPayload.fields.code.stringValue : null;
                 let image = webhookPayload && webhookPayload.fields && webhookPayload.fields.image ? webhookPayload.fields.image.stringValue : null;
+                let chartName =  webhookPayload && webhookPayload.fields && webhookPayload.fields.chartName ? webhookPayload.fields.chartName.stringValue : null;
 
                 if (responseText || webhookStatus.code === 0) {
                     console.log(`${cLog}Response as text message with message: ${responseText}`);
                     if (react != 'true' && image == null) {
-                        bot.sendMessage(/*chatId*/sessionId, responseText, {parse_mode: 'html'})
+                        bot.sendMessage(sessionId, responseText, {parse_mode: 'html'})
                             .catch(err => {
                                 console.error(`${cLog}ERROR: ${err}`);
                             });
@@ -247,7 +227,7 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, /*chatId*/ses
 
                             if(text && text !== '' && text !== responseText) {
                                 if (react != 'true' && response.action === 'data.description.request') {
-                                    bot.sendMessage(/*chatId*/sessionId, `<code>${text}</code>`, {parse_mode: 'html'})
+                                    bot.sendMessage(sessionId, `<code>${text}</code>`, {parse_mode: 'html'})
                                         .catch(err => {
                                             console.error(`${cLog}ERROR: ${err}`);
                                         });
@@ -266,10 +246,10 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, /*chatId*/ses
                         messages = null;
                     }
 
-                    if (image && webhookStatus !== null) {
+                    if (image && chartName && webhookStatus !== null) {
                         if (react != 'true'){
 
-                            let tmpSessionPath = path.join(aiConfig.tmpPath, `/${/*chatId*/sessionId}`);
+                            let tmpSessionPath = path.join(aiConfig.tmpPath, `/${sessionId}`);
 
                             if (!fs.existsSync(tmpSessionPath)){
                                 fs.mkdirSync(tmpSessionPath);
@@ -279,7 +259,7 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, /*chatId*/ses
 
                             try {
                                 fs.writeFileSync(imagePath, image, {encoding: 'base64'});
-                                bot.sendPhoto(/*chatId*/sessionId, imagePath, {caption: responseText})
+                                bot.sendPhoto(sessionId, imagePath, {caption: responseText})
                                     .then(() => {
                                         fs.unlinkSync(imagePath);
                                     })
@@ -288,7 +268,7 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, /*chatId*/ses
                                     });
                             } catch (e) {
                                 console.error(`${cLog}ERROR: ${e}`);
-                                bot.sendMessage(/*chatId*/sessionId, `There was an error processing the image of your chart`)
+                                bot.sendMessage(sessionId, `There was an error processing the image of your chart`)
                                     .catch(err => {
                                         console.error(`${cLog}ERROR: ${err}`)
                                     });
@@ -297,7 +277,8 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, /*chatId*/ses
                         }
                         messages.push({
                             type:'image/png',
-                            content: image
+                            content: image,
+                            title: chartName
                         });
                     }
 
@@ -311,7 +292,7 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, /*chatId*/ses
                         case 4: {
                             let message = 'Request has timed out. Please retry in a few minutes';
                             if (react != 'true') {
-                                bot.sendMessage(/*chatId*/sessionId, message)
+                                bot.sendMessage(sessionId, message)
                                     .catch(err => {
                                         console.error(`${cLog}ERROR: ${err}`);
                                     });
@@ -332,7 +313,7 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, /*chatId*/ses
                         default:
                             let message = 'Something went wrong. Please retry in a few minutes';
                             if (react != 'true') {
-                                bot.sendMessage(/*chatId*/sessionId, message)
+                                bot.sendMessage(sessionId, message)
                                     .catch(err => {
                                         console.error(`${cLog}ERROR: ${err}`);
                                     });
@@ -353,7 +334,7 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, /*chatId*/ses
             } else {
                 let message = 'Something went wrong. Please retry in a few minutes';
                 if (react != 'true') {
-                    bot.sendMessage(/*chatId*/sessionId, message)
+                    bot.sendMessage(sessionId, message)
                         .catch(err => {
                             console.error(`${cLog}ERROR: ${err}`);
                         });
