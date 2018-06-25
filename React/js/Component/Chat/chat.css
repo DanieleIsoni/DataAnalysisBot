@@ -49,18 +49,26 @@
     margin: 8px 0;
 }
 
-.line pre{
+.markdown pre{
+    white-space: pre-wrap;
+    font-family: 'Roboto', sans-serif;
+    margin-bottom: 0px;
+}
+
+.error pre{
+    font-family: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+}
+
+.line-code{
+    margin-top: 12px !important;
+}
+
+.line-code pre{
     margin: 0 12px !important;
-    border-radius: 5px;
     box-shadow: 0 1px 1px 0 #C7C7C7 inset;
     cursor: text;
     max-height: 250px;
     flex-grow: 1;
-}
-
-.mycode pre{
-    width: 70%; 
-    float: right;
 }
 
 .output-area{
@@ -87,48 +95,92 @@
     margin: 0 15px;
 }
 
-.code pre{
-    float: right !important;
-}
-
 .error .bot{
     background: rgba(244, 67, 54, 0.25) !important;
 }
 
 .me{
     background: #4285f4;
-    color: white;
     border-radius: 25px 25px 0px 25px;
     float: right !important;
     box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 }
+
+.me pre{
+    color: white;
+}
+
+.mycode{
+    position: relative;
+    margin: 5px 10px;
+}
+
+.mycode pre{
+    float: right !important;
+    box-shadow: 0 1px 1px 0 #C7C7C7 inset;
+    cursor: text;
+    max-height: 350px;
+    width: 80% !important;
+    margin: 0 !important;
+}
+
+.code-indicator{
+    display: block;
+    width: auto;
+    height: 28px;
+    background: rgba(0,0,0,0.07);
+    border-radius: 15px 15px 0 0;
+    position: absolute;
+    top: -29px;
+    right: 0;
+    text-align: center;
+    line-height: 28px;
+    font-size: 15px;
+    padding: 0 10px;
+    /*border-radius: 50%;
+    padding: 3px;
+    border: 1px solid rgba(0,0,0,0.2);*/
+}
+
+.code-indicator i{
+    line-height: 28px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
 
 .bot, .comp{
     color: #555;
     border-radius: 0px 25px 25px 25px;
     background: #f6f6f6;
     box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    margin-bottom: 13px !important;
 }
 
-/*.bot::after{
+
+.bot::after{
     content: '';
     display: block;
-    width: 15px;
-    height: 15px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
-    background: url("dist/img/logo.png") no-repeat;
+    background:url("dist/img/logov2.png") no-repeat;
     background-size: 100%;
+    background-position: center center;
     position: absolute;
-    bottom: -20px;
+    bottom: -23px;
     left: 0;
-}*/
+    /*border-radius: 50%;
+    padding: 3px;
+    border: 1px solid rgba(0,0,0,0.2);*/
+}
 
 .date{
     position: absolute;
     top: 100%;
-    padding: 1px 0;
-    color: #aaa;
-    font-size: 12px;
+    padding: 2px 0;
+    color: #999;
+    font-size: 11px;
     display: block;
     right: 0;
 }

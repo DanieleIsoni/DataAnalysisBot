@@ -324,10 +324,12 @@
 }
 
 .divider{
+    display: block;
     margin: 10px auto;
     width: 92%;
     height: 1px;
     background: #dedede;
+    position: relative;
 }
 
 /* TABLE */

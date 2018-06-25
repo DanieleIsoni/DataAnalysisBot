@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import Jupyter from './JupyterOperation';
 import UndoRedo from './UndoRedo';
+import Upload from './Upload';
 import { Translate } from 'react-localize-redux';
 import controlTranslation from './translation';
 import { withLocalize } from 'react-localize-redux';
@@ -71,10 +72,12 @@ class ConnectedForm extends React.Component {
 
     sendMessage(value){     
         let suggest = this.state.suggest;
-        suggest.add(value);
+        if(this.state.type != "Py" && value != "" && value != " "){ 
+            suggest.add(value);
+        }
 
         this.setRestrictedArray("");
-        this.setState({ inputValue: '', suggest: suggest, loading: true });
+        this.setState({ inputValue: '', suggest: suggest, loading: true, type: 'NL' });
 
         if (typeof(Storage) !== "undefined") {
             sessionStorage.setItem('suggestion', JSON.stringify([...this.state.suggest]));
@@ -84,9 +87,14 @@ class ConnectedForm extends React.Component {
             this.setState({temp_mex: value, waiting_var: true});
         }
 
-        sendMessage(value, this.state.type, this.props.activeVar, !this.state.waiting_var).then(() => {
+        this.textarea.style.height = '30px';
+
+        sendMessage(value, this.state.type).then(() => {
             this.setState({ loading: false, selectedCommand: -1 });
-        });        
+        }).catch((error) => {
+            this.setState({ loading: false, selectedCommand: -1 });
+            console.log("Errore: " + error);
+        });  
     }
 
     handleKeyPress(event) {
@@ -120,11 +128,11 @@ class ConnectedForm extends React.Component {
         let set = this.state.suggest;
         let restricted = new Set([]);
 
-        if(search == ""){
+        if(search == "" || this.checkPython(search)){
             restricted = set;
         }else{
             set.forEach(function(value) {
-                var regex = new RegExp('^' + search + '')
+                var regex = new RegExp('^' + search + '');
                 if(regex.test(value)){
                     restricted.add(value);
                 }
@@ -174,8 +182,8 @@ class ConnectedForm extends React.Component {
     }
 
     updateTextArea(){
-        this.preview.style.bottom = '40px';
-        this.preview.style.bottom = this.control.clientHeight-1 + 'px';
+        this.preview.style.bottom = '90px';
+        this.preview.style.bottom = this.control.clientHeight-1+50 + 'px';
     }
 
     handleFocus(e, focus){
@@ -184,7 +192,7 @@ class ConnectedForm extends React.Component {
     }
 
     checkPython(text){
-        var pattern =/([\/\+\*\[\]\(\)\:]|import|\bif\b|\bcase\b|\bdef\b|.*\..*)+/;
+        var pattern =/([\/\+\*\[\]\(\)\:]|import|print|\bif\b|\bcase\b|\bdef\b|.*\..*)+/;
         return pattern.test(text);
     }
 
@@ -206,14 +214,14 @@ class ConnectedForm extends React.Component {
                 <Suggest input={this.state.inputValue} handleSuggest={(e, sug) => this.setInput(e, sug)} type={this.state.type} focused={this.state.focused} suggest={this.state.restricted} select={this.state.selectedCommand}/>
                 <UndoRedo />
                 <div style={{display: (this.state.loading) ? "block" : "none"}} className="lds-ellipsis loader-light"><div></div><div></div><div></div><div></div></div>
-                <div className={(this.state.focused) ? "input_container input_cont_focused" : "input_container"}>
+                <div className={(this.state.focused) ? "input_container input_cont_focused" : "input_container"} style={{borderRadius: (this.state.type == "Py") ? '0px' : '20px'}}>
                     <textarea onKeyDown={this.handleKeyDown} rows="1" id="dialog" autoComplete="on" onBlur={(e) => this.handleFocus(e, false)} onFocus={(e) => this.handleFocus(e, true)} ref={input => this.textarea = input} placeholder={(this.state.inputValue.length == 0) ? renderToString(<Translate id="sugg"></Translate>) : ""} value={this.state.inputValue} onKeyPress={this.handleKeyPress} onChange={this.handleChange}></textarea>                  
                         <span className={(this.state.type == "NL" ? "type_of" : "type_of type_py")}>{this.state.type}</span>
                         {
                             (this.props.activeVar != null) ? <span className="var_sel var_back">{this.props.activeVar}</span> : <span className="var_sel">No Context</span> 
                         }
                 </div>
-                {/*<Upload addMessaggio={this.props.addMessaggio} url={this.props.url} theme={"form_add"} text={<i className="material-icons">attach_file</i>}/>*/}
+                <Upload id={"upload_mobile"} addMessaggio={this.props.addMessaggio} url={this.props.url} theme={"form_add"} text={<i className="material-icons">attach_file</i>}/>
                 <div className="group_button">
                     <Jupyter />
                     <button className="button-board-lateral clear" onClick={(e) => clearMessages(e)}><i className="material-icons" style={{color: "#EF5350"}}>clear_all</i> <Translate id="clear"></Translate></button>
