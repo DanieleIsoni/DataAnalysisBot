@@ -18,7 +18,9 @@ class ConnectedMessages extends React.Component {
     }
 
     componentWillMount() { 
-        getAll().then(() => {}).catch(error => { console.log(error) });
+        getAll().then(() => {
+            this.scrollToBottom(1000);
+        }).catch(error => { console.log(error) });
     }
 
     componentDidUpdate() { this.scrollToBottom(1000); } 
@@ -40,7 +42,7 @@ class ConnectedMessages extends React.Component {
             return(
                 <li key={el.id} id={el.id} >              
                     <Message content={el} n={n} isCodeOpen={this.state.openCode} openCode={this.openCode}/>
-                    <Output output={el.output} n={n} />
+                    <Output output={el.output} n={n} scroller={this.scrollToBottom}/>
                 </li>
             );
         });

@@ -22,18 +22,28 @@ class ConnectedList extends React.Component {
         };
         this.toggle = this.toggle.bind(this);
         this.toggleModal = this.toggleModal.bind(this);
+        this.toggleOnOver = this.toggleOnOver.bind(this);
+        this.toggleOnOut = this.toggleOnOut.bind(this);
     }
 
     toggle(e, esempio, name){
-        if(e.target.id != "upload" && e.target.className != "" && e.target.className != "body_ex" && e.target.className != "writable"){
-            this.setState({ dropdownOpen: (this.state.dropdownOpen == "none" || this.state.dropdownOpen != e.target.className) ? e.target.className : "none"});
-        }else if(e.target.className == "writable"){
+        if(e.target.className == "writable"){
             sendMessage(e.target.innerHTML, "NL");
         }else{
             if(esempio.required != null){
                 this.setState({request: { "content": esempio.content, "holder": esempio.holder, "name": name }, ask: esempio.required});
                 this.toggleModal();
             }
+        }
+    }
+
+    toggleOnOut(e){
+        this.setState({ dropdownOpen: "none"});
+    }
+
+    toggleOnOver(e){
+        if(e.target.id != "upload" && e.target.className != "" && e.target.className != "body_ex" && e.target.className != "writable"){
+            this.setState({ dropdownOpen: e.target.className });
         }
     }
 
@@ -58,7 +68,7 @@ class ConnectedList extends React.Component {
                         el.esempi.map(esempio => {
                             return(
                                 <li key={uuidv1()} onClick={(e) => this.toggle(e, esempio, el.name)}>
-                                    <div className="body_ex">{esempio.content}</div>
+                                    <div className="body_ex" onMouseOver={(e) => this.toggleOnOver(e)} onMouseOut={(e) => this.toggleOnOut(e)}>{esempio.content}</div>
                                 </li> 
                             );
                         })

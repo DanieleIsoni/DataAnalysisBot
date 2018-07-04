@@ -86,15 +86,6 @@ class App extends React.Component {
     handleFileDrop(e){
         if(e){
             this.setState({ file: e });
-
-            /*var activeVar = store.getState().active;
-            var send_active = (activeVar == null || typeof activeVar == 'undefined') ? "empty" : activeVar;
-            uploadFile(file, send_active).then(() => {
-                this.setState({ hover: false });
-            }).catch(error => {
-                console.log(error);
-            });*/
-        
             this.toggle();
         }else{
             this.setState({ hover: false });

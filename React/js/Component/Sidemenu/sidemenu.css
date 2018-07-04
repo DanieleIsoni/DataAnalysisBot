@@ -265,12 +265,12 @@
     color: #4285f4;
 }
 
-.asse_container{
+.axis_container{
     background: rgba(253, 216, 53, 0.149);
     box-shadow: inset 0 0 0 1px rgba(253, 216, 53, 0.25);  
 }
 
-.asse_container .head_hint {
+.axis_container .head_hint {
     background: rgba(255,255,255,0);
     color: #FBC02D;
 }

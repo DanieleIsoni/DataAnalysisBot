@@ -56,7 +56,7 @@ let actions = {
         {
             name: <Translate id="plot">Plotting</Translate>, 
             esempi: [
-                {"content": <div>Can you plot the <span className="operation">  Operation  </span> <span className="attribute">  Attribute  </span> by <span className="attribute">  Attribute  </span></div>, "required": ["Operation", "Attribute", "Attribute"], "holder": "Can you plot the %s %s by %s"}
+                {"content": <div>Can you plot the <span className="operation">  Operation  </span> <span className="attribute">  Attribute  </span> by <span className="attribute">  Attribute  </span></div>, "required": ["Operation", "Attribute", "Attribute 2"], "holder": "Can you plot the %s %s by %s"}
             ]
         }
     ],

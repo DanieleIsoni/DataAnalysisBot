@@ -22,6 +22,7 @@ const actionController = (azione) => {
             break;
         case "plot.chart":
         case "plot.chart.fu.label":
+        case "change.title":
             store.dispatch(addHints(Action["after_plot"]));
             break;
         case "test.request":
@@ -70,10 +71,8 @@ export const sendMessage = (value, type) => {
             })
             .then(response => {
                 store.dispatch(addMessage({id: uuidv1(), who: "bot", what: (response.status == 200) ?  "markdown" : "markdown error", messaggio: response.data.message, output: response.data.outputs, code: response.data.code}));
-
-                console.log(response.data);
-
                 actionController(response.data.action);
+                console.log(response.data);
                 resolve();
             }).catch((error) => {
                 errorHandling(error);
