@@ -128,8 +128,10 @@ module.exports.createEntitiesArray = (arrIn, arrOut=[]) => {
     return arrOut;
 };
 
-module.exports.sendChartNameEntity = (session) => {
+module.exports.sendChartNameEntity = (sessionPath, sessionId) => {
     let entries = [];
+    let session = sessions.get(sessionId);
+    let charts = session.charts;
     charts.forEach(element => {
         entries.push({
             "value": `${element.name}`,
@@ -141,12 +143,12 @@ module.exports.sendChartNameEntity = (session) => {
 
 
     let sessionEntityType = {
-        name: `${session}/entityTypes/ChartName`,
+        name: `${sessionPath}/entityTypes/ChartName`,
         entityOverrideMode: "ENTITY_OVERRIDE_MODE_SUPPLEMENT",
         entities: entries
     };
     let request = {
-        parent: session,
+        parent: sessionPath,
         sessionEntityType: sessionEntityType
     };
 

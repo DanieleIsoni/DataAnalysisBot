@@ -64,6 +64,12 @@ module.exports.dialogflowFulfillment = (request, response) => {
             else
                 tPlotChart.plotChartFuLabel(contexts, parameters, action, sessionPath, response);
             break;
+        case 'change.title':
+            if (Common.sessions.get(sessionId).react === 'true')
+                plotChart.changeTitle(contexts, parameters, action, sessionPath, sessionId, response);
+            else
+                tPlotChart.changeTitle(contexts, parameters, action, sessionPath, response);
+            break;
         default:
             console.warn(`${fLog}No action matched`);
             response.send({

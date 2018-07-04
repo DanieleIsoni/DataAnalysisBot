@@ -42,7 +42,7 @@ module.exports.plotChart = (contexts, parameters, action, sessionPath, sessionId
         if (session.variablesMap.get(session.variable).attributes.includes(testAttr)
             && session.variablesMap.get(session.variable).attributes.includes(attr)) {
             chart.variable = session.variable;
-            plotChartPy(fileLink, chart, response, sessionId);
+            plotChartPy(fileLink, chart, response, sessionPath, sessionId);
         } else {
             response.send({
                 fulfillmentText: `The attribute you selected is not in the chosen dataset, try selecting the correct dataset`
@@ -82,7 +82,7 @@ module.exports.plotChartFuLabel = (contexts, parameters, action, sessionPath, se
                 if (color) chart.xLabel.color = color;
                 if (DEV_CONFIG) console.log(`${fLog}Chosen test: ${chart.test} on ${chart.testAttr}\nChosen attribute for x-axis: ${chart.attr}\nChosen chart: ${chart.chartType}`);
 
-                plotChartPy(fileLink, chart, response, sessionId);
+                plotChartPy(fileLink, chart, response, sessionPath, sessionId);
             } else if (axis === 'y') {
                 if (!chart.yLabel){
                     chart.yLabel = {};
@@ -91,19 +91,55 @@ module.exports.plotChartFuLabel = (contexts, parameters, action, sessionPath, se
                 if (color) chart.yLabel.color = color;
                 if (DEV_CONFIG) console.log(`${fLog}Chosen test: ${chart.test} on ${chart.testAttr}\nChosen attribute for x-axis: ${chart.attr}\nChosen chart: ${chart.chartType}`);
 
-                plotChartPy(fileLink, chart, response, sessionId);
+                plotChartPy(fileLink, chart, response, sessionPath, sessionId);
             }
         } else {
             response.send({
-                fulfillmentText: `The attribute you selected is not in the chosen dataset, try selecting the correct dataset`
+                fulfillmentText: `Something went wrong. Chart not found.`
             });
         }
 
     }
 };
 
+module.exports.changeTitle = (contexts, parameters, action, sessionPath, sessionId, response) => {
+     const data_received = contexts.find(obj => {
+        return obj.name === `${sessionPath}/contexts/data_received`;
+    });
+    const plot_chart = contexts.find(obj => {
+        return obj.name === `${sessionPath}/contexts/plot_chart`;
+    });
 
-let plotChartPy = (fileLink, chart, response, sessionId) => {
+    if (data_received && plot_chart) {
+        let session = Common.sessions.get(sessionId);
+        let oldChartName = parameters.OldChartName;
+        let newChartName = parameters.ChartName;
+
+        let chart = session.charts.find(obj => {
+            return obj.name === `${oldChartName}`;
+        });
+
+        if (chart) {
+            let fileLink = session.variablesMap.get(session.variable).variableLink;
+
+            chart.name = newChartName;
+            Common.sendChartNameEntity(sessionPath, sessionId);
+
+            if (DEV_CONFIG) console.log(`${fLog}Chosen test: ${chart.test} on ${chart.testAttr}\nChosen attribute for x-axis: ${chart.attr}\nChosen chart: ${chart.chartType}`);
+            plotChartPy(fileLink, chart, response, sessionPath, sessionId);
+
+        } else {
+            response.send({
+                fulfillmentText: `Something went wrong. Chart not found.`
+            });
+        }
+
+    }
+
+};
+
+
+let plotChartPy = (fileLink, chart, response, sessionPath, sessionId) => {
 
     let session = Common.sessions.get(sessionId);
 
@@ -213,6 +249,7 @@ except urllib.error.HTTPError as err:
                     if (cId=== -1) {
                         session.charts.push(chart);
                         session.chartCount++;
+                        Common.sendChartNameEntity(sessionPath, sessionId);
                     } else {
                         session.charts[cId] = chart;
                     }
