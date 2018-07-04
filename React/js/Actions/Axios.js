@@ -11,12 +11,12 @@ const actionController = (azione) => {
         case "initial":
         case "input.welcome":
         case "input.unknown":
-        case "data.description.request":
             if(store.getState().variabili.length > 0)
                 store.dispatch(addHints(Action["after_file"]));
             else
                 store.dispatch(addHints(Action["initial"]));
             break;
+        case "data.description.request":
         case "data.received":
             store.dispatch(addHints(Action["after_file"]));
             break;

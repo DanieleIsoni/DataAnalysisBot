@@ -44,7 +44,7 @@ class ConnectedList extends React.Component {
                         ))
                     :""
                 }
-                <Upload addMessaggio={this.props.addMessage} url={this.props.url} theme={"side_add"} text={"Add Variable"} activeVar={this.props.activeVar}/>
+                <Upload addMessaggio={this.props.addMessage} url={this.props.url} theme={"side_add"} text={"Add Datasets"} activeVar={this.props.activeVar}/>
             </div>
         );
     }
