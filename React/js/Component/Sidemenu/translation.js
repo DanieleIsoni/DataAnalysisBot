@@ -1,8 +1,8 @@
 const json = {
-    "var": ["Variables", "переменные"],
-    "novar": ["No Variable uploaded!", "без переменной нагрузки"],
+    "var": ["Datasets", "переменные"],
+    "novar": ["No Dataset uploaded!", "без переменной нагрузки"],
     "queries": ["Possible Queries", "возможные запросы"],
-    "detail": ["Variable Detail", "переменные детали"],
+    "detail": ["Dataset detail", "переменные детали"],
     "lang": ["Language", "язык"],
     "operation": {
         "title": ["Operation", "операция"],
@@ -24,7 +24,7 @@ const json = {
         "body": ["The font type applied to the plot label. It can be this five: monospace, cursive, serif, sans, fantasy", 
         "имя столбцов и строк, присвоенных загруженному набору данных"]
     },
-    "asse": {
+    "axis": {
         "title": ["Axis", "атрибут"],
         "body": ["The axis you want to change label color or font. Can be x or y", 
         "имя столбцов и строк, присвоенных загруженному набору данных"]
