@@ -27,7 +27,7 @@ const Header = () => {
         <div className="variable-context">
             <div className="iridium">
                 <img src="./dist/img/logov2.png"/>
-                <div className="presentation"><h4>DAB</h4><span>Datascience Chatbot</span></div>
+                <div className="presentation"><h4>DABOT</h4><span>Datascience Chatbot</span></div>
             </div>
         </div>
     );

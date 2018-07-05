@@ -6,18 +6,19 @@ class AskModal extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            filename: 'Upload file...',
+            filename: 'Seleziona il file...',
             filesize: '',
             modal: false,
             progress: 0,
             showLoader: false,
-            fileDropped: null
+            fileDropped: null,
+            separator: ','
         }
 
         this.handlefileupload = this.handlefileupload.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleSeparator = this.handleSeparator.bind(this);
     }
-
     
     handlefileupload(e){
         if(e.target.value){
@@ -49,7 +50,7 @@ class AskModal extends React.Component {
         if(file){
             this.setState({ showLoader: true });
             var send_active = (this.props.activeVar == null || typeof this.props.activeVar == 'undefined') ? "empty" : this.props.activeVar;
-            uploadFile(file, send_active).then(() => {
+            uploadFile(file, send_active, this.state.separator).then(() => {
                 this.setState({filename: "Upload file...", showLoader: false });
                 this.props.toggle();
             }).catch(error => {
@@ -61,14 +62,26 @@ class AskModal extends React.Component {
         }
     }
 
-    render(){
-        if(this.props.file && this.props.file != null && this.props.file.type == "application/vnd.ms-excel") this.setState({ uploadingCSV: true });
+    handleSeparator (e){
+        this.setState({
+            separator: e.target.value
+        });
+    }
 
+    render(){
         var droporup = (this.props.file && this.props.file != null) 
             ? 
                 <div>
                     <span className="body_text">Dropped file</span>
                     <h6 className="body_text file_dropped">{this.props.file.name}</h6>
+                    {
+                        (this.props.file.type == "application/vnd.ms-excel") ? 
+                            <span className="body_text" style={{marginTop: '20px'}}>Select the separator symbol
+                                <input type="text" maxLength="1" name="separator" className="input_ask" placeholder="Default ','" onChange={(e) => handleSeparator(e)}/>
+                            </span>
+                        :
+                        ''
+                    }
                 </div>
             :
                 <div>
@@ -88,7 +101,7 @@ class AskModal extends React.Component {
                     {
                         (this.state.uploadingCSV) ? 
                             <span className="body_text" style={{marginTop: '20px'}}>Select the separator symbol
-                                <input type="text" maxLength="1" name="separator" className="input_ask" placeholder="Default ','"/>
+                                <input type="text" maxLength="1" name="separator" className="input_ask" placeholder="Default ','" onChange={(e) => handleSeparator(e)}/>
                             </span>
                             :
                             ''

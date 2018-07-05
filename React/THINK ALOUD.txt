@@ -1,0 +1,17 @@
+Candidato: Studente senza esperienza in data analisi
+
+Tasto Upload crea confusione,
+Popup per l'upload il tasto plus crea confusione
+
+Scrolling problematico nel sidemenu
+Problema con la basic description nei campi stringa
+
+Nelle suggestion aggiungere un tasto per eseguire il dialog
+
+Da molta più importanza alla barra laterale che alla chat
+
+Barra in basso
+Quando si carica il grafico fare un head di tutto il dataset per vedere le prime righe del dataset
+
+boxplot o istagramma come plot alternativi
+
