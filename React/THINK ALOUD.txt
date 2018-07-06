@@ -1,17 +1,14 @@
 Candidato: Studente senza esperienza in data analisi
+Considerazioni: 
 
-Tasto Upload crea confusione,
-Popup per l'upload il tasto plus crea confusione
-
-Scrolling problematico nel sidemenu
-Problema con la basic description nei campi stringa
-
-Nelle suggestion aggiungere un tasto per eseguire il dialog
-
-Da molta più importanza alla barra laterale che alla chat
-
-Barra in basso
-Quando si carica il grafico fare un head di tutto il dataset per vedere le prime righe del dataset
-
-boxplot o istagramma come plot alternativi
+- Tasto Upload nei suggerimenti crea confusione perchè non si capisce se svolge un ruolo differente da quello in alto
+- Popup per l'upload il tasto plus crea confusione, non si capisce cosa deve fare l'utente
+- Scrolling problematico nel sidemenu quando l'utente fa l'hover sugli elementi
+- Problema con la basic description nei campi stringa (probabilmente problema parsing del dataset)
+- Nelle suggestion aggiungere un tasto per eseguire il dialog o comunque gestire in modo diverso l'avvio del suggerimento
+- Da molta più importanza alla barra laterale che all'input della chat che invece viene un po svisto dato il colore scuro
+- Quando si carica il grafico fare un head (funzion R) di tutto il dataset per vedere le prime righe del dataset
+- Mostrare nella barra a lato i nomi delle colonne
+- Gestire le variabili come tab separate di un browser, spostandosi di tab ci si sposta di contesto
+- boxplot o istagramma come plot alternativi (molto utili come prima impressione)
 

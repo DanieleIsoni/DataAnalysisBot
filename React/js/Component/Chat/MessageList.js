@@ -4,7 +4,7 @@ import { CSSTransitionGroup } from 'react-transition-group';
 import Message from './Message/Content';
 import Output from './Message/Output';
 import { getAll} from '../../Actions/Axios'
-import { Element, scroller } from 'react-scroll'
+import { Link, Element , Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll'
 
 const mapMessage = state => {
     return { messaggi: state.messaggi.present };
@@ -42,7 +42,7 @@ class ConnectedMessages extends React.Component {
             return(
                 <li key={el.id} id={el.id} >              
                     <Message content={el} n={n} isCodeOpen={this.state.openCode} openCode={this.openCode}/>
-                    <Output output={el.output} n={n} scroller={this.scrollToBottom}/>
+                    <Output output={el.output} n={n} scroller={this.scroll}/>
                 </li>
             );
         });

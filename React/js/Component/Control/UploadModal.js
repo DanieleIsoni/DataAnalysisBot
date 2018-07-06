@@ -6,7 +6,7 @@ class AskModal extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            filename: 'Seleziona il file...',
+            filename: 'Select the file...',
             filesize: '',
             modal: false,
             progress: 0,

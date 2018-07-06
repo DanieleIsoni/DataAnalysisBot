@@ -47,7 +47,7 @@ class ConnectedForm extends React.Component {
     componentWillMount(){
         if (typeof(Storage) !== "undefined") {
             if(localStorage.getItem('suggestion') != null){
-                let array = JSON.parse(sessionStorage.getItem('suggestion')) || []; 
+                let array = JSON.parse(localStorage.getItem('suggestion')) || []; 
                 let fromStorage = new Set([...array]);
 
                 if(fromStorage != null){
@@ -80,7 +80,7 @@ class ConnectedForm extends React.Component {
         this.setState({ inputValue: '', suggest: suggest, loading: true, type: 'NL' });
 
         if (typeof(Storage) !== "undefined") {
-            sessionStorage.setItem('suggestion', JSON.stringify([...this.state.suggest]));
+            localStorage.setItem('suggestion', JSON.stringify([...this.state.suggest]));
         }
 
         if(this.props.activeVar == null && this.props.variabili.length > 0){
@@ -211,10 +211,10 @@ class ConnectedForm extends React.Component {
         return (
             <div className="control" ref={div => this.control = div}>      
                 {editor_code}
-                <Suggest input={this.state.inputValue} handleSuggest={(e, sug) => this.setInput(e, sug)} type={this.state.type} focused={this.state.focused} suggest={this.state.restricted} select={this.state.selectedCommand}/>
                 <UndoRedo />
                 <div style={{display: (this.state.loading) ? "block" : "none"}} className="lds-ellipsis loader-light"><div></div><div></div><div></div><div></div></div>
-                <div className={(this.state.focused) ? "input_container input_cont_focused" : "input_container"} style={{borderRadius: (this.state.type == "Py") ? '0px' : '20px'}}>
+                <div className={(this.state.focused) ? "input_container input_cont_focused" : "input_container"}>
+                <Suggest input={this.state.inputValue} handleSuggest={(e, sug) => this.setInput(e, sug)} type={this.state.type} focused={this.state.focused} suggest={this.state.restricted} select={this.state.selectedCommand}/>
                     <textarea onKeyDown={this.handleKeyDown} rows="1" id="dialog" autoComplete="on" onBlur={(e) => this.handleFocus(e, false)} onFocus={(e) => this.handleFocus(e, true)} ref={input => this.textarea = input} placeholder={(this.state.inputValue.length == 0) ? renderToString(<Translate id="sugg"></Translate>) : ""} value={this.state.inputValue} onKeyPress={this.handleKeyPress} onChange={this.handleChange}></textarea>                  
                         <span className={(this.state.type == "NL" ? "type_of" : "type_of type_py")}>{this.state.type}</span>
                         {

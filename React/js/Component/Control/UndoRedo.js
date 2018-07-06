@@ -49,7 +49,7 @@ class UndoRedo extends React.Component{
 
     render(){
         return (
-            <div>
+            <div className="group_undoredo">
                 <button className="undoredo" onClick={(e) => this.checkStep(e, "undo")} disabled={!this.props.canUndo}><i className="material-icons">keyboard_arrow_left</i></button>
                 <button className="undoredo" onClick={(e) => this.checkStep(e, "redo")} disabled={!this.props.canRedo}><i className="material-icons">keyboard_arrow_right</i></button>
             </div>

@@ -1,6 +1,6 @@
 .gestione{
     background: white;
-    padding: 20px 10px 120px 10px;
+    padding: 10px 10px 120px 10px;
     flex-direction: column;
     justify-content: space-between;
     justify-content: flex-start;
@@ -64,21 +64,22 @@
 .variable-list{
     background: rgba(0,0,0,0);
     height: auto;
-    margin-left: 15px;
+    margin: 0 15px;
 }
 
 .variable-container{
     position: relative;
-    padding: 7px 15px;
+    padding: 7px 12px;
     background: #f6f7f9;
     box-shadow: inset 0 0 0 1px #e9eaeb, 0 10px 30px -10px rgba(0,0,0,0.12);
-    border-radius: 30px;
+    border-radius: 5px;
     display: inline-block;
-    margin-right: 20px;
+    margin-right: 10px;
     margin-bottom: 10px;
     width: auto;
     cursor: pointer;
     transition: all 0.3s;
+    order: 3;
 }
 
 .variable-container:hover{
@@ -106,6 +107,20 @@
 
 .selected-var i{
     color: white;
+}
+
+.variable-selected{
+    display: block;
+    border: 1px solid rgba(0,0,0,0.15);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    padding: 5px 12px;
+    padding-right: 0;
+    order: 1 !important;
+}
+
+.variable-selected h6{
+    padding: 5px;
 }
 
 .close_var{
@@ -152,9 +167,9 @@
 .head_hint{
     top: 0;
     width: 100%;
-    padding: 6px 20px;
+    padding: 4px 20px;
     -webkit-font-smoothing: antialiased;
-    font-size: 20px;    
+    font-size: 18px;    
     background: rgba(66,133,244,0.7);
     background: linear-gradient(to right, rgba(66,133,244,0.9), rgba(153, 102, 255, 0.5));
     color: #fff;
@@ -175,31 +190,26 @@
 
 .operation{
     color: #EF5350;
-    text-decoration: underline;
     cursor: pointer;
 }
 
 .attribute{
     color: #4285f4;
-    text-decoration: underline;
     cursor: pointer;
 }
 
 .axis{
     color: #FBC02D;
-    text-decoration: underline;
     cursor: pointer;
 }
 
 .color{
     color: #43A047;
-    text-decoration: underline;
     cursor: pointer;
 }
 
 .font{
     color: #F06292;
-    text-decoration: underline;
     cursor: pointer;
 }
 
@@ -227,22 +237,46 @@
 }
 
 .list_hint li div > div{
+    position: relative;
     margin: 4px 0;
-    padding: 5px 20px;
+    padding: 5px 10px;
     width: auto;
-    display: inline-block;
-    /*box-shadow: inset 0 0 0 1px #e9eaeb;  */
-    border-radius: 20px;
+    display: block;
+    box-shadow: inset 0 0 0 1px #e9eaeb;  
+    border-radius: 10px;
     cursor: pointer;
     -webkit-font-smoothing: antialiased;
     font-size: 16px;
     letter-spacing: .2px;
     background: none;
     color: #5f6368;
+    padding-right: 15px;
 }
 
-.writable:hover{
-    box-shadow: inset 0 2px 10px -1px rgba(0,0,0,0.08);
+.list_hint li div > div:after{
+    font-family: 'Material Icons';
+    content: "chevron_right";
+    -webkit-font-feature-settings: 'liga';
+    display: block;
+    font-size: 25px;
+    color: #666;
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    top: 0;
+    bottom: 0;
+    right: 20px;
+}
+
+.upload_sugg{
+    box-shadow: none !important;  
+}
+.upload_sugg:after{
+    display: none !important;
+}
+
+.list_hint li div > div:hover{
+    box-shadow: inset 0 2px 10px -1px rgba(0,0,0,0.10);
 }
 
 .operation_container{
@@ -302,6 +336,10 @@
     letter-spacing: 0.046875 !important;
 }
 
+.presentation{
+
+}
+
 .iridium{
     position: relative;
     display: flex;
@@ -356,8 +394,13 @@
 
 /* TABLE */
 
+.variable-detail .table td, .table th{
+    padding: .20rem .30rem;
+}
+
 .table{
     margin: 0 5px !important; 
+    font-size: 13px;
 }
 
 @media (max-width: 768px) {

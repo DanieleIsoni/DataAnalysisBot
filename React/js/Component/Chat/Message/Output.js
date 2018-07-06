@@ -1,6 +1,7 @@
 import React from "react";
 import Choices from '../Choices/Choices';
 import { UrlContext } from '../../../Config/Url';
+import { Link, Element , Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll'
 
 class Output extends React.Component{
     constructor(props){
@@ -17,15 +18,23 @@ class Output extends React.Component{
             activeOutput: (this.state.activeOutput == "none" || this.state.activeOutput != name) ? name : "none",
             activeContent: content
         }, () => {
-            this.props.scroller();
+            this.scrollToBasic();
         })
     }
+
+    scrollToBasic(){ 
+        scroller.scrollTo('afterbasic', {
+            duration: 500,
+            smooth: true,
+            containerId: 'scroll'
+        }); 
+    }
+
 
     render () { 
         return (
             (typeof this.props.output != "undefined" && this.props.output != null && this.props.output.length > 0) ?
                 <div className="output-area">
-                    <span className="outcode">Out [ {this.props.n} ]: </span>
                     {
                         this.props.output.map((al, i) => {
                             return(
@@ -53,6 +62,7 @@ class Output extends React.Component{
                     }
                     <div className="container-basic">
                         {(this.state.activeOutput != "none") ? <pre>{this.state.activeContent}</pre> : ''}
+                        <Element name="afterbasic"></Element>  
                     </div>
                 </div>
             :

@@ -9,25 +9,25 @@ let actions = {
         {
             name: "Welcome", 
             esempi: [
-                { "content": <div className="writable">Hi</div>}, 
-                {"content": <div className="writable">Hello</div>}
+                { "content": <div className="writable">Hi</div>}
             ],
         },
         {
             name: "Upload", 
             esempi: [
-                {"content": <div>Select the file <br/><Upload url={URL_HEROKU} theme={"side_add"} text={"Upload"} activeVar={store.getState().active}/></div>}, 
-                {"content": <div>or drop it on the page</div>}
+                {"content": <div className="upload_sugg">Select or drop the file</div>}
             ]
         }
     ],
     "after_file": [
         {
+            name:<Translate id="basic">Basic Description</Translate>, 
+            esempi: [{"content": <div className="writable">Basic Description</div>}]
+        },
+        {
             name: <Translate id="ana">Analysis</Translate>, 
             esempi: [
-                { "content": <div>I want the <span className="operation">  Operation  </span> of <span className="attribute">  Attribute  </span></div>, "required": ["Operation", "Attribute"], "holder": "I want the %s of %s" }, 
-                { "content": <div> Give me the <span className="operation">  Operation  </span> of <span className="attribute">  Attribute  </span></div>, "required": ["Operation", "Attribute"], "holder": "Give me the %s of %s"}, 
-                { "content": <div><span className="operation">  Operation  </span> of  <span className="attribute">  Attribute  </span></div>, "required": ["Operation", "Attribute"], "holder": "%s of %s"}
+                { "content": <div> Give me the <span className="operation">  Operation  </span> of <span className="attribute">  Attribute  </span></div>, "required": ["Operation", "Attribute"], "holder": "Give me the %s of %s"}
             ]
         },
         {
@@ -35,10 +35,6 @@ let actions = {
             esempi: [
                 {"content": <div>Can you plot the <span className="operation">  Operation  </span> <span className="attribute">  Attribute  </span> by <span className="attribute">  Attribute  </span></div>, "required": ["Operation", "Attribute", "Attribute 2"], "holder": "Can you plot the %s %s by %s"}
             ]
-        },
-        {
-            name:<Translate id="basic">Basic Description</Translate>, 
-            esempi: [{"content": <div className="writable">Basic Description</div>}]
         }
     ],
     "after_analisys": [
@@ -64,9 +60,7 @@ let actions = {
         {
             name: <Translate id="ana">Analysis</Translate>, 
             esempi: [ 
-                {"content": <div>I want the <span className="operation">  Operation  </span> of <span className="attribute">  Attribute  </span></div>,"required": ["Operation", "Attribute"], "holder": "I want the %s of %s"}, 
-                {"content": <div> Give me the <span className="operation">  Operation  </span> of <span className="attribute">  Attribute  </span></div>, "required": ["Operation", "Attribute"], "holder": "Give me the %s of %s"}, 
-                {"content": <div><span className="operation">  Operation  </span> of  <span className="attribute">  Attribute  </span></div>, "required": ["Operation", "Attribute"], "holder": "%s of %s"}
+                {"content": <div> Give me the <span className="operation">  Operation  </span> of <span className="attribute">  Attribute  </span></div>, "required": ["Operation", "Attribute"], "holder": "Give me the %s of %s"}
             ]
         },
         {

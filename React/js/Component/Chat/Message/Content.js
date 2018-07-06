@@ -4,7 +4,6 @@ import Code from '../Code';
 const Message = ({ content, n, isCodeOpen, openCode}) => (
     <div className="m_message">
         <div className="line">
-        <span className="incode-markdown">{(content.start != null) ? "" : n}</span>
             <div className={content.what}>
                 {
                     (content.what == "code") ? 
@@ -31,7 +30,6 @@ const Message = ({ content, n, isCodeOpen, openCode}) => (
         {
             (content.id === isCodeOpen) ?
                 <div className="line line-code">
-                    <span className="incode">In [ {n} ]: </span>
                     <Code code={content.code} line="true"/>   
                 </div>
             : ''

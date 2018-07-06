@@ -17,6 +17,10 @@ const mapDeleteVar = dispatch => {
 class ConnectedList extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            selected_n: null,
+            selected_id: null
+        }
         this.delete = this.delete.bind(this);
     }
 
@@ -26,21 +30,39 @@ class ConnectedList extends React.Component {
     }
 
 
-    delete(e, id, n, name) {
+    delete(e, name) {
         if(name === this.props.activeVar) this.props.setActiveVariable(null);
-        call_deleteVariable(n);
+        call_deleteVariable(name);
     }
 
     render() {
+        var selected = (this.props.activeVar) ?
+        <div className='variable-selected'>
+            <h6 className="body_text">Active Dataset</h6>
+            <div className='variable-container selected-var'>
+                <span>{this.props.activeVar}</span>
+            </div>
+            <div className='variable-container' style={{background: '#ff5050'}}>
+                <span onClick={(e) => this.delete(e, this.props.activeVar)} style={{color: 'white'}}>Delete <i className="material-icons">close</i></span>
+            </div>
+            <div className='variable-container' style={{background: 'white'}}>
+                <span onClick={() => this.props.describe(this.props.activeVar)}>Describe <i className="material-icons">chevron_right</i></span>
+            </div>
+        </div>
+        : ''
+
         return (
             <div className="variable-list">
+                {selected}
                 {
                     (this.props.variabili.length) ? 
                         this.props.variabili.map((el, n) => (
-                            <div key={el.id} className={(this.props.activeVar === el.name) ? 'variable-container selected-var' : 'variable-container'} id={el.name}>
-                                <span onClick={() => this.props.onClick(el)}>{el.name}</span>
-                                <span className="delete_var" onClick={(e) => this.delete(e, el.id, n, el.name)}><i className="material-icons close_var">close</i></span>
-                            </div>
+                            (this.props.activeVar != el.name) ? 
+                                <div key={el.id} className='variable-container' id={el.name} onClick={() => this.props.onClick(el)}>
+                                    <span>{el.name}</span>
+                                </div>
+                                :
+                            ''
                         ))
                     :""
                 }

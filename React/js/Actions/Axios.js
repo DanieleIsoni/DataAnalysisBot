@@ -127,7 +127,8 @@ export const getAll = () => {
                 store.dispatch(addMessage({id: uuidv1(), who: messaggio.who, what: "markdown", messaggio: messaggio.message, output: messaggio.outputs, code: messaggio.code, date: messaggio.date}));
             })
             response.data.variables.map((variabile, n) => {
-                store.dispatch(addVariable({"name": variabile.name, "id": uuidv1()}));
+                var id = uuidv1();
+                store.dispatch(addVariable({"name": variabile.name, "id": id, "n": n}));
 
                 if(n == response.data.variables.length-1) store.dispatch(setActiveVariable(variabile.name));
             })    
@@ -161,7 +162,8 @@ export const uploadFile = (file, send_active) => {
             }
         }).then(response => {
             if(response.status == 200){
-                store.dispatch(addVariable({ "name": file.name, "id": uuidv1() }));
+                var id = uuidv1();
+                store.dispatch(addVariable({ "name": file.name, "id": id}));
                 store.dispatch(addMessage({"id": uuidv1(), "who": "bot", "what": "markdown", "messaggio": response.data.message, "output": []}));
                 store.dispatch(setActiveVariable(file.name));
             }else{
@@ -200,7 +202,10 @@ export const getVariable = (name) => {
 }
 
 
-export const call_deleteVariable = (n) => {
+export const call_deleteVariable = (name) => {
+
+    var n = store.getState().variabili.present.map(function(e) { return e.name; }).indexOf(name);
+
     axios({
         url: URL_HEROKU + '/delete/' + n,
         method: 'get', 
