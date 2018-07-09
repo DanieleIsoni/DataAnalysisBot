@@ -17,7 +17,7 @@ const mapEvents = dispatch => {
 };
 
 const mapState = state => {
-    return { variabili: state.variabili.present, activeVar: state.active };
+    return { variabili: state.variabili.present, activeVar: (state.active != null) ? state.active.name : "" };
 };
 
 class ConnectedForm extends React.Component {

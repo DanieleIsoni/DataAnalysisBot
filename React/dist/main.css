@@ -159,6 +159,20 @@ button[disabled]{ opacity: 0.3; }
     filter: blur(3px);
 }
 
+.preview_csv > div > div{
+    overflow-x: auto !important;
+}
+
+.preview_csv .table td, .table th{
+    padding: .20rem .30rem;
+}
+
+.preview_csv .table tbody tr:nth-child(1){
+    background: #ddd;
+    font-size: 14px;
+    font-weight: 500;
+}
+
 
 /* TOGGLE LINGUA */
 

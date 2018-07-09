@@ -1,14 +1,13 @@
 import { ADD_HINTS } from "../Constants/action-types";
 import undoable from 'redux-undo'
 
-const hints = (state = [], action) => {
+const hints = (state = "initial", action) => {
     switch (action.type) {
         case ADD_HINTS:
-            return [...action.payload];
+            return action.payload;
         default:
             return state;
     }
 };
 
-const undoableHints = undoable(hints);
-export default undoableHints;
+export default hints;

@@ -2,7 +2,6 @@ import axios from 'axios';
 import uuidv1 from "uuid";
 import store from "../Store/index";
 import { addMessage, clearMessage, addHints, addVariable, setActiveVariable, deleteAllVariables, deleteVariable } from "./index";
-import Action from '../Constants/Actions';
 import { URL_HEROKU } from "./../Config/Url";
 import { ActionCreators } from 'redux-undo'
 
@@ -12,26 +11,26 @@ const actionController = (azione) => {
         case "input.welcome":
         case "input.unknown":
             if(store.getState().variabili.length > 0)
-                store.dispatch(addHints(Action["after_file"]));
+                store.dispatch(addHints("after_file"));
             else
-                store.dispatch(addHints(Action["initial"]));
+                store.dispatch(addHints("initial"));
             break;
         case "data.description.request":
         case "data.received":
-            store.dispatch(addHints(Action["after_file"]));
+            store.dispatch(addHints("after_file"));
             break;
         case "plot.chart":
         case "plot.chart.fu.label":
         case "change.title":
-            store.dispatch(addHints(Action["after_plot"]));
+            store.dispatch(addHints("after_plot"));
             break;
         case "test.request":
         case "test.request.fu.attribute":
         case "test.request.fu.test":
-            store.dispatch(addHints(Action["after_analisys"]));
+            store.dispatch(addHints("after_analisys"));
             break;
         default:
-            store.dispatch(addHints(Action["initial"]));
+            store.dispatch(addHints("initial"));
     }
 }
 
@@ -63,7 +62,7 @@ export const sendMessage = (value, type) => {
                     return status < 500;
                 },
                 data: { "message": { "text": value }, "react": "true", 
-                        "variabile": (store.getState().active == null) ? "empty" : store.getState().active
+                        "variabile": (store.getState().active == null) ? "empty" : store.getState().active.name
                 }, headers: {
                     'accept': 'application/json',
                     'Content-Type': 'application/json'
@@ -91,7 +90,7 @@ export const sendPy = (value) => {
                 return status < 500;
             },
             data: { "message": { "text": value }, "react": "true", 
-                    "variabile": (store.getState().active == null) ? "empty" : store.getState().active
+                    "variabile": (store.getState().active == null) ? "empty" : store.getState().active.name
             }, headers: {
                 'accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -105,7 +104,6 @@ export const sendPy = (value) => {
         });
     });
 }
-
 
 export const clearMessages = (e) => {
     axios.get(URL_HEROKU + '/clear')
@@ -128,9 +126,9 @@ export const getAll = () => {
             })
             response.data.variables.map((variabile, n) => {
                 var id = uuidv1();
-                store.dispatch(addVariable({"name": variabile.name, "id": id, "n": n}));
+                store.dispatch(addVariable({"name": variabile.name, "id": id, "attributes": variabile.attributes, "head": variabile.head}));
 
-                if(n == response.data.variables.length-1) store.dispatch(setActiveVariable(variabile.name));
+                if(n == response.data.variables.length-1) store.dispatch(setActiveVariable({"name": variabile.name, "attributes": variabile.attributes, "head": variabile.head}));
             })    
 
             if(response.data.variables.length > 0)
@@ -146,14 +144,16 @@ export const getAll = () => {
     });
 }
 
-export const uploadFile = (file, send_active) => {
+export const uploadFile = (file, divider, header, dataset) => {
     return new Promise((resolve, reject) => {
         var formdata = new FormData();
         formdata.append('file', file);
         formdata.append('react', "true");
-        formdata.append('variabile',send_active);
+        formdata.append('divider', divider);
+        formdata.append('head', dataset);
+        formdata.append('variabile', (store.getState().active != null) ? store.getState().active.name : "empty");
         store.dispatch(addMessage({"id": uuidv1(), "who": "me", "what": "markdown", "messaggio": "Uploading file...", "output": []}));
-        axios({ //TODO togliere il fatto che il server salva sulla sessione il messaggio di caricamento della variabile
+        axios({
             url: URL_HEROKU + '/upload',
             data: formdata,
             method: 'post', 
@@ -163,9 +163,9 @@ export const uploadFile = (file, send_active) => {
         }).then(response => {
             if(response.status == 200){
                 var id = uuidv1();
-                store.dispatch(addVariable({ "name": file.name, "id": id}));
+                store.dispatch(addVariable({ "name": file.name, "id": id, "attributes": header, "head": dataset}));
                 store.dispatch(addMessage({"id": uuidv1(), "who": "bot", "what": "markdown", "messaggio": response.data.message, "output": []}));
-                store.dispatch(setActiveVariable(file.name));
+                store.dispatch(setActiveVariable({"name": file.name, "attributes": header, "head": dataset}));
             }else{
                 store.dispatch(addMessage({"id": uuidv1(), "who": "bot", "what": "markdown error", "messaggio": response.data.message, "output": []}));
             }    

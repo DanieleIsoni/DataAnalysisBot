@@ -1,8 +1,6 @@
 import React from "react";
 import { Translate } from 'react-localize-redux';
-import { URL_HEROKU } from '../Config/Url';
 import store from "../Store/index";
-import Upload from '../Component/Control/Upload';
 
 let actions = {
     "initial": [
@@ -27,13 +25,13 @@ let actions = {
         {
             name: <Translate id="ana">Analysis</Translate>, 
             esempi: [
-                { "content": <div> Give me the <span className="operation">  Operation  </span> of <span className="attribute">  Attribute  </span></div>, "required": ["Operation", "Attribute"], "holder": "Give me the %s of %s"}
+                { "content": <div> Give me the <span className="operation"> Operation </span> of <span className="attribute"> Attribute </span></div>, "required": ["Operation", "Attribute"], "holder": "Give me the %s of %s"}
             ]
         },
         {
             name: <Translate id="plot">Plotting</Translate>, 
             esempi: [
-                {"content": <div>Can you plot the <span className="operation">  Operation  </span> <span className="attribute">  Attribute  </span> by <span className="attribute">  Attribute  </span></div>, "required": ["Operation", "Attribute", "Attribute 2"], "holder": "Can you plot the %s %s by %s"}
+                {"content": <div>Can you plot the <span className="operation"> Operation </span> <span className="attribute"> Attribute </span> by <span className="attribute"> Attribute </span></div>, "required": ["Operation", "Attribute", "Attribute 2"], "holder": "Can you plot the %s %s by %s"}
             ]
         }
     ],
@@ -45,14 +43,14 @@ let actions = {
         {
             name: <Translate id="ana_cont">Analysis</Translate>, 
             esempi: [
-                {"content": <div>Now the <span className="operation">  Operation  </span></div>, "required": ["Operation"], "holder": "Now the %s"}, 
+                {"content": <div>Now the <span className="operation"> Operation </span></div>, "required": ["Operation"], "holder": "Now the %s"}, 
                 {"content": <div>Of the <span className="attribute">  Attribute  </span></div>, "required": ["Attribute"], "holder": "Of the %s"}
             ]
         },
         {
             name: <Translate id="plot">Plotting</Translate>, 
             esempi: [
-                {"content": <div>Can you plot the <span className="operation">  Operation  </span> <span className="attribute">  Attribute  </span> by <span className="attribute">  Attribute  </span></div>, "required": ["Operation", "Attribute", "Attribute 2"], "holder": "Can you plot the %s %s by %s"}
+                {"content": <div>Can you plot the <span className="operation"> Operation </span> <span className="attribute">  Attribute  </span> by <span className="attribute">  Attribute  </span></div>, "required": ["Operation", "Attribute", "Attribute 2"], "holder": "Can you plot the %s %s by %s"}
             ]
         }
     ],
@@ -60,21 +58,20 @@ let actions = {
         {
             name: <Translate id="ana">Analysis</Translate>, 
             esempi: [ 
-                {"content": <div> Give me the <span className="operation">  Operation  </span> of <span className="attribute">  Attribute  </span></div>, "required": ["Operation", "Attribute"], "holder": "Give me the %s of %s"}
+                {"content": <div> Give me the <span className="operation"> Operation </span> of <span className="attribute">  Attribute  </span></div>, "required": ["Operation", "Attribute"], "holder": "Give me the %s of %s"}
             ]
         },
         {
             name: <Translate id="plot">Plotting</Translate>, 
             esempi: [
-                {"content": <div>Can you plot the <span className="operation">  Operation  </span> <span className="attribute">  Attribute  </span> by <span className="attribute">  Attribute  </span> </div>, "required": ["Operation", "Attribute", "Attribute 2"], "holder": "Can you plot the %s %s by %s"}
+                {"content": <div>Can you plot the <span className="operation"> Operation </span> <span className="attribute">  Attribute  </span> by <span className="attribute">  Attribute  </span> </div>, "required": ["Operation", "Attribute", "Attribute 2"], "holder": "Can you plot the %s %s by %s"}
             ]
         },
         {
             name: <Translate id="edit">Edit plot</Translate>, 
             esempi: [
-                {"content": <div>Change the color of the label of <span className="axis"> Axis </span> to <span className="color"> Color  </span> </div>, "required": ["Axis", "Color"], "holder": "Change the color of the label of %s to %s"}, 
-                {"content": <div>Change the <span className="axis"> Axis  </span> label font to <span className="font"> Font </span></div>, "required": ["Axis", "Font"], "holder": "Change the %s label font to %s"},
-                {"content": <div>Change the <span className="axis"> Plot  </span> title to <span className="axis"> Title </span></div>, "required": ["Title"], "holder": "Change the %s title to %s"}
+                {"content": <div>Change the color of the label of <span className="axis"> x </span> to <span className="color"> green </span> </div>, "required": ["Axis", "Color"], "holder": "Change the color of the label of %s to %s"}, 
+                {"content": <div>Change the <span className="axis"> y </span> label font to <span className="font"> monospace </span></div>, "required": ["Axis", "Font"], "holder": "Change the %s label font to %s"}
             ]
         }
     ]

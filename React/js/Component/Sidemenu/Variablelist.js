@@ -19,19 +19,26 @@ class ConnectedList extends React.Component {
         super(props);
         this.state = {
             selected_n: null,
-            selected_id: null
+            selected_id: null,
+            openAttr: false
         }
         this.delete = this.delete.bind(this);
+        this.openAttribute = this.openAttribute.bind(this);
     }
 
     componentDidUpdate(){
-        if(this.props.variabili.length > 0) this.props.addHints(Action["after_file"]);  
-        else this.props.addHints(Action["initial"]);   
+        if(this.props.variabili.length > 0) this.props.addHints("after_file");  
+        else this.props.addHints("initial");   
     }
 
+    openAttribute(e){
+        this.setState({
+            openAttr: !this.state.openAttr
+        });
+    }
 
     delete(e, name) {
-        if(name === this.props.activeVar) this.props.setActiveVariable(null);
+        if(name === this.props.activeVar.name) this.props.setActiveVariable(null);
         call_deleteVariable(name);
     }
 
@@ -40,14 +47,36 @@ class ConnectedList extends React.Component {
         <div className='variable-selected'>
             <h6 className="body_text">Active Dataset</h6>
             <div className='variable-container selected-var'>
-                <span>{this.props.activeVar}</span>
+                <span>{this.props.activeVar.name}</span>
             </div>
-            <div className='variable-container' style={{background: '#ff5050'}}>
-                <span onClick={(e) => this.delete(e, this.props.activeVar)} style={{color: 'white'}}>Delete <i className="material-icons">close</i></span>
+            <div className='variable-container' style={{background: '#ff5050'}} onClick={(e) => this.delete(e, this.props.activeVar.name)}>
+                <span style={{color: 'white'}}>Delete <i className="material-icons">close</i></span>
             </div>
-            <div className='variable-container' style={{background: 'white'}}>
-                <span onClick={() => this.props.describe(this.props.activeVar)}>Describe <i className="material-icons">chevron_right</i></span>
+            <div className='variable-container' style={{background: 'white'}} onClick={() => this.props.describe(this.props.activeVar.name)}>
+                <span>Describe <i className="material-icons">chevron_right</i></span>
             </div>
+            {
+                (this.props.activeVar.head != null) ? 
+                    <div className='variable-container' style={{background: 'white'}} onClick={() => this.props.head(this.props.activeVar.name)}>
+                        <span>Head <i className="material-icons">chevron_right</i></span>
+                    </div> : ''
+            }
+
+            <div className='variable-container' style={{background: 'white'}} onClick={(e) => this.openAttribute(e)}>
+                <span>Attribute list <i className="material-icons">chevron_right</i></span>
+            </div>
+            {
+                (this.props.activeVar.attributes != null && this.state.openAttr) ? 
+                <div>
+                    <h6 className="body_text">Attributes</h6>
+                    {
+                        this.props.activeVar.attributes.map((attribute) => {
+                            return <span className="attributes_list">{attribute}</span>
+                        })
+                    }   
+                </div>
+                : ''
+            }
         </div>
         : ''
 
@@ -57,7 +86,7 @@ class ConnectedList extends React.Component {
                 {
                     (this.props.variabili.length) ? 
                         this.props.variabili.map((el, n) => (
-                            (this.props.activeVar != el.name) ? 
+                            (this.props.activeVar != null && this.props.activeVar.name != el.name) ? 
                                 <div key={el.id} className='variable-container' id={el.name} onClick={() => this.props.onClick(el)}>
                                     <span>{el.name}</span>
                                 </div>
@@ -66,7 +95,7 @@ class ConnectedList extends React.Component {
                         ))
                     :""
                 }
-                <Upload addMessaggio={this.props.addMessage} url={this.props.url} theme={"side_add"} text={"Add Datasets"} activeVar={this.props.activeVar}/>
+                <Upload addMessaggio={this.props.addMessage} url={this.props.url} theme={"side_add"} text={"Add Datasets"}/>
             </div>
         );
     }

@@ -49,7 +49,7 @@ class Output extends React.Component{
                                             </div>
                                         :
                                         (typeof this.props.output != "undefined" && this.props.output != null && this.props.output.length > 3) ? 
-                                            <div style={{paddingTop: '10px'}}>
+                                            <div style={{paddingTop: '10px', marginBottom: '5px'}}>
                                                 {(i==0) ? <a className="split_basic attributes_label">Attributes: </a> : ''}
                                                 <a className="split_basic" onClick={(e) => this.toggleOutput(e, al.content, al.content.split("\n")[0])}>{al.content.split("\n")[0]}</a>
                                             </div>

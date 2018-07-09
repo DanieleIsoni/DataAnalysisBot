@@ -41,11 +41,13 @@ class ConnectedSidemenu extends React.Component {
             idVar: '',
             selectedVar: '',
             contentVar: [],
-            described: false
+            described: false,
+            headed: false
         }
         this.handleClick = this.handleClick.bind(this);
         this.handleDescribe= this.handleDescribe.bind(this);
         this.closeVar = this.closeVar.bind(this);
+        this.handleHead = this.handleHead.bind(this);
     }
 
     handleClick (el) {
@@ -54,7 +56,7 @@ class ConnectedSidemenu extends React.Component {
             selectedVar: el.name,
         });
 
-        this.props.setActiveVariable(el.name);
+        this.props.setActiveVariable({"name": el.name, "attributes": el.attributes});
     }
 
     handleDescribe(name){
@@ -64,6 +66,19 @@ class ConnectedSidemenu extends React.Component {
                 contentVar: data
             });
         }).catch(err => console.log('There was an error:' + err));
+    }
+
+    handleHead(name){
+        this.setState({
+            headed: !this.state.headed
+        });
+    }
+
+    
+    closeHead (e){
+        this.setState({
+            headed: false
+        }); 
     }
 
     closeVar (e){
@@ -81,21 +96,35 @@ class ConnectedSidemenu extends React.Component {
 
         const dettaglioVariabile = (this.state.described) ? (
             <div className="variable-detail">
-                <div className="side_subtitle"><h6><i className="material-icons">description</i><Translate id="detail">Variable Details</Translate></h6>                
+                <div className="side_subtitle"><h6><i className="material-icons">description</i><Translate id="detail">Describe Dataset</Translate></h6>                
                  {  (this.state.described) ? <a  className="code_command close_side" onClick={(e) => this.closeVar(e)}> <i className="material-icons">close</i></a> : ""}
                  </div>
                 <JsonTable className="table table-hover" rows={this.state.contentVar.data} columns={getColumns(this.state.contentVar.schema.fields)}/>
             </div>
         ) : "";
 
+        const headVariabile = (this.state.headed) ? (
+            <div className="variable-detail">
+                <div className="side_subtitle"><h6><i className="material-icons">description</i><Translate id="detail">Head of Dataset</Translate></h6>                
+                 {  (this.state.headed) ? <a  className="code_command close_side" onClick={(e) => this.closeHead(e)}> <i className="material-icons">close</i></a> : ""}
+                 </div>
+                 <span className="preview_csv">
+                    <JsonTable className="table table-hover" settings={{header: false}} rows={this.props.activeVar.head}/>
+                </span>
+            </div>
+        ) : "";
+
         return (
-            <Col xs="12" md="4" lg="3" className="gestione" style={{"display": this.props.show}}>
+            <Col xs="12" md="5" lg="4" className="gestione" style={{"display": this.props.show}}>
                 <div className="variable-context">
                     <div className="side_subtitle"><h6><i className="material-icons">list</i> <Translate id="var">Variables</Translate> <span className="var_num">{this.props.variabili.length}</span></h6></div>
-                    <List variabili={this.props.variabili} activeVar={this.props.activeVar} onClick={this.handleClick} describe={this.handleDescribe} selected={this.state.selectedVar} lang={sideTranslation} url={this.props.url}/>
+                    <List variabili={this.props.variabili} activeVar={this.props.activeVar} onClick={this.handleClick} describe={this.handleDescribe} head={this.handleHead} selected={this.state.selectedVar} lang={sideTranslation} url={this.props.url}/>
                 </div>
+                {headVariabile}
                 {dettaglioVariabile}
-                <Hints lang={sideTranslation}/>
+                <div style={{display: 'block'}}>
+                    <Hints lang={sideTranslation}/>
+                </div>
                 <div className="divider"></div>
                 <div className="side_subtitle" style={{marginBottom: '10px'}}><h6><i className="material-icons">language</i><Translate id="lang">Language</Translate></h6><Language /></div>
                 <div className="divider"></div>
