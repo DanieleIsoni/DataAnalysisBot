@@ -67,7 +67,7 @@ class ConnectedList extends React.Component {
             </div>
             {
                 (this.props.activeVar.attributes != null && this.state.openAttr) ? 
-                <div>
+                <div style={{marginBottom: '10px'}}>
                     <h6 className="body_text">Attributes</h6>
                     {
                         this.props.activeVar.attributes.map((attribute) => {

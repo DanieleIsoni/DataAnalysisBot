@@ -126,6 +126,7 @@ export const getAll = () => {
             })
             response.data.variables.map((variabile, n) => {
                 var id = uuidv1();
+                console.log(variabile);
                 store.dispatch(addVariable({"name": variabile.name, "id": id, "attributes": variabile.attributes, "head": variabile.head}));
 
                 if(n == response.data.variables.length-1) store.dispatch(setActiveVariable({"name": variabile.name, "attributes": variabile.attributes, "head": variabile.head}));
@@ -150,7 +151,7 @@ export const uploadFile = (file, divider, header, dataset) => {
         formdata.append('file', file);
         formdata.append('react', "true");
         formdata.append('divider', divider);
-        formdata.append('head', dataset);
+        formdata.append('head', JSON.stringify(dataset));
         formdata.append('variabile', (store.getState().active != null) ? store.getState().active.name : "empty");
         store.dispatch(addMessage({"id": uuidv1(), "who": "me", "what": "markdown", "messaggio": "Uploading file...", "output": []}));
         axios({
