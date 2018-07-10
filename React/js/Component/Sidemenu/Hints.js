@@ -132,7 +132,7 @@ class ConnectedList extends React.Component {
 
         return (
             <div className="request_type">
-                <div className="side_subtitle" style={{flexBasis: '100%'}}><h6><i className="material-icons">question_answer</i><Translate id="queries">Language</Translate></h6></div>
+                <div className="side_subtitle" style={{flexBasis: '100%'}}><h6><i className="material-icons">question_answer</i><Translate id="queries"></Translate></h6></div>
                 {list} 
                 {dialog}
                 <AskModal modal={this.state.modal} toggle={() => this.toggleModal()} request={this.state.request} ask={this.state.ask} active={this.props.active}/>

@@ -3,7 +3,6 @@ import React from "react";
 import { connect } from "react-redux";
 import List from './Variablelist';
 import Hints from './Hints';
-import Language from './LanguageToggle';
 import { Col } from 'reactstrap';
 const JsonTable = require('ts-react-json-table');
 import { Translate } from 'react-localize-redux';
@@ -11,6 +10,7 @@ import sideTranslation from './translation';
 import { withLocalize } from 'react-localize-redux';
 import { setActiveVariable} from "../../Actions/index";
 import { getVariable } from  '../../Actions/Axios'
+import Help from './Help';
 
 const mapSetActive = dispatch => {
     return {
@@ -42,7 +42,8 @@ class ConnectedSidemenu extends React.Component {
             selectedVar: '',
             contentVar: [],
             described: false,
-            headed: false
+            headed: false,
+            tab_active: "dashboard"
         }
         this.handleClick = this.handleClick.bind(this);
         this.handleDescribe= this.handleDescribe.bind(this);
@@ -116,14 +117,25 @@ class ConnectedSidemenu extends React.Component {
 
         return (
             <Col xs="12" md="5" lg="4" className="gestione" style={{"display": this.props.show}}>
-                <List variabili={this.props.variabili} activeVar={this.props.activeVar} onClick={this.handleClick} describe={this.handleDescribe} head={this.handleHead} selected={this.state.selectedVar} lang={sideTranslation} url={this.props.url}/>
-                {headVariabile}
-                {dettaglioVariabile}
-                <div style={{display: 'block'}}>
-                    <Hints lang={sideTranslation}/>
+                <div className="tabs_sidemenu">
+                    <div className={(this.state.tab_active == "dashboard") ? "tab_side_active tab_side" : "tab_side"} onClick={(e) => this.setState({tab_active: "dashboard"})}><span>Dashboard</span></div>
+                    <div className={(this.state.tab_active == "help") ? "tab_side_active tab_side" : "tab_side"} onClick={(e) => this.setState({tab_active: "help"})}><span>Help & Settings</span></div>
+                    <div className="tab_bar" style={{left: (this.state.tab_active == "dashboard") ? '0%' : '50%'}}></div>
                 </div>
-                <div className="divider"></div>
-                <div className="side_subtitle" style={{marginBottom: '10px'}}><h6><i className="material-icons">language</i><Translate id="lang">Language</Translate></h6><Language /></div>
+                {
+                    (this.state.tab_active == "dashboard") ? 
+                        <div>
+                            <List variabili={this.props.variabili} activeVar={this.props.activeVar} onClick={this.handleClick} describe={this.handleDescribe} head={this.handleHead} selected={this.state.selectedVar} lang={sideTranslation} url={this.props.url}/>
+                            {headVariabile}
+                            {dettaglioVariabile}
+                            <div style={{display: 'block'}}>
+                                <Hints lang={sideTranslation}/>
+                            </div>
+                        </div>
+                    :
+                        <Help />
+                }
+
             </Col>
         );
     }
