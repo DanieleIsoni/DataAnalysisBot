@@ -22,16 +22,6 @@ const mapVariable = state => {
     return { variabili: state.variabili.present, activeVar: state.active };
 };
 
-const Header = () => {
-    return(
-        <div className="variable-context presentation" style={{margin: '0', padding: '0 10px'}}>
-            <div className="iridium">
-                <img src="./dist/img/logov2.png"/>
-                <div className="presentation"><h5>DABOT</h5><span>Datascience Chatbot</span></div>
-            </div>
-        </div>
-    );
-}
 
 class ConnectedSidemenu extends React.Component {
     constructor(props){
