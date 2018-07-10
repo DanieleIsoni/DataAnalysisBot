@@ -217,9 +217,6 @@ class ConnectedForm extends React.Component {
                 <Suggest input={this.state.inputValue} handleSuggest={(e, sug) => this.setInput(e, sug)} type={this.state.type} focused={this.state.focused} suggest={this.state.restricted} select={this.state.selectedCommand}/>
                     <textarea onKeyDown={this.handleKeyDown} rows="1" id="dialog" autoComplete="on" onBlur={(e) => this.handleFocus(e, false)} onFocus={(e) => this.handleFocus(e, true)} ref={input => this.textarea = input} placeholder={(this.state.inputValue.length == 0) ? renderToString(<Translate id="sugg"></Translate>) : ""} value={this.state.inputValue} onKeyPress={this.handleKeyPress} onChange={this.handleChange}></textarea>                  
                         <span className={(this.state.type == "NL" ? "type_of" : "type_of type_py")}>{this.state.type}</span>
-                        {
-                            (this.props.activeVar != null) ? <span className="var_sel var_back">{this.props.activeVar}</span> : <span className="var_sel">No Context</span> 
-                        }
                 </div>
                 <Upload id={"upload_mobile"} addMessaggio={this.props.addMessaggio} url={this.props.url} theme={"form_add"} text={<i className="material-icons">attach_file</i>}/>
                 <div className="group_button">

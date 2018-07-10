@@ -3,7 +3,6 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { sendMessage } from '../../Actions/Axios';
 import { Translate } from 'react-localize-redux';
 import { withLocalize } from 'react-localize-redux';
-import Autosuggest from 'react-autosuggest';
 import Autocomplete from 'react-autocomplete';
 
 const getSuggestionValue = suggestion => suggestion;

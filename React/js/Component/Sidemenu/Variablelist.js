@@ -1,7 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
 import { addHints, addMessage } from "../../Actions/index";
-import Action from '../../Constants/Actions';
+import sideTranslation from './translation';
+import { Translate } from 'react-localize-redux';
+import { withLocalize } from 'react-localize-redux';
 import Upload from '../Control/Upload';
 import { setActiveVariable} from "../../Actions/index";
 import { call_deleteVariable } from '../../Actions/Axios';
@@ -45,13 +47,11 @@ class ConnectedList extends React.Component {
     render() {
         var selected = (this.props.activeVar) ?
         <div className='variable-selected'>
-            <h6 className="body_text">Active Dataset</h6>
+            <h5 className="body_text" style={{padding: '5px'}}>Active context dataset</h5>
             <div className='variable-container selected-var'>
                 <span>{this.props.activeVar.name}</span>
             </div>
-            <div className='variable-container' style={{background: '#ff5050'}} onClick={(e) => this.delete(e, this.props.activeVar.name)}>
-                <span style={{color: 'white'}}>Delete <i className="material-icons">close</i></span>
-            </div>
+            <br />
             <div className='variable-container' style={{background: 'white'}} onClick={() => this.props.describe(this.props.activeVar.name)}>
                 <span>Describe <i className="material-icons">chevron_right</i></span>
             </div>
@@ -77,29 +77,32 @@ class ConnectedList extends React.Component {
                 </div>
                 : ''
             }
+            <div className='variable-container' style={{background: '#ff5050'}} onClick={(e) => this.delete(e, this.props.activeVar.name)}>
+                <span style={{color: 'white'}}>Delete <i className="material-icons">close</i></span>
+            </div>
         </div>
         : ''
 
         return (
-            <div className="variable-list">
-                {selected}
-                {
-                    (this.props.variabili.length) ? 
-                        this.props.variabili.map((el, n) => (
-                            (this.props.activeVar != null && this.props.activeVar.name != el.name) ? 
-                                <div key={el.id} className='variable-container' id={el.name} onClick={() => this.props.onClick(el)}>
-                                    <span>{el.name}</span>
-                                </div>
-                                :
-                            ''
-                        ))
-                    :""
-                }
-                <Upload addMessaggio={this.props.addMessage} url={this.props.url} theme={"side_add"} text={"Add Datasets"}/>
-            </div>
+                <div className="variable-list">
+                    {selected}
+                    {/*
+                        (this.props.variabili.length) ? 
+                            this.props.variabili.map((el, n) => (
+                                (this.props.activeVar != null && this.props.activeVar.name != el.name) ? 
+                                    <div key={el.id} className='variable-container' id={el.name} onClick={() => this.props.onClick(el)}>
+                                        <span>{el.name}</span>
+                                    </div>
+                                    :
+                                ''
+                            ))
+                        :""*/
+                    }
+                    <Upload addMessaggio={this.props.addMessage} url={this.props.url} theme={"side_add"} text={"Add Datasets"}/>
+                </div>
         );
     }
 }
 
 const List = connect(null, mapDeleteVar)(ConnectedList);
-export default List;
+export default withLocalize(List);

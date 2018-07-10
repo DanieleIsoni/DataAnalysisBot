@@ -1,7 +1,7 @@
 const json = {
     "var": ["Datasets", "переменные"],
     "novar": ["No Dataset uploaded!", "без переменной нагрузки"],
-    "queries": ["Possible Queries", "возможные запросы"],
+    "queries": ["Queries example", "возможные запросы"],
     "detail": ["Dataset detail", "переменные детали"],
     "lang": ["Language", "язык"],
     "operation": {

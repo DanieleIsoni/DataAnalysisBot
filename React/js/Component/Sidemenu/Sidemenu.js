@@ -56,7 +56,7 @@ class ConnectedSidemenu extends React.Component {
             selectedVar: el.name,
         });
 
-        this.props.setActiveVariable({"name": el.name, "attributes": el.attributes});
+        this.props.setActiveVariable({"name": el.name, "attributes": el.attributes, "head": el.head});
     }
 
     handleDescribe(name){
@@ -116,10 +116,7 @@ class ConnectedSidemenu extends React.Component {
 
         return (
             <Col xs="12" md="5" lg="4" className="gestione" style={{"display": this.props.show}}>
-                <div className="variable-context">
-                    <div className="side_subtitle"><h6><i className="material-icons">list</i> <Translate id="var">Variables</Translate> <span className="var_num">{this.props.variabili.length}</span></h6></div>
-                    <List variabili={this.props.variabili} activeVar={this.props.activeVar} onClick={this.handleClick} describe={this.handleDescribe} head={this.handleHead} selected={this.state.selectedVar} lang={sideTranslation} url={this.props.url}/>
-                </div>
+                <List variabili={this.props.variabili} activeVar={this.props.activeVar} onClick={this.handleClick} describe={this.handleDescribe} head={this.handleHead} selected={this.state.selectedVar} lang={sideTranslation} url={this.props.url}/>
                 {headVariabile}
                 {dettaglioVariabile}
                 <div style={{display: 'block'}}>

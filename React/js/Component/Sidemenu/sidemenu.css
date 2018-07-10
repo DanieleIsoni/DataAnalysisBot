@@ -72,7 +72,7 @@
 .variable-list{
     background: rgba(0,0,0,0);
     height: auto;
-    margin: 0 15px;
+    margin: 7px 15px;
 }
 
 .variable-container{
@@ -119,10 +119,12 @@
 
 .variable-selected{
     display: block;
-    border: 1px solid rgba(0,0,0,0.15);
-    border-radius: 10px;
-    margin-bottom: 10px;
-    padding: 5px 12px;
+    background: white;
+    /*border: 1px solid rgba(0,0,0,0.15);*/
+    box-shadow: 0 1px 2px 0 rgba(60,64,67,0.182), 0 1px 3px 1px rgba(60,64,67,0.100);
+    border-radius: 15px;
+    margin-bottom: 15px;
+    padding: 7px 15px;
     padding-right: 0;
     order: 1 !important;
 }
