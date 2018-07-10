@@ -124,7 +124,6 @@ class ConnectedSidemenu extends React.Component {
                 </div>
                 <div className="divider"></div>
                 <div className="side_subtitle" style={{marginBottom: '10px'}}><h6><i className="material-icons">language</i><Translate id="lang">Language</Translate></h6><Language /></div>
-                <div className="divider"></div>
             </Col>
         );
     }
