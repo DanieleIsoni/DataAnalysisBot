@@ -126,9 +126,11 @@ export const getAll = () => {
             })
             response.data.variables.map((variabile, n) => {
                 var id = uuidv1();
-                store.dispatch(addVariable({"name": variabile.name, "id": id, "attributes": variabile.attributes, "head": variabile.head}));
 
-                if(n == response.data.variables.length-1) store.dispatch(setActiveVariable({"name": variabile.name, "attributes": variabile.attributes, "head": variabile.head}));
+                console.log(JSON.parse(variabile.describe));
+                store.dispatch(addVariable({"name": variabile.name, "id": id, "attributes": variabile.attributes, "head": variabile.head, "describe": JSON.parse(variabile.describe)}));
+
+                if(n == response.data.variables.length-1) store.dispatch(setActiveVariable({"name": variabile.name, "attributes": variabile.attributes, "head": variabile.head, "describe": JSON.parse(variabile.describe)}));
             })    
 
             if(response.data.variables.length > 0)
@@ -150,7 +152,7 @@ export const uploadFile = (file, divider, header, dataset) => {
         formdata.append('file', file);
         formdata.append('react', "true");
         formdata.append('divider', divider);
-        formdata.append('head', dataset);
+        formdata.append('head', JSON.stringify(dataset));
         formdata.append('variabile', (store.getState().active != null) ? store.getState().active.name : "empty");
         store.dispatch(addMessage({"id": uuidv1(), "who": "me", "what": "markdown", "messaggio": "Uploading file...", "output": []}));
         axios({
@@ -163,9 +165,13 @@ export const uploadFile = (file, divider, header, dataset) => {
         }).then(response => {
             if(response.status == 200){
                 var id = uuidv1();
-                store.dispatch(addVariable({ "name": file.name, "id": id, "attributes": header, "head": dataset}));
-                store.dispatch(addMessage({"id": uuidv1(), "who": "bot", "what": "markdown", "messaggio": response.data.message, "output": []}));
-                store.dispatch(setActiveVariable({"name": file.name, "attributes": header, "head": dataset}));
+
+                getVariable(file.name).then(data => {
+                    store.dispatch(addVariable({ "name": file.name, "id": id, "attributes": header, "head": dataset, "describe": data}));
+                    store.dispatch(addMessage({"id": uuidv1(), "who": "bot", "what": "markdown", "messaggio": response.data.message, "output": []}));
+                    store.dispatch(setActiveVariable({"name": file.name, "attributes": header, "head": dataset, "describe": data}));
+                })
+
             }else{
                 store.dispatch(addMessage({"id": uuidv1(), "who": "bot", "what": "markdown error", "messaggio": response.data.message, "output": []}));
             }    

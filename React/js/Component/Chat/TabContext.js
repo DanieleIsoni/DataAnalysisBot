@@ -31,7 +31,7 @@ class TabContext extends React.Component {
     render(){
 
         return(
-                <div className="tab_container" onWheel={(e) => this.onMouseWheel(e)} ref={(scroll) => this.scrollBars = scroll}>
+                <div className="tab_container" onWheel={(e) => this.onMouseWheel(e)} ref={(scroll) => this.scrollBars = scroll} >
                     {
                         (this.props.variabili.length) ? 
                             this.props.variabili.map((el, n) => (
@@ -44,7 +44,10 @@ class TabContext extends React.Component {
                                         <span>{el.name}</span>
                                     </div>
                             ))
-                        :""
+                        :                                    
+                        <div className='tab_element tab_active'>
+                            <span>No context</span>
+                        </div>
                     }
                 </div>
         );
