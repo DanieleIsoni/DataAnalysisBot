@@ -1,5 +1,4 @@
 const dialogFlow = require('dialogflow');
-const uuid = require('node-uuid');
 const TelegramBot = require('node-telegram-bot-api');
 const fs = require('fs');
 const path = require('path');
@@ -14,10 +13,6 @@ module.exports = class DialogFlow {
         return this._sessionClient;
     }
 
-    set sessionClient(value) {
-        this._sessionClient = value;
-    }
-
     get bot() {
         return this._bot;
     }
@@ -28,10 +23,6 @@ module.exports = class DialogFlow {
 
     get aiConfig() {
         return this._aiConfig;
-    }
-
-    set aiConfig(value) {
-        this._aiConfig = value;
     }
 
     constructor(aiConfig, baseUrl) {
@@ -54,6 +45,7 @@ module.exports = class DialogFlow {
         let devConfig = this._aiConfig.devConfig;
 
         let updateObject = req.body;
+        if (devConfig) console.log(`Request body: ${JSON.stringify(req.body, null, '   ')}`);
 
         if (updateObject && updateObject.message) {
             let msg = updateObject.message;
@@ -61,18 +53,18 @@ module.exports = class DialogFlow {
             let react = updateObject.react;
 
             let sessionId;
-            if (req.sessionID && react == 'true') {
+            if (req.sessionID && react === 'true') {
                 sessionId = req.sessionID;
-            } else if (react != 'true'){
+            } else if (react !== 'true'){
                 sessionId = `${msg.chat.id}`;
             }
 
             let session = Common.sessions.get(sessionId);
 
             console.log('VARIABLE: '+updateObject.variabile);
-            if (react == 'true' && updateObject.variabile != null)
+            if (react === 'true' && updateObject.variabile != null)
                 session.variable = updateObject.variabile;
-            else if (react == 'true')
+            else if (react === 'true')
                 return DialogFlow.createResponse(res, 400, 'Something went wrong. Either select a variable or upload one before asking again.');
 
             let messageText = msg.text;
@@ -113,7 +105,7 @@ module.exports = class DialogFlow {
                             }
                         };
                         promise = this.sessionClient.detectIntent(request);
-                        if (react == 'true'){
+                        if (react === 'true'){
                             req.session.messages.push({who: 'me', what: 'markdown', message: messageText, outputs: null});
                         }
                     }
@@ -145,12 +137,13 @@ module.exports = class DialogFlow {
                             promise = this.sessionClient.detectIntent(request);
                             processRequest(DialogFlow, promise, this.aiConfig, this._bot, sessionId, req, res, react);
                         });
-                } else if (messageDoc && sessionId && messageDoc.file_name && messageDoc.file_link){
+                } else if (messageDoc && sessionId && messageDoc.file_name && messageDoc.file_link && messageDoc.divider){
                     let event = {
                         name: "DATA_RECEIVED",
                         parameters: structjson.jsonToStructProto({
                             file_name: messageDoc.file_name,
-                            file_link: messageDoc.file_link
+                            file_link: messageDoc.file_link,
+                            divider: messageDoc.divider
                         }),
                         languageCode: this.aiConfig.languageCode,
                     };
@@ -217,7 +210,7 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, sessionId, re
 
                 if (responseText || (webhookStatus && webhookCode === 0)) {
                     console.log(`${cLog}Response as text message with message: ${responseText}`);
-                    if (react != 'true' && image == null) {
+                    if (react !== 'true' && image == null) {
                         bot.sendMessage(sessionId, responseText, {parse_mode: 'html'})
                             .catch(err => {
                                 console.error(`${cLog}ERROR: ${err}`);
@@ -230,7 +223,7 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, sessionId, re
                             let text = el.text.text[0];
 
                             if(text && text !== '' && text !== responseText) {
-                                if (react != 'true' && response.action === 'data.description.request') {
+                                if (react !== 'true' && response.action === 'data.description.request') {
                                     bot.sendMessage(sessionId, `<code>${text}</code>`, {parse_mode: 'html'})
                                         .catch(err => {
                                             console.error(`${cLog}ERROR: ${err}`);
@@ -252,7 +245,7 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, sessionId, re
 
                     if (image && chartName && webhookStatus !== null) {
 
-                        if (react != 'true'){
+                        if (react !== 'true'){
 
                             let tmpSessionPath = path.join(aiConfig.tmpPath, `/${sessionId}`);
 
@@ -287,7 +280,7 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, sessionId, re
                         });
                     }
 
-                    if (react == 'true') {
+                    if (react === 'true') {
                         req.session.messages.push({who: 'bot', what: 'markdown', message: responseText, outputs: messages});
                     }
                     req.session.lastAction = action;
@@ -296,14 +289,14 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, sessionId, re
                     switch (webhookCode) {
                         case 4: {
                             let message = 'Request has timed out. Please retry in a few minutes';
-                            if (react != 'true') {
+                            if (react !== 'true') {
                                 bot.sendMessage(sessionId, message)
                                     .catch(err => {
                                         console.error(`${cLog}ERROR: ${err}`);
                                     });
                             }
                             console.log(`${cLog}${webhookStatus.message}`);
-                            if (react == 'true') {
+                            if (react === 'true') {
                                 req.session.messages.push({
                                     who: 'bot',
                                     what: 'markdown',
@@ -317,14 +310,14 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, sessionId, re
 
                         default:
                             let message = 'Something went wrong. Please retry in a few minutes';
-                            if (react != 'true') {
+                            if (react !== 'true') {
                                 bot.sendMessage(sessionId, message)
                                     .catch(err => {
                                         console.error(`${cLog}ERROR: ${err}`);
                                     });
                             }
                             console.log(`${cLog}Received empty speech`);
-                            if (react == 'true') {
+                            if (react === 'true') {
                                 req.session.messages.push({
                                     who: 'bot',
                                     what: 'markdown',
@@ -338,14 +331,14 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, sessionId, re
 
             } else {
                 let message = 'Something went wrong. Please retry in a few minutes';
-                if (react != 'true') {
+                if (react !== 'true') {
                     bot.sendMessage(sessionId, message)
                         .catch(err => {
                             console.error(`${cLog}ERROR: ${err}`);
                         });
                 }
                 console.log(`${cLog}Received empty result`);
-                if (react == 'true') {
+                if (react === 'true') {
                     req.session.messages.push({who: 'bot', what: 'markdown', message: message, outputs: null});
                 }
                 DialogFlow.createResponse(res, 400, message);
@@ -354,7 +347,7 @@ let processRequest = function (DialogFlow, promise, aiConfig, bot, sessionId, re
         .catch(err => {
             console.error(`${cLog}Error processing your request`, err);
             let message = 'Error processing your request';
-            if (react == 'true') {
+            if (react === 'true') {
                 req.session.messages.push({who: 'bot', what: 'markdown', message: message, outputs: null});
             }
             DialogFlow.createResponse(res, 400, message);

@@ -1,7 +1,7 @@
 const Common = require('../../Common');
 const PythonShell = require('python-shell');
-const DEV_CONFIG = (process.env.DEVELOPMENT_CONFIG == 'true');
-const PROJECT_ID = process.env.PROJECT_ID;
+const DEV_CONFIG = (process.env.DEVELOPMENT_CONFIG === 'true');
+//const PROJECT_ID = process.env.PROJECT_ID;
 const PYPATH = process.env.PYPATH;
 const fLog = '[FULFILLMENT] ';
 
@@ -17,6 +17,7 @@ module.exports.plotChart = (contexts, parameters, action, sessionPath, sessionId
         let session = Common.sessions.get(sessionId);
 
         let fileLink = session.variablesMap.get(session.variable).variableLink;
+        let divider = session.variablesMap.get(session.variable).divider;
         let test = parameters.CompositeTest.Test;
         let testAttr = parameters.CompositeTest.Attribute;
         let testOrig = plot_chart.parameters.CompositeTest['Test.original'];
@@ -42,7 +43,7 @@ module.exports.plotChart = (contexts, parameters, action, sessionPath, sessionId
         if (session.variablesMap.get(session.variable).attributes.includes(testAttr)
             && session.variablesMap.get(session.variable).attributes.includes(attr)) {
             chart.variable = session.variable;
-            plotChartPy(fileLink, chart, response, sessionPath, sessionId);
+            plotChartPy(fileLink, divider, chart, response, sessionPath, sessionId);
         } else {
             response.send({
                 fulfillmentText: `The attribute you selected is not in the chosen dataset, try selecting the correct dataset`
@@ -74,6 +75,7 @@ module.exports.plotChartFuLabel = (contexts, parameters, action, sessionPath, se
 
         if (chart) {
             let fileLink = session.variablesMap.get(session.variable).variableLink;
+            let divider = session.variablesMap.get(session.variable).divider;
             if (axis === 'x') {
                 if (!chart.xLabel){
                     chart.xLabel = {};
@@ -82,7 +84,7 @@ module.exports.plotChartFuLabel = (contexts, parameters, action, sessionPath, se
                 if (color) chart.xLabel.color = color;
                 if (DEV_CONFIG) console.log(`${fLog}Chosen test: ${chart.test} on ${chart.testAttr}\nChosen attribute for x-axis: ${chart.attr}\nChosen chart: ${chart.chartType}`);
 
-                plotChartPy(fileLink, chart, response, sessionPath, sessionId);
+                plotChartPy(fileLink, divider, chart, response, sessionPath, sessionId);
             } else if (axis === 'y') {
                 if (!chart.yLabel){
                     chart.yLabel = {};
@@ -91,7 +93,7 @@ module.exports.plotChartFuLabel = (contexts, parameters, action, sessionPath, se
                 if (color) chart.yLabel.color = color;
                 if (DEV_CONFIG) console.log(`${fLog}Chosen test: ${chart.test} on ${chart.testAttr}\nChosen attribute for x-axis: ${chart.attr}\nChosen chart: ${chart.chartType}`);
 
-                plotChartPy(fileLink, chart, response, sessionPath, sessionId);
+                plotChartPy(fileLink, divider, chart, response, sessionPath, sessionId);
             }
         } else {
             response.send({
@@ -121,12 +123,13 @@ module.exports.changeTitle = (contexts, parameters, action, sessionPath, session
 
         if (chart) {
             let fileLink = session.variablesMap.get(session.variable).variableLink;
+            let divider = session.variablesMap.get(session.variable).divider;
 
             chart.name = newChartName;
             Common.sendChartNameEntity(sessionPath, sessionId);
 
             if (DEV_CONFIG) console.log(`${fLog}Chosen test: ${chart.test} on ${chart.testAttr}\nChosen attribute for x-axis: ${chart.attr}\nChosen chart: ${chart.chartType}`);
-            plotChartPy(fileLink, chart, response, sessionPath, sessionId);
+            plotChartPy(fileLink, divider, chart, response, sessionPath, sessionId);
 
         } else {
             response.send({
@@ -139,7 +142,7 @@ module.exports.changeTitle = (contexts, parameters, action, sessionPath, session
 };
 
 
-let plotChartPy = (fileLink, chart, response, sessionPath, sessionId) => {
+let plotChartPy = (fileLink, divider, chart, response, sessionPath, sessionId) => {
 
     let session = Common.sessions.get(sessionId);
 
@@ -160,7 +163,7 @@ let plotChartPy = (fileLink, chart, response, sessionPath, sessionId) => {
     const options = {
         mode: 'text',
         scriptPath: 'Server/src/Fulfillment/Python/',
-        args: [`${fileLink}`, `${chart.test}`, `${chart.testAttr}`, `${chart.testOrig}`, `${chart.attr}`, xLabelPy, yLabelPy, `${chart.name}`]
+        args: [`${fileLink}`, `${divider}`, `${chart.test}`, `${chart.testAttr}`, `${chart.testOrig}`, `${chart.attr}`, xLabelPy, yLabelPy, `${chart.name}`]
     };
     if (PYPATH)
         options.pythonPath = PYPATH;
@@ -240,7 +243,7 @@ except urllib.error.HTTPError as err:
                     },
                 };
 
-                if (result != 'define'){
+                if (result !== 'define'){
 
                     let cId = session.charts.findIndex(el => {
                         return el.name === chart.name;

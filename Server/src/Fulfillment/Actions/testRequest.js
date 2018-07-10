@@ -15,12 +15,13 @@ module.exports.testRequest = (contexts, parameters, action, sessionPath, session
     if (data_received && test_request) {
         let session = Common.sessions.get(sessionId);
         let fileLink = session.variablesMap.get(session.variable).variableLink;
+        let divider = session.variablesMap.get(session.variable).divider;
         let test = parameters.Test;
         let test_original = test_request.parameters['Test.original'];
         let attr = parameters.Attribute;
         if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test}\nChosen attribute: ${attr}`);
         if (session.variablesMap.get(session.variable).attributes.includes(attr)) {
-            executeTest(fileLink, test, test_original, attr, response);
+            executeTest(fileLink, divider, test, test_original, attr, response);
         } else {
             response.send({
                 fulfillmentText: `The attribute you selected is not in the chosen dataset, try selecting the correct dataset`
@@ -45,13 +46,14 @@ module.exports.testRequestFuAttribute = (contexts, parameters, action, sessionPa
     if (test_request && data_received) {
         let session = Common.sessions.get(sessionId);
         let fileLink = session.variablesMap.get(session.variable).variableLink;
+        let divider = session.variablesMap.get(session.variable).divider;
         let test = test_request.parameters.Test;
         let test_original = test_request.parameters['Test.original'];
         let attr = parameters.Attribute;
         if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test}\nChosen attribute: ${attr}`);
 
         if (session.variablesMap.get(session.variable).attributes.includes(attr)) {
-            executeTest(fileLink, test, test_original, attr, response);
+            executeTest(fileLink, divider, test, test_original, attr, response);
         } else {
             response.send({
                 fulfillmentText: `The attribute you selected is not in the chosen dataset, try selecting the correct dataset`
@@ -76,13 +78,14 @@ module.exports.testRequestFuTest = (contexts, parameters, action, sessionPath, s
     if (test_request && data_received) {
         let session = Common.sessions.get(sessionId);
         let fileLink = session.variablesMap.get(session.variable).variableLink;
+        let divider = session.variablesMap.get(session.variable).divider;
         let test = parameters.Test;
         let test_original = test_request.parameters['Test.original'];
         let attr = test_request.parameters.Attribute;
         if(DEV_CONFIG) console.log(`${fLog}Chosen test: ${test}\nChosen attribute: ${attr}`);
 
         if (session.variablesMap.get(session.variable).attributes.includes(attr)) {
-            executeTest(fileLink, test, test_original, attr, response);
+            executeTest(fileLink, divider, test, test_original, attr, response);
         } else {
             response.send({
                 fulfillmentText: `The attribute you selected is not in the chosen dataset, try selecting the correct dataset`
@@ -97,11 +100,11 @@ module.exports.testRequestFuTest = (contexts, parameters, action, sessionPath, s
 };
 
 
-let executeTest = function(fileLink, test, test_original, attr, response){
+let executeTest = function(fileLink, divider, test, test_original, attr, response){
     const options = {
         mode: 'text',
         scriptPath: 'Server/src/Fulfillment/Python/',
-        args: [`${fileLink}`, `${test}`, `${attr}`]
+        args: [`${fileLink}`, `${divider}`, `${test}`, `${attr}`]
     };
     if (PYPATH)
         options.pythonPath = PYPATH;

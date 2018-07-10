@@ -1,6 +1,6 @@
 const Common = require('../../Common');
 const PythonShell = require('python-shell');
-const DEV_CONFIG = (process.env.DEVELOPMENT_CONFIG == 'true');
+//const DEV_CONFIG = (process.env.DEVELOPMENT_CONFIG === 'true');
 const PYPATH = process.env.PYPATH;
 const fLog = '[FULFILLMENT] ';
 
@@ -13,8 +13,9 @@ module.exports.dataDescriptionRequest = (contexts, action, sessionPath, sessionI
         let session = Common.sessions.get(sessionId);
         let fileName = session.variable;
         let fileLink = session.variablesMap.get(session.variable).variableLink;
+        let divider = session.variablesMap.get(session.variable).divider;
 
-        dataDescription(fileName, fileLink, response);
+        dataDescription(fileName, fileLink, divider, response);
     } else {
         console.error(`${fLog}Context not found for action ${action}`);
         response.send({
@@ -24,11 +25,11 @@ module.exports.dataDescriptionRequest = (contexts, action, sessionPath, sessionI
 };
 
 
-let dataDescription = (fileName, fileLink, response) => {
+let dataDescription = (fileName, fileLink, divider, response) => {
     const options = {
         mode: 'text',
         scriptPath: 'Server/src/Fulfillment/Python/',
-        args: [`${fileLink}`]
+        args: [`${fileLink}`, `${divider}`]
     };
     if (PYPATH)
         options.pythonPath = PYPATH;

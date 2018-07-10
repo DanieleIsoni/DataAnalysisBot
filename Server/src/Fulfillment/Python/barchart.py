@@ -17,47 +17,51 @@ if len(sys.argv) > 1:
         url = None
 
     if sys.argv[2] != 'null':
-        test = sys.argv[2]
+        divider = sys.argv[2]
+    else:
+        divider = None
+
+    if sys.argv[3] != 'null':
+        test = sys.argv[3]
     else:
         test = None
 
-    if sys.argv[3] != 'null':
-        testAttr = sys.argv[3]
+    if sys.argv[4] != 'null':
+        testAttr = sys.argv[4]
     else:
         testAttr = None
 
-    if sys.argv[4] != 'null':
-        testOrig = sys.argv[4]
+    if sys.argv[5] != 'null':
+        testOrig = sys.argv[5]
     else:
         testOrig = None
 
-    if sys.argv[5] != 'null':
-        attr = sys.argv[5]
+    if sys.argv[6] != 'null':
+        attr = sys.argv[6]
     else:
         attr = None
 
-    if sys.argv[6] != 'null' and sys.argv[6] != 'undefined':
-        xLabelFontdict = json.loads(sys.argv[6].replace('[', '{').replace(']', '}'))
+    if sys.argv[7] != 'null' and sys.argv[7] != 'undefined':
+        xLabelFontdict = json.loads(sys.argv[7].replace('[', '{').replace(']', '}'))
         if 'color' in xLabelFontdict:
             xLabelFontdict['color'] = xLabelFontdict['color'].replace(' ', '')
     else:
         xLabelFontdict = None
 
-    if sys.argv[7] != 'null' and sys.argv[7] != 'undefined':
-        yLabelFontdict = json.loads(sys.argv[7].replace('[', '{').replace(']', '}'))
+    if sys.argv[8] != 'null' and sys.argv[8] != 'undefined':
+        yLabelFontdict = json.loads(sys.argv[8].replace('[', '{').replace(']', '}'))
         if 'color' in yLabelFontdict:
             yLabelFontdict['color'] = yLabelFontdict['color'].replace(' ', '')
     else:
         yLabelFontdict = None
 
-    if sys.argv[8] != 'null':
-        chartName = sys.argv[8]
+    if sys.argv[9] != 'null':
+        chartName = sys.argv[9]
     else:
         chartName = None
 
-
     try:
-        data_set = pd.read_csv(url, sep=',', na_values=["?"])
+        data_set = pd.read_csv(url, sep=divider, na_values=["?"])
 
         x = {
             'maximum': data_set[[attr, testAttr]].groupby(attr).agg([np.max]),

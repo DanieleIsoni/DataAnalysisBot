@@ -4,9 +4,18 @@ import numpy as np
 import urllib
 
 if len(sys.argv) > 1:
-    url = sys.argv[1]
+    if sys.argv[1] != 'null':
+        url = sys.argv[1]
+    else:
+        url = None
+
+    if sys.argv[2] != 'null':
+        divider = sys.argv[2]
+    else:
+        divider = None
+
     try:
-        data_set = pd.read_csv(url, sep=',', na_values=["?"])
+        data_set = pd.read_csv(url, sep=divider, na_values=["?"])
         for el in data_set:
             print(el)
             if data_set[el].dtype == np.int64 or data_set[el].dtype == np.float64:

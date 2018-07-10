@@ -3,6 +3,7 @@ const path = require('path');
 const rimraf = require('rimraf');
 const tmpPath = path.join(__dirname,'../../tmp');
 const dialogflow = require('dialogflow');
+const DEV_CONFIG = (process.env.DEVELOPMENT_CONFIG === 'true');
 const PROJECT_ID = process.env.PROJECT_ID;
 const gappCred = process.env.GOOGLE_APPLICATION_CREDENTIALS;
 const sessionEntityTypesClient = new dialogflow.SessionEntityTypesClient({
@@ -61,7 +62,8 @@ module.exports.sessionHandler = (req) => {
                  *
                  * Value: {
                  *           variableLink: urlVariable,
-                 *           attributes: []
+                 *           attributes: [],
+                 *           divider: ',',
                  *        }
                  *
                  */
@@ -97,9 +99,8 @@ module.exports.sessionHandler = (req) => {
                 chartCount: 0,
                 react: `${req.body.react}`
             });
-            console.log(`Request: ${JSON.stringify(req.sessionID, null, '   ')}`);
             console.log(`session ${req.sessionID} created`);
-            console.log(`session: ${JSON.stringify(sessions.get(req.sessionID), null, '   ')}`);
+            if (DEV_CONFIG) console.log(`session: ${JSON.stringify(sessions.get(req.sessionID), null, '   ')}`);
         }
     } else {
         console.log(`ENTERED`);

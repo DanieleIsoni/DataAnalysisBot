@@ -68,6 +68,7 @@ app.route('/')
 app.route('/messages')
     .get((req, res) => {
         Common.sessionTimeoutHandler(sessionsTimeout, req);
+
         res.writeHead(200, {'Content-Type': 'application/json'});
         res.write(JSON.stringify({
             messages: req.session.messages,
@@ -225,6 +226,10 @@ app.route('/upload')
             let name = req.files.file.name;
             let file = req.files.file;
             let variable = req.body.variabile;
+            let divider = req.body.divider;
+            let head = JSON.parse(req.body.head);
+
+            console.log(`HEAD: ${JSON.stringify(head, null, '   ')}`);
 
             let fileLink = `${path_}/${name}`;
 
@@ -246,7 +251,31 @@ app.route('/upload')
                 pyshell.send(stream.toString());
 
                 pyshell.on('message', function (message) {
-                    req.session.datasets.push({name: name, describe: message});
+                    const options = {
+                        mode: 'text',
+                        scriptPath: 'Server/src/Fulfillment/Python/',
+                        args: [`${fileLink}`, `${divider}`]
+                    };
+                    if (PYPATH)
+                        options.pythonPath = PYPATH;
+
+                    PythonShell.run('getAttributes.py', options, function (err, results) {
+                        if (err) {
+                            console.error(`ERROR: ${err}`);
+                        } else {
+                            let attributes = `${results}`.split(',');
+
+                            if (attributes === undefined) {
+                                attributes = '';
+                            }
+
+                            req.session.datasets.push({
+                                name: name,
+                                describe: message,
+                                attributes: attributes,
+                                head: head});
+                        }
+                    });
                 });
                 pyshell.end(function (err) {
                     if (err) throw err;
@@ -258,7 +287,8 @@ app.route('/upload')
                             message: {
                                 document: {
                                     file_name: name,
-                                    file_link: fileLink
+                                    file_link: fileLink,
+                                    divider: divider
                                 }
                             },
                         };
