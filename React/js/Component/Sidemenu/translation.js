@@ -3,6 +3,7 @@ const json = {
     "novar": ["No Dataset uploaded!", "без переменной нагрузки"],
     "queries": ["Queries example", "возможные запросы"],
     "detail": ["Dataset detail", "переменные детали"],
+    "detail": ["Dataset Head", "переменные детали"],
     "lang": ["Language", "язык"],
     "operation": {
         "title": ["Operation", "операция"],

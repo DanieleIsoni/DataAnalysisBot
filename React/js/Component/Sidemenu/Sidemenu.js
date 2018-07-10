@@ -51,12 +51,9 @@ class ConnectedSidemenu extends React.Component {
     }
 
     handleDescribe(name){
-        getVariable(name).then((data) => {
-            this.setState({
-                described: true,
-                contentVar: data
-            });
-        }).catch(err => console.log('There was an error:' + err));
+        this.setState({
+            described: !this.state.described,
+        });
     }
 
     handleHead(name){
@@ -64,7 +61,6 @@ class ConnectedSidemenu extends React.Component {
             headed: !this.state.headed
         });
     }
-
     
     closeHead (e){
         this.setState({
@@ -90,13 +86,13 @@ class ConnectedSidemenu extends React.Component {
                 <div className="side_subtitle"><h6><i className="material-icons">description</i><Translate id="detail">Describe Dataset</Translate></h6>                
                  {  (this.state.described) ? <a  className="code_command close_side" onClick={(e) => this.closeVar(e)}> <i className="material-icons">close</i></a> : ""}
                  </div>
-                <JsonTable className="table table-hover" rows={this.state.contentVar.data} columns={getColumns(this.state.contentVar.schema.fields)}/>
+                <JsonTable className="table table-hover" rows={this.props.activeVar.describe.data} columns={getColumns(this.props.activeVar.describe.schema.fields)}/>
             </div>
         ) : "";
 
         const headVariabile = (this.state.headed) ? (
             <div className="variable-detail">
-                <div className="side_subtitle"><h6><i className="material-icons">description</i><Translate id="detail">Head of Dataset</Translate></h6>                
+                <div className="side_subtitle"><h6><i className="material-icons">description</i><Translate id="head">Head of Dataset</Translate></h6>                
                  {  (this.state.headed) ? <a  className="code_command close_side" onClick={(e) => this.closeHead(e)}> <i className="material-icons">close</i></a> : ""}
                  </div>
                  <span className="preview_csv">
