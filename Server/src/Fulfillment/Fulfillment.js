@@ -1,4 +1,4 @@
-const DEV_CONFIG = (process.env.DEVELOPMENT_CONFIG === 'true');
+//const DEV_CONFIG = (process.env.DEVELOPMENT_CONFIG === 'true');
 const dataReceived = require('./Actions/dataReceived');
 const dataDescriptionRequest = require('./Actions/dataDescriptionRequest');
 const testRequest = require('./Actions/testRequest');
@@ -64,11 +64,11 @@ module.exports.dialogflowFulfillment = (request, response) => {
             else
                 tPlotChart.plotChartFuLabel(contexts, parameters, action, sessionPath, response);
             break;
-        case 'change.title':
+        case 'plot.chart.fu.title':
             if (Common.sessions.get(sessionId).react === 'true')
                 plotChart.changeTitle(contexts, parameters, action, sessionPath, sessionId, response);
             else
-                tPlotChart.changeTitle(contexts, parameters, action, sessionPath, response);
+                //tPlotChart.changeTitle(contexts, parameters, action, sessionPath, response);
             break;
         default:
             console.warn(`${fLog}No action matched`);

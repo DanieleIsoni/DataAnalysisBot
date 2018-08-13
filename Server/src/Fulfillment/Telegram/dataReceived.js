@@ -1,5 +1,5 @@
 const PythonShell = require('python-shell');
-const DEV_CONFIG = (process.env.DEVELOPMENT_CONFIG == 'true');
+//const DEV_CONFIG = (process.env.DEVELOPMENT_CONFIG === 'true');
 const PROJECT_ID = process.env.PROJECT_ID;
 const gappCred = process.env.GOOGLE_APPLICATION_CREDENTIALS;
 const PYPATH = process.env.PYPATH;

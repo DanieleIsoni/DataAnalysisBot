@@ -21,7 +21,7 @@ const actionController = (azione) => {
             break;
         case "plot.chart":
         case "plot.chart.fu.label":
-        case "change.title":
+        case "plot.chart.fu.title":
             store.dispatch(addHints("after_plot"));
             break;
         case "test.request":
