@@ -67,7 +67,7 @@ module.exports.dialogflowFulfillment = (request, response) => {
         case 'plot.chart.fu.title':
             if (Common.sessions.get(sessionId).react === 'true')
                 plotChart.changeTitle(contexts, parameters, action, sessionPath, sessionId, response);
-            else
+            //else
                 //tPlotChart.changeTitle(contexts, parameters, action, sessionPath, response);
             break;
         default:

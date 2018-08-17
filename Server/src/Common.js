@@ -19,10 +19,10 @@ module.exports = {
 
 module.exports.sessionTimeoutHandler = (sessionsTimeOut, req) => {
     if (!sessionsTimeOut.has(req.sessionID)){
-        sessionsTimeOut.set(req.sessionID, setTimeout(destroySession, 10*60*1000, req.sessionID, req.session));
+        sessionsTimeOut.set(req.sessionID, setTimeout(destroySession, 20*60*1000, req.sessionID, req.session));
     } else {
         clearTimeout(sessionsTimeOut.get(req.sessionID));
-        sessionsTimeOut.set(req.sessionID, setTimeout(destroySession, 10*60*1000, req.sessionID, req.session));
+        sessionsTimeOut.set(req.sessionID, setTimeout(destroySession, 20*60*1000, req.sessionID, req.session));
     }
 };
 

@@ -106,7 +106,7 @@ let plotChartPy = (fileLink, chart, test, testAttr, testOrig, attr, xLabel, yLab
     const options = {
         mode: 'text',
         scriptPath: 'Server/src/Fulfillment/Python/',
-        args: [`${fileLink}`, `${test}`, `${testAttr}`, `${testOrig}`, `${attr}`, xLabelPy, yLabelPy, chartName]
+        args: [`${fileLink}`, `,`, `${test}`, `${testAttr}`, `${testOrig}`, `${attr}`, xLabelPy, yLabelPy, chartName]
     };
 
     if (PYPATH)
