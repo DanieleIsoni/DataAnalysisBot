@@ -3,9 +3,9 @@ import React from "react";
 import { connect } from "react-redux";
 
 const mapStateToProps = (state) => ({
-    canUndo: state.messaggi.past.length > 0 && state.messaggi.present.length > 0,
-    canRedo: state.messaggi.future.length > 0,
-    message: state.messaggi.present
+    canUndo: state.messages.past.length > 0 && state.messages.present.length > 0,
+    canRedo: state.messages.future.length > 0,
+    message: state.messages.present
 })
   
 const mapDispatchToProps = dispatch => {
@@ -25,8 +25,7 @@ class UndoRedo extends React.Component{
         this.checkStep = this.checkStep.bind(this);
     }
 
-    checkStep(e, action){ //Controllo se i messaggi tra bot e umano sono uguali altrimenti tolgo solo uno
-        console.log("Messaggi: " + this.props.message);
+    checkStep(e, action){ //Check if count of bot and human is the same otherwise i delete only one row
         if(action == "undo"){
             let stepToDo = 2;
 
@@ -43,7 +42,6 @@ class UndoRedo extends React.Component{
             let stepToDo = this.state.stepToRedo[this.state.step-1];
             this.setState({step: this.state.step - 1, stepToRedo: [...this.state.stepToRedo.slice(0, this.state.step-1), ...this.state.stepToRedo.slice(this.state.step)]});
             this.props.onRedo(stepToDo);
-            console.log("Aggiunte: " + stepToDo);
         }
     }
 

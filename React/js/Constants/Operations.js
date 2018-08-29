@@ -1,3 +1,6 @@
+//This is a static (can be dynamic) array of all the possible operations that helps the user during the analisys
+//Will be viewed in the HELP SECTION
+
 let operations = [
     {
         "name": "Basic Description",

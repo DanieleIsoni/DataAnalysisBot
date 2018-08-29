@@ -8,8 +8,8 @@ import ChangeTitle from "./ChangeTitle";
 
 const mapMessageEvent = dispatch => {
     return {
-      addMessage: messaggio => dispatch(addMessage(messaggio)),
-      editMessaggio: (id, messaggio) => dispatch(editMessage(id, messaggio)),
+      addMessage: message => dispatch(addMessage(message)),
+      editMessaggio: (id, message) => dispatch(editMessage(id, message)),
     };
 };
 

@@ -17,9 +17,12 @@ const mapEvents = dispatch => {
 };
 
 const mapState = state => {
-    return { variabili: state.variabili.present, activeVar: (state.active != null) ? state.active.name : "" };
+    return { datasets: state.datasets.present, activeVar: (state.active != null) ? state.active.name : "" };
 };
 
+/*
+    Most important component that works like a hub for all the request interface and main input area
+ */
 class ConnectedForm extends React.Component {
     constructor(props){
         super(props);
@@ -45,6 +48,9 @@ class ConnectedForm extends React.Component {
     }
 
     componentWillMount(){
+        /*
+            Small code to load the input suggestion from the SessionStorage
+         */
         if (typeof(Storage) !== "undefined") {
             if(localStorage.getItem('suggestion') != null){
                 let array = JSON.parse(localStorage.getItem('suggestion')) || []; 
@@ -57,12 +63,12 @@ class ConnectedForm extends React.Component {
                 }
             }
         }else{
-            console.log("Unavaibable");
+            console.log("Session Storage Unavaibable");
         }
     }
 
     componentDidUpdate(){
-        if(this.state.type == "Py") this.updateTextArea();
+        if(this.state.type === "Py") this.updateTextArea();
         
         if(this.state.waiting_var && this.props.activeVar != null){
             this.sendMessage(this.state.temp_mex);
@@ -72,7 +78,7 @@ class ConnectedForm extends React.Component {
 
     sendMessage(value){     
         let suggest = this.state.suggest;
-        if(this.state.type != "Py" && value != "" && value != " "){ 
+        if(this.state.type !== "Py" && value !== "" && value !== " "){
             suggest.add(value);
         }
 
@@ -83,7 +89,7 @@ class ConnectedForm extends React.Component {
             localStorage.setItem('suggestion', JSON.stringify([...this.state.suggest]));
         }
 
-        if(this.props.activeVar == null && this.props.variabili.length > 0){
+        if(this.props.activeVar == null && this.props.datasets.length > 0){
             this.setState({temp_mex: value, waiting_var: true});
         }
 
@@ -191,6 +197,9 @@ class ConnectedForm extends React.Component {
         this.setRestrictedArray(this.state.inputValue);
     }
 
+    /*
+        Regex to understand when the user is writing Python code in the main input
+     */
     checkPython(text){
         var pattern =/([\/\+\*\[\]\(\)\:]|import|print|\bif\b|\bcase\b|\bdef\b|.*\..*)+/;
         return pattern.test(text);

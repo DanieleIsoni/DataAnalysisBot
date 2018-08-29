@@ -8,20 +8,19 @@ const JsonTable = require('ts-react-json-table');
 import { Translate } from 'react-localize-redux';
 import sideTranslation from './translation';
 import { withLocalize } from 'react-localize-redux';
-import { setActiveVariable} from "../../Actions/index";
+import { setActiveDataset} from "../../Actions/index";
 import { getVariable } from  '../../Actions/Axios'
 import Help from './Help';
 
 const mapSetActive = dispatch => {
     return {
-      setActiveVariable: vari => dispatch(setActiveVariable(vari))
+      setActiveDataset: dataset => dispatch(setActiveDataset(dataset))
     };
 };
 
 const mapVariable = state => {
-    return { variabili: state.variabili.present, activeVar: state.active };
+    return { datasets: state.datasets.present, activeVar: state.active };
 };
-
 
 class ConnectedSidemenu extends React.Component {
     constructor(props){
@@ -47,31 +46,20 @@ class ConnectedSidemenu extends React.Component {
             selectedVar: el.name,
         });
 
-        this.props.setActiveVariable({"name": el.name, "attributes": el.attributes, "head": el.head});
+        this.props.setActiveDataset({"name": el.name, "attributes": el.attributes, "head": el.head});
     }
 
     handleDescribe(name){
-        this.setState({
-            described: !this.state.described,
-        });
+        this.setState({ described: !this.state.described });
     }
-
     handleHead(name){
-        this.setState({
-            headed: !this.state.headed
-        });
+        this.setState({ headed: !this.state.headed });
     }
-    
     closeHead (e){
-        this.setState({
-            headed: false
-        }); 
+        this.setState({ headed: false });
     }
-
     closeVar (e){
-        this.setState({
-            described: false
-        }); 
+        this.setState({ described: false });
     }
 
     render () {
@@ -81,7 +69,7 @@ class ConnectedSidemenu extends React.Component {
             return array;
         }
 
-        const dettaglioVariabile = (this.state.described) ? (
+        const detailDataset = (this.state.described) ? (
             <div className="variable-detail">
                 <div className="side_subtitle"><h6><i className="material-icons">description</i><Translate id="detail">Describe Dataset</Translate></h6>                
                  {  (this.state.described) ? <a  className="code_command close_side" onClick={(e) => this.closeVar(e)}> <i className="material-icons">close</i></a> : ""}
@@ -90,7 +78,7 @@ class ConnectedSidemenu extends React.Component {
             </div>
         ) : "";
 
-        const headVariabile = (this.state.headed) ? (
+        const headDataset = (this.state.headed) ? (
             <div className="variable-detail">
                 <div className="side_subtitle"><h6><i className="material-icons">description</i><Translate id="head">Head of Dataset</Translate></h6>                
                  {  (this.state.headed) ? <a  className="code_command close_side" onClick={(e) => this.closeHead(e)}> <i className="material-icons">close</i></a> : ""}
@@ -109,11 +97,11 @@ class ConnectedSidemenu extends React.Component {
                     <div className="tab_bar" style={{left: (this.state.tab_active == "dashboard") ? '0%' : '50%'}}></div>
                 </div>
                 {
-                    (this.state.tab_active == "dashboard") ? 
+                    (this.state.tab_active === "dashboard") ?
                         <div>
-                            <List variabili={this.props.variabili} activeVar={this.props.activeVar} onClick={this.handleClick} describe={this.handleDescribe} head={this.handleHead} selected={this.state.selectedVar} lang={sideTranslation} url={this.props.url}/>
-                            {headVariabile}
-                            {dettaglioVariabile}
+                            <List datasets={this.props.datasets} activeVar={this.props.activeVar} onClick={this.handleClick} describe={this.handleDescribe} head={this.handleHead} selected={this.state.selectedVar} lang={sideTranslation} url={this.props.url}/>
+                            {headDataset}
+                            {detailDataset}
                             <div style={{display: 'block'}}>
                                 <Hints lang={sideTranslation}/>
                             </div>

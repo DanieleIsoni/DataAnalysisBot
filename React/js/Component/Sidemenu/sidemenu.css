@@ -483,17 +483,17 @@
   }
 
   .tab_side{
-    position: relative;
-    display: inline-block;
-    height: 38px;
-    width: 50%;
-    text-align: center;
-    background: #f1f1f1;
-    cursor: pointer;
+      position: relative;
+      display: inline-block;
+      height: 38px;
+      width: 50%;
+      border-radius: 0 0 3px 3px;
+      text-align: center;
+      background: #f1f1f1;
+      cursor: pointer;
   }
 
   .tab_side_active{
-      background: white;
       transition: all 0.3s;
   }
 
@@ -505,10 +505,11 @@
       position: relative;
       display: block;
       width: 50%;
-      height: 3px;
+      height: 2px;
       background: #4285f4;
       transition: all 0.25s;
-      border-radius: 10px;
+      margin-top: -2px;
+      border-radius: 20px;
   }
 
   .search_help{

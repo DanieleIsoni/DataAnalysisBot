@@ -1,7 +1,7 @@
 import React from "react";
 import { Container, Row, Col } from 'reactstrap';
 import { withLocalize } from 'react-localize-redux';    
-/* Componenti */
+/* Components */
 import Chat from "./Component/Chat/Chat";
 import Sidemenu from "./Component/Sidemenu/Sidemenu";
 import Form from "./Component/Control/Form";
@@ -33,6 +33,7 @@ class App extends React.Component {
             modal: false,
             file: null
         }
+        //Event for drag and Drop file on the interface
         this.handleClick = this.handleClick.bind(this);
         this.dropHandler = this.dropHandler.bind(this);
         this.dropTarget = this.dropTarget.bind(this);
@@ -67,9 +68,7 @@ class App extends React.Component {
     dropLeave(e){
         e.stopPropagation();
 		e.preventDefault();
-        if(e.screenX === 0 && e.screenY === 0) {
-            this.setState({ hover: false });
-        }
+        if(e.screenX === 0 && e.screenY === 0) this.setState({ hover: false });
     }
 
     dropDragEnter(e) {
@@ -123,6 +122,8 @@ class App extends React.Component {
                     </UrlContext.Consumer>
                 </Row>   
                 <UploadModal toggle={this.toggle} modal={this.state.modal} file={this.state.file}/>
+
+                /* Button for the side menu on mobile*/
                 <div className="openSide" onClick={this.handleClick}><i className="material-icons">keyboard_arrow_down</i></div>
             </Container>   
         );

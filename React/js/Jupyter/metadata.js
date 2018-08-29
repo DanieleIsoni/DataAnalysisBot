@@ -1,3 +1,4 @@
+//Metadata information of Jupyter Notebook file
 module.exports = {
     "kernelspec": {
         "display_name": "Python 3",

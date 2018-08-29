@@ -7,9 +7,12 @@ import { getAll} from '../../Actions/Axios'
 import { Link, Element , Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll'
 
 const mapMessage = state => {
-    return { messaggi: state.messaggi.present };
+    return { messages: state.messages.present };
 };
 
+/*
+    Main interface with the list of request and output from the bot
+*/
 class ConnectedMessages extends React.Component {
     constructor(props){
         super(props);
@@ -17,14 +20,22 @@ class ConnectedMessages extends React.Component {
         this.openCode = this.openCode.bind(this);
     }
 
+    /*
+        Before the interface completely load the component download all the messages and datasets in the session (if available)
+    */
     componentWillMount() { 
         getAll().then(() => {
             this.scrollToBottom(1000);
-        }).catch(error => { console.log(error) });
+        }).catch(error => {
+            console.log(error)
+        });
     }
 
     componentDidUpdate() { this.scrollToBottom(1000); } 
 
+    /*
+        Function used to scroll down in the chat every time is called
+    */
     scrollToBottom(time){ 
         scroller.scrollTo('lastelement', {
             duration: time,
@@ -33,12 +44,16 @@ class ConnectedMessages extends React.Component {
           }); 
     }
 
+    /*
+        With the ouput the server send the code executed. This function trigger the possibility to see it saving the message id
+    */
     openCode(e, id){
         this.setState({ openCode: (this.state.openCode) ? '' : id });
     }
 
     render(){
-        const list = this.props.messaggi.map((el, n) => {
+        /* Object containing all the message */
+        const list = this.props.messages.map((el, n) => {
             return(
                 <li key={el.id} id={el.id} >              
                     <Message content={el} n={n} isCodeOpen={this.state.openCode} openCode={this.openCode}/>
@@ -53,7 +68,12 @@ class ConnectedMessages extends React.Component {
                     <CSSTransitionGroup transitionName="example" transitionEnterTimeout={300} transitionLeaveTimeout={300}>
                         {list}                  
                     </CSSTransitionGroup>
-                    <Element name="lastelement"></Element>  
+                    {
+                        /*
+                            Empty ast element as a placeholder to scroll down
+                         */
+                        <Element name="lastelement"></Element>
+                    }
                 </ul>
             </div>
         );

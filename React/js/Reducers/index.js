@@ -1,12 +1,12 @@
 import { combineReducers } from 'redux'
-import messaggi from './messaggi'
-import variabili from './variabili'
+import messages from './messages'
+import datasets from './datasets'
 import hints from './hints'
-import active from './active_var'
+import active from './active_dataset'
 
 const App = combineReducers({
-  messaggi,
-  variabili,
+  messages,
+  datasets,
   hints,
   active
 })

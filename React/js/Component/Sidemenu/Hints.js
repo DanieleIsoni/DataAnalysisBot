@@ -28,12 +28,12 @@ class ConnectedList extends React.Component {
     }
 
 
-    toggle(e, esempio, name){
+    toggle(e, example, name){
         if(e.target.className == "writable"){
             sendMessage(e.target.innerHTML, "NL");
         }else{
-            if(esempio.required != null){
-                this.setState({request: { "content": esempio.content, "holder": esempio.holder, "name": name }, ask: esempio.required});
+            if(example.required != null){
+                this.setState({request: { "content": example.content, "holder": example.holder, "name": name }, ask: example.required});
                 this.toggleModal();
             }
         }
@@ -71,16 +71,15 @@ class ConnectedList extends React.Component {
         }
         return indices;
     }
-
-
-    generateExample(esempio){
-        var holder =  esempio.holder;
+    
+    generateExample(example){
+        var holder =  example.holder;
         var operation = ["avg", "average", "mean", "minimum", "max"];
         
         if(holder != null){
             var index = this.getIndicesOf('%s', holder, false);
             var message = holder;
-            var required = esempio.required;
+            var required = example.required;
 
             for(var i = index.length-1; i >= 0; i--){
                 if(required[i] == "Attribute" || required[i].substr(0, required[i].indexOf(" ")) == "Attribute"){
@@ -96,16 +95,16 @@ class ConnectedList extends React.Component {
                     case "Axis":
                     case "Color":
                     case "Font": 
-                        return esempio.content;
+                        return example.content;
                 }
             }
 
             return <div>{message}</div>;
         }else{
-            return esempio.content;
+            return example.content;
         }
     }
-
+    
     render() {
         let dialog = (this.state.dropdownOpen != 'none') ?        
             <div className={this.state.dropdownOpen + "_container hint_container"}>
@@ -118,10 +117,10 @@ class ConnectedList extends React.Component {
                 <div className="head_hint">{el.name}</div>
                 <ul className="list_hint">
                     {
-                        el.esempi.map(esempio => {
+                        el.example.map(example => {
                             return(
-                                <li key={uuidv1()} onClick={(e) => this.toggle(e, esempio, el.name)}>
-                                    <div className="body_ex">{this.generateExample(esempio)}</div>
+                                <li key={uuidv1()} onClick={(e) => this.toggle(e, example, el.name)}>
+                                    <div className="body_ex">{this.generateExample(example)}</div>
                                 </li> 
                             );
                         })

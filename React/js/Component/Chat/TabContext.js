@@ -1,17 +1,22 @@
 import React from "react";
 import { connect } from "react-redux";
-import { setActiveVariable} from "../../Actions/index";
+import { setActiveDataset} from "../../Actions/index";
 
 const mapSetActive = dispatch => {
     return {
-      setActiveVariable: vari => dispatch(setActiveVariable(vari))
+      setActiveDataset: dataset => dispatch(setActiveDataset(dataset))
     };
 };
 
-const mapVariable = state => {
-    return { variabili: state.variabili.present, activeVar: state.active };
+const mapDatasets = state => {
+    return {
+        datasets: state.datasets.present, activeVar: state.active
+    };
 };
 
+/*
+   Top bar with browser-like tab to navigate through context (that coincide with the dataset selected)
+*/
 class TabContext extends React.Component {
     constructor(props){
         super(props);
@@ -19,22 +24,24 @@ class TabContext extends React.Component {
         this.onMouseWheel = this.onMouseWheel.bind(this);
     }
 
+    /*
+        Event to scroll the tabs of the dataset
+    */
     onMouseWheel(e) {
         const currentScrollDelta = this.scrollBars.scrollLeft;
         this.scrollBars.scrollLeft = currentScrollDelta + e.deltaY;
     }
 
     handleClick (e, el) {
-        this.props.setActiveVariable({"name": el.name, "attributes": el.attributes, "head": el.head});
+        this.props.setActiveDataset({"name": el.name, "attributes": el.attributes, "head": el.head});
     }
 
     render(){
-
         return(
                 <div className="tab_container" onWheel={(e) => this.onMouseWheel(e)} ref={(scroll) => this.scrollBars = scroll} >
                     {
-                        (this.props.variabili.length) ? 
-                            this.props.variabili.map((el, n) => (
+                        (this.props.datasets.length) ?
+                            this.props.datasets.map((el, n) => (
                                 (this.props.activeVar != null && this.props.activeVar.name != el.name) ? 
                                     <div key={el.id} className='tab_element' id={el.name} onClick={(e) => this.handleClick(e, el)}>
                                         <span>{el.name}</span>
@@ -54,6 +61,5 @@ class TabContext extends React.Component {
     }
 }
 
-
-const TabContextConn = connect(mapVariable, mapSetActive)(TabContext);
+const TabContextConn = connect(mapDatasets, mapSetActive)(TabContext);
 export default TabContextConn;

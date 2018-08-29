@@ -1,5 +1,4 @@
 import { ADD_HINTS } from "../Constants/action-types";
-import undoable from 'redux-undo'
 
 const hints = (state = "initial", action) => {
     switch (action.type) {

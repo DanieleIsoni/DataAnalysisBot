@@ -8,13 +8,13 @@ const Message = ({ content, n, isCodeOpen, openCode}) => (
                 {
                     (content.what == "code") ? 
                         <div className="mycode">
-                            <Code code={content.messaggio} line={"false"}/>
+                            <Code code={content.message} line={"false"}/>
                             <span className="code-indicator">Python script <i className="material-icons">code</i></span>
                         </div>
                     :
                     <div className={content.who}>
                         <pre>
-                            {content.messaggio}
+                            {content.message}
                         </pre>
                         <span className="date">{content.date}</span>
 
@@ -28,6 +28,9 @@ const Message = ({ content, n, isCodeOpen, openCode}) => (
             </div>
         </div>
         {
+            /*
+                Rendering of the code executed if we open it
+             */
             (content.id === isCodeOpen) ?
                 <div className="line line-code">
                     <Code code={content.code} line="true"/>   

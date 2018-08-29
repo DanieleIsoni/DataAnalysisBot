@@ -1,14 +1,14 @@
 import React from "react";
 import { connect } from "react-redux";
-import { addVariable, addHints, setActiveVariable} from "../../Actions/index";
+import { addDataset, addHints, setActiveDataset} from "../../Actions/index";
 import { Button } from 'reactstrap';
 import UploadModal from "./UploadModal";
 
 const mapEvents = dispatch => {
     return {
-      addVariabile: variabile => dispatch(addVariable(variabile)),
+      addDataset: dataset => dispatch(addDataset(dataset)),
       addHints: hints => dispatch(addHints(hints)),
-      setActiveVariable: vari => dispatch(setActiveVariable(vari))
+      setActiveDataset: dataset => dispatch(setActiveDataset(dataset))
     };
 };
 

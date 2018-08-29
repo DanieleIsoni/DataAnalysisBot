@@ -7,8 +7,8 @@
   "scripts": {
     "start": "./node_modules/.bin/forever -m 5 Server/src/app.js",
     "start:local": "export $(cat .env) && node Server/src/app.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack -p --progress --config webpack.config.js",
+    "test": "jest",
+    "build": "webpack --mode=production -p --progress --config webpack.config.js",
     "dev-build": "webpack --progress -d --config webpack.config.js",
     "watch": "webpack --progress -d --config webpack.config.js --watch",
     "start:dev": "webpack-dev-server",
@@ -52,6 +52,11 @@
       "transform-object-rest-spread"
     ]
   },
+  "jest": {
+    "verbose": true,
+    "collectCoverage": false,
+    "testEnvironment": "node"
+  },
   "dependencies": {
     "axios": "^0.18.0",
     "body-parser": "^1.18.2",
@@ -67,6 +72,7 @@
     "forever": "^0.15.3",
     "fs": "0.0.1-security",
     "heroku-ssl-redirect": "0.0.4",
+    "jest": "^23.4.1",
     "js-file-download": "^0.4.1",
     "node-telegram-bot-api": "^0.30.0",
     "node-uuid": "^1.4.8",

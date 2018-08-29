@@ -1,18 +1,16 @@
 import React from "react";
 import { connect } from "react-redux";
 import { addHints, addMessage } from "../../Actions/index";
-import sideTranslation from './translation';
-import { Translate } from 'react-localize-redux';
 import { withLocalize } from 'react-localize-redux';
 import Upload from '../Control/Upload';
-import { setActiveVariable} from "../../Actions/index";
+import { setActiveDataset} from "../../Actions/index";
 import { call_deleteVariable } from '../../Actions/Axios';
 
 const mapDeleteVar = dispatch => {
     return {
       addHints: hints => dispatch(addHints(hints)),
       addMessage: message => dispatch(addMessage(message)),
-      setActiveVariable: variable => dispatch(setActiveVariable(variable))
+      setActiveDataset: dataset => dispatch(setActiveDataset(dataset))
     };
 };
 
@@ -29,7 +27,7 @@ class ConnectedList extends React.Component {
     }
 
     componentDidUpdate(){
-        if(this.props.variabili.length > 0) this.props.addHints("after_file");  
+        if(this.props.datasets.length > 0) this.props.addHints("after_file");
         else this.props.addHints("initial");   
     }
 
@@ -40,7 +38,7 @@ class ConnectedList extends React.Component {
     }
 
     delete(e, name) {
-        if(name === this.props.activeVar.name) this.props.setActiveVariable(null);
+        if(name === this.props.activeVar.name) this.props.setActiveDataset(null);
         call_deleteVariable(name);
     }
 
@@ -86,18 +84,6 @@ class ConnectedList extends React.Component {
         return (
                 <div className="variable-list">
                     {selected}
-                    {/*
-                        (this.props.variabili.length) ? 
-                            this.props.variabili.map((el, n) => (
-                                (this.props.activeVar != null && this.props.activeVar.name != el.name) ? 
-                                    <div key={el.id} className='variable-container' id={el.name} onClick={() => this.props.onClick(el)}>
-                                        <span>{el.name}</span>
-                                    </div>
-                                    :
-                                ''
-                            ))
-                        :""*/
-                    }
                     <Upload addMessaggio={this.props.addMessage} url={this.props.url} theme={"side_add"} text={"Add Datasets"}/>
                 </div>
         );

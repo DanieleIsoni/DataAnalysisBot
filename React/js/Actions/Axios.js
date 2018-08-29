@@ -1,16 +1,22 @@
 import axios from 'axios';
 import uuidv1 from "uuid";
 import store from "../Store/index";
-import { addMessage, clearMessage, addHints, addVariable, setActiveVariable, deleteAllVariables, deleteVariable } from "./index";
+import { addMessage, clearMessage, addHints, addDataset, setActiveDataset, deleteAllDatasets, deleteDataset } from "./index";
 import { URL_HEROKU } from "./../Config/Url";
 import { ActionCreators } from 'redux-undo'
 
-const actionController = (azione) => {
-    switch(azione){
+/*
+   Function called after every server call to change the type of hints
+*/
+const actionController = (action) => {
+    /*
+        The case equal the Dialogflow action intent name
+     */
+    switch(action){
         case "initial":
         case "input.welcome":
         case "input.unknown":
-            if(store.getState().variabili.length > 0)
+            if(store.getState().datasets.length > 0)
                 store.dispatch(addHints("after_file"));
             else
                 store.dispatch(addHints("initial"));
@@ -27,7 +33,7 @@ const actionController = (azione) => {
         case "test.request":
         case "test.request.fu.attribute":
         case "test.request.fu.test":
-            store.dispatch(addHints("after_analisys"));
+            store.dispatch(addHints("after_analysis"));
             break;
         default:
             store.dispatch(addHints("initial"));
@@ -35,33 +41,39 @@ const actionController = (azione) => {
 }
 
 export const errorHandling = (error) => {
-    store.dispatch(addMessage({id: uuidv1(), who: "bot", what: "markdown error", messaggio: "Error not handled! " + error, output: []}));
+    store.dispatch(addMessage({id: uuidv1(), who: "bot", what: "markdown error", message: "Error not handled! " + error, output: []}));
 }
 
 export const sendMessage = (value, type) => {
     return new Promise((resolve, reject) => {
-        if(value != "" && value != "/start"){
-            var date = new Date();
-            var time = date.getHours() + ":" + date.getMinutes();
-            store.dispatch(addMessage({id: uuidv1(), who: "me", what: (type != "Py") ? "markdown" : "code", messaggio: value, output: [], date: time}));
+        /*
+            Message sent from the user is added to the redux store with a optional date parameter
+         */
+        if(value !== "" && value !== "/start"){
+            let date = new Date();
+            let time = date.getHours() + ":" + date.getMinutes();
+            store.dispatch(addMessage({id: uuidv1(), who: "me", what: (type !== "Py") ? "markdown" : "code", message: value, output: [], date: time}));
         }
 
-        if(type == "Py"){
-            sendPy(value).then(() => {
-                resolve();
+        /*
+            Check if the text written by the user is Python or a NL request
+         */
+        if(type === "Py"){
+            sendPy(value).then((status) => {
+                resolve(status);
             }).catch((error) => {
                 errorHandling(error);
                 reject(error);
             })
-        }else{   
-            console.log(value + " - react: true");
+        }else{
             axios({
                 url: URL_HEROKU + "/clientWebHook/",
                 method: 'post', 
                 validateStatus: function (status) {
                     return status < 500;
                 },
-                data: { "message": { "text": value }, "react": "true", 
+                data: { "message": { "text": value },
+                        "react": "true",
                         "variabile": (store.getState().active == null) ? "empty" : store.getState().active.name
                 }, headers: {
                     'accept': 'application/json',
@@ -69,10 +81,10 @@ export const sendMessage = (value, type) => {
                 }
             })
             .then(response => {
-                store.dispatch(addMessage({id: uuidv1(), who: "bot", what: (response.status == 200) ?  "markdown" : "markdown error", messaggio: response.data.message, output: response.data.outputs, code: response.data.code}));
+                store.dispatch(addMessage({id: uuidv1(), who: "bot", what: (response.status == 200) ?  "markdown" : "markdown error", message: response.data.message, output: response.data.outputs, code: response.data.code}));
                 actionController(response.data.action);
-                console.log(response.data);
-                resolve();
+
+                resolve(response);
             }).catch((error) => {
                 errorHandling(error);
                 reject(error);
@@ -97,10 +109,10 @@ export const sendPy = (value) => {
             }
         })
         .then(response => {
-            store.dispatch(addMessage({id: uuidv1(), who: "bot", what: (response.status == 200) ?  "markdown" : "markdown error", messaggio: response.data.message, output: response.data.outputs, code: value, who_code: "me"}));
-            resolve();
+            store.dispatch(addMessage({id: uuidv1(), who: "bot", what: (response.status == 200) ?  "markdown" : "markdown error", message: response.data.message, output: response.data.outputs, code: value, who_code: "me"}));
+            resolve(response.status);
         }).catch((error) => {
-            reject();
+            reject(error);
         });
     });
 }
@@ -117,28 +129,45 @@ export const getAll = () => {
     return new Promise((resolve, reject) => {
         axios.get(URL_HEROKU + '/messages')
         .then(response => {
+
+            /*
+                If is the first time opening the app a "/start" command is sent to the server
+             */
             if(response.data.messages.length == 0){
                 sendMessage("/start", "NL");
             }
 
-            response.data.messages.map(messaggio => {
-                store.dispatch(addMessage({id: uuidv1(), who: messaggio.who, what: "markdown", messaggio: messaggio.message, output: messaggio.outputs, code: messaggio.code, date: messaggio.date}));
+            /*
+                Past messages in the session
+             */
+            response.data.messages.map(message => {
+                store.dispatch(addMessage({id: uuidv1(), who: message.who, what: "markdown", message: message.message, output: message.outputs, code: message.code, date: message.date}));
             })
-            response.data.variables.map((variabile, n) => {
+
+            /*
+                Past datasets in the session
+             */
+            response.data.variables.map((dataset, n) => {
                 var id = uuidv1();
 
-                console.log(JSON.parse(variabile.describe));
-                store.dispatch(addVariable({"name": variabile.name, "id": id, "attributes": variabile.attributes, "head": variabile.head, "describe": JSON.parse(variabile.describe)}));
+                console.log(JSON.parse(dataset.describe));
+                store.dispatch(addDataset({"name": dataset.name, "id": id, "attributes": dataset.attributes, "head": dataset.head, "describe": JSON.parse(dataset.describe)}));
 
-                if(n == response.data.variables.length-1) store.dispatch(setActiveVariable({"name": variabile.name, "attributes": variabile.attributes, "head": variabile.head, "describe": JSON.parse(variabile.describe)}));
+                /*
+                    If datasets is available i activate the context of the last one
+                 */
+                if(n == response.data.variables.length-1) store.dispatch(setActiveDataset({"name": dataset.name, "attributes": dataset.attributes, "head": dataset.head, "describe": JSON.parse(dataset.describe)}));
             })    
 
+            /*
+                When gathering all the information the system check if dataset has been uploaded. In this case the proper hints is loaded
+             */
             if(response.data.variables.length > 0)
                 actionController("data.received");
             else
                 actionController("initial");
 
-            resolve();
+            resolve(response);
         }).catch(error => {
             errorHandling(error);
             reject(error);
@@ -146,15 +175,25 @@ export const getAll = () => {
     });
 }
 
+/*
+    Function to upload a dataset. He need the divider that is automatically detected by the csv reading.
+    The head is nothing less than the first 10 rows of the dataset
+ */
 export const uploadFile = (file, divider, header, dataset) => {
     return new Promise((resolve, reject) => {
+
+        /*
+            Creation of the POST body request with the file
+         */
         var formdata = new FormData();
         formdata.append('file', file);
         formdata.append('react', "true");
         formdata.append('divider', divider);
         formdata.append('head', JSON.stringify(dataset));
         formdata.append('variabile', (store.getState().active != null) ? store.getState().active.name : "empty");
-        store.dispatch(addMessage({"id": uuidv1(), "who": "me", "what": "markdown", "messaggio": "Uploading file...", "output": []}));
+
+        store.dispatch(addMessage({"id": uuidv1(), "who": "me", "what": "markdown", "message": "Uploading file...", "output": []}));
+
         axios({
             url: URL_HEROKU + '/upload',
             data: formdata,
@@ -167,24 +206,27 @@ export const uploadFile = (file, divider, header, dataset) => {
                 var id = uuidv1();
 
                 getVariable(file.name).then(data => {
-                    store.dispatch(addVariable({ "name": file.name, "id": id, "attributes": header, "head": dataset, "describe": data}));
-                    store.dispatch(addMessage({"id": uuidv1(), "who": "bot", "what": "markdown", "messaggio": response.data.message, "output": []}));
-                    store.dispatch(setActiveVariable({"name": file.name, "attributes": header, "head": dataset, "describe": data}));
+                    store.dispatch(addDataset({ "name": file.name, "id": id, "attributes": header, "head": dataset, "describe": data}));
+                    store.dispatch(addMessage({"id": uuidv1(), "who": "bot", "what": "markdown", "message": response.data.message, "output": []}));
+                    store.dispatch(setActiveDataset({"name": file.name, "attributes": header, "head": dataset, "describe": data}));
                 })
 
             }else{
-                store.dispatch(addMessage({"id": uuidv1(), "who": "bot", "what": "markdown error", "messaggio": response.data.message, "output": []}));
+                store.dispatch(addMessage({"id": uuidv1(), "who": "bot", "what": "markdown error", "message": response.data.message, "output": []}));
             }    
 
             actionController(response.data.action);
             
-            resolve();
+            resolve(response.status);
         }).catch(error => {
             reject(error);
         });
     });
 }
 
+/*
+    Function for gathering the describe of a loaded dataset
+ */
 export const getVariable = (name) => {
     return new Promise((resolve, reject) => {
         axios({
@@ -195,11 +237,16 @@ export const getVariable = (name) => {
                 return status <= 500;
             }
         }).then(response => {
+            /*
+                Different network error code to handle different problems
+             */
+            console.log(response.data);
+
             if(response.status == 404){
-                store.dispatch(addMessage({id: uuidv1(), who: "bot", what: "markdown", messaggio: response.data, output: []}));
+                store.dispatch(addMessage({id: uuidv1(), who: "bot", what: "markdown", message: response.data, output: []}));
             }else if(response.status == 400){
-                store.dispatch(deleteAllVariables());
-                store.dispatch(addMessage({id: uuidv1(), who: "bot", what: "markdown", messaggio: "Session expired, all variabile was deleted!", output: []}));
+                store.dispatch(deleteAllDatasets());
+                store.dispatch(addMessage({id: uuidv1(), who: "bot", what: "markdown", message: "Session expired, all datasets was deleted!", output: []}));
             }else{
                 resolve(response.data);
             }
@@ -207,11 +254,11 @@ export const getVariable = (name) => {
     });
 }
 
-
+/*
+    Function to delete a loaded dataset
+ */
 export const call_deleteVariable = (name) => {
-
-    var n = store.getState().variabili.present.map(function(e) { return e.name; }).indexOf(name);
-
+    var n = store.getState().datasets.present.map(function(e) { return e.name; }).indexOf(name);
     axios({
         url: URL_HEROKU + '/delete/' + n,
         method: 'get', 
@@ -220,16 +267,17 @@ export const call_deleteVariable = (name) => {
         }
     }).then(response => {
         let message = "";
+
         if(response.status === 500){
             message = response.data;
         }else if(response.status === 400){
             message = "Session expired, all variabile was deleted!";
-            store.dispatch(deleteAllVariables());
+            store.dispatch(deleteAllDatasets());
         }else{
-            store.dispatch(deleteVariable(n));
+            store.dispatch(deleteDataset(n));
             message = response.data;
         }
 
-        store.dispatch(addMessage({id: uuidv1(), who: "bot", what: "markdown", messaggio: message, output: []}));
+        store.dispatch(addMessage({id: uuidv1(), who: "bot", what: "markdown", message: message, output: []}));
     }) 
 } 

@@ -30,7 +30,6 @@ class Output extends React.Component{
         }); 
     }
 
-
     render () { 
         return (
             (typeof this.props.output != "undefined" && this.props.output != null && this.props.output.length > 0) ?
@@ -40,14 +39,23 @@ class Output extends React.Component{
                             return(
                                 <div className="resultdiv" key={i}>
                                     {
-                                        (al.type == "image/png" && al.content != "define") ? 
+
+                                        /*
+                                             Plot output with the image
+                                        */
+                                        (al.type == "image/png" && al.content != "define") ?
                                             <div>
                                                 <img className="plot_img" src={"data:image/gif;base64," + al.content}/> 
                                                 <UrlContext.Consumer>
                                                     {url => <Choices image={al.content} url={url} title={al.title}/>}
                                                 </UrlContext.Consumer>
                                             </div>
+
                                         :
+
+                                        /*
+                                               Normal output or basic description handler
+                                         */
                                         (typeof this.props.output != "undefined" && this.props.output != null && this.props.output.length > 3) ? 
                                             <div style={{paddingTop: '10px', marginBottom: '5px'}}>
                                                 {(i==0) ? <a className="split_basic attributes_label">Attributes: </a> : ''}

@@ -7,7 +7,7 @@ import Jup from "../../Jupyter/Jupyter";
 import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 
 const mapMessaggi = state => {
-    return { messaggi: state.messaggi.present };
+    return { messages: state.messages.present };
 };
 
 const mapAddMessaggioEvent = dispatch => {
@@ -32,12 +32,12 @@ class ConnectedJupyter extends React.Component{
     generateJSON(){
         var json_jup = new Jup();
 
-        this.props.messaggi.map(el =>{
+        this.props.messages.map(el =>{
             if(el.what != "code"){
                 if(el.code != null)
                     json_jup.addCode(el.output, el.code, el.who_code);
                 else
-                    json_jup.addMarkdown(el.who, el.messaggio);
+                    json_jup.addMarkdown(el.who, el.message);
             }
         });
 
@@ -59,7 +59,7 @@ class ConnectedJupyter extends React.Component{
                 var messaggi_jup = Jup.readJupyter(json.cells);
 
                 messaggi_jup.map(mes => {
-                    f.addMessage({id: uuidv1(), who: mes.who, what: mes.what, messaggio: mes.messaggio, output: mes.output, code: mes.code});
+                    f.addMessage({id: uuidv1(), who: mes.who, what: mes.what, message: mes.message, output: mes.output, code: mes.code});
                 });
             };
         })(this.props);
