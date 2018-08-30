@@ -42,14 +42,15 @@ class TabContext extends React.Component {
                     {
                         (this.props.datasets.length) ?
                             this.props.datasets.map((el, n) => (
-                                (this.props.activeVar != null && this.props.activeVar.name != el.name) ? 
-                                    <div key={el.id} className='tab_element' id={el.name} onClick={(e) => this.handleClick(e, el)}>
+                                (this.props.activeVar != null && this.props.activeVar.name == el.name) ? 
+                                    <div key={el.id} className='tab_element tab_active' id={el.name} onClick={(e) => this.handleClick(e, el)}>
                                         <span>{el.name}</span>
                                     </div>
                                     :
-                                    <div key={el.id} className='tab_element tab_active' id={el.name}>
+                                    <div key={el.id} className='tab_element' id={el.name} onClick={(e) => this.handleClick(e, el)}>
                                         <span>{el.name}</span>
                                     </div>
+
                             ))
                         :                                    
                         <div className='tab_element tab_active'>

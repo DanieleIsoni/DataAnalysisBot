@@ -99,6 +99,7 @@ class ConnectedSidemenu extends React.Component {
                 {
                     (this.state.tab_active === "dashboard") ?
                         <div>
+                            <div className="side_subtitle" style={{flexBasis: '100%'}}><h6><i className="material-icons">info</i>Active Dataset</h6></div>
                             <List datasets={this.props.datasets} activeVar={this.props.activeVar} onClick={this.handleClick} describe={this.handleDescribe} head={this.handleHead} selected={this.state.selectedVar} lang={sideTranslation} url={this.props.url}/>
                             {headDataset}
                             {detailDataset}

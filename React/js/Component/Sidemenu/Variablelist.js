@@ -45,11 +45,6 @@ class ConnectedList extends React.Component {
     render() {
         var selected = (this.props.activeVar) ?
         <div className='variable-selected'>
-            <h5 className="body_text" style={{padding: '5px'}}>Active context dataset</h5>
-            <div className='variable-container selected-var'>
-                <span>{this.props.activeVar.name}</span>
-            </div>
-            <br />
             <div className='variable-container' style={{background: 'white'}} onClick={() => this.props.describe(this.props.activeVar.name)}>
                 <span>Describe <i className="material-icons">chevron_right</i></span>
             </div>
@@ -86,6 +81,12 @@ class ConnectedList extends React.Component {
                     {selected}
                     <Upload addMessaggio={this.props.addMessage} url={this.props.url} theme={"side_add"} text={"Add Datasets"}/>
                 </div>
+
+                /**
+                 *  <div className='variable-container selected-var'>
+                        <span>{this.props.activeVar.name}</span>
+                    </div>
+                 */
         );
     }
 }
