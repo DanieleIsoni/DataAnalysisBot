@@ -15,3 +15,5 @@ tmp/
 .floo
 .flooignore
 test-447c53803df9.json
+.vscode/
+DataAnalysisBot*.json

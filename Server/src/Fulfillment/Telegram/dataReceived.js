@@ -33,7 +33,7 @@ let storeAttributes = function (fileName, fileLink, response, session){
     const options = {
         mode: 'text',
         scriptPath: 'Server/src/Fulfillment/Python/',
-        args: [`${fileLink}`]
+        args: [`${fileLink}`, `,`]
     };
     if (PYPATH)
         options.pythonPath = PYPATH;

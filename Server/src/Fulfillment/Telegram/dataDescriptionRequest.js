@@ -26,7 +26,7 @@ let dataDescription = (fileName, fileLink, response) => {
     const options = {
         mode: 'text',
         scriptPath: 'Server/src/Fulfillment/Python/',
-        args: [`${fileLink}`]
+        args: [`${fileLink}`,`,`]
     };
     if (PYPATH)
         options.pythonPath = PYPATH;

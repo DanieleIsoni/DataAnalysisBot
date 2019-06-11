@@ -25,13 +25,15 @@ const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
 const CLIENT_WEBHOOK = process.env.CLIENT_WEBHOOK;
 const FULFILLMENT_WEBHOOK = process.env.FULFILLMENT_WEBHOOK;
 const PYPATH = process.env.PYPATH;
+const TESTING_ENV_URL = process.env.TESTING_ENV_URL;
 
 let baseUrl = "";
 if (APP_NAME){
     // Heroku case
     baseUrl = `https://${APP_NAME}.herokuapp.com`;
 } else {
-    baseUrl = `https://dab.serveo.net`;
+    // testing enviroment
+    if (TESTING_ENV_URL) baseUrl = TESTING_ENV_URL;
     // console.error('Set up the url of your service here and remove exit code!');
     // process.exit(1);
 }
