@@ -12,7 +12,8 @@
     "dev-build": "webpack --progress -d --config webpack.config.js",
     "watch": "webpack --progress -d --config webpack.config.js --watch",
     "start:dev": "webpack-dev-server",
-    "start:ele": "electron ."
+    "start:ele": "electron .",
+    "preinstall": "node Server/src/gcpSetup.js"
   },
   "keywords": [
     "fullstack",
