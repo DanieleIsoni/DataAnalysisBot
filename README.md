@@ -2,6 +2,8 @@
 
 A chat-bot with the goal of simplifying data exploration to users that are less expert in the Data Science field, decreasing risks related to bad data analysis.
 
+You can find a demo [here](https://data-analysis-bot.herokuapp.com)
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
